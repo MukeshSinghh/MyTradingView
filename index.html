@@ -1,10 +1,524 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>My TradingView Site</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MyTradingView — Portfolio Tracker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-primary: #ffffff;
+      --bg-secondary: #f5f5f3;
+      --bg-tertiary: #eeede8;
+      --text-primary: #1a1a1a;
+      --text-secondary: #555553;
+      --text-tertiary: #999896;
+      --border-light: rgba(0,0,0,0.10);
+      --border-mid: rgba(0,0,0,0.18);
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --green: #1D9E75;
+      --green-bg: #E1F5EE;
+      --green-text: #0F6E56;
+      --red: #D85A30;
+      --red-bg: #FAECE7;
+      --red-text: #993C1D;
+      --blue: #185FA5;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg-primary: #1c1c1a;
+        --bg-secondary: #252523;
+        --bg-tertiary: #2e2e2b;
+        --text-primary: #f0efe8;
+        --text-secondary: #a8a7a0;
+        --text-tertiary: #6e6d68;
+        --border-light: rgba(255,255,255,0.08);
+        --border-mid: rgba(255,255,255,0.15);
+        --green-bg: #04342C;
+        --green-text: #9FE1CB;
+        --red-bg: #4A1B0C;
+        --red-text: #F5C4B3;
+      }
+    }
+
+    body {
+      font-family: 'Syne', sans-serif;
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      min-height: 100vh;
+    }
+
+    .topbar {
+      background: var(--bg-primary);
+      border-bottom: 0.5px solid var(--border-light);
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .topbar h1 { font-size: 17px; font-weight: 600; letter-spacing: -0.4px; color: var(--text-primary); }
+    .topbar span { font-size: 12px; color: var(--text-tertiary); font-family: 'DM Mono', monospace; }
+
+    .app { max-width: 960px; margin: 0 auto; padding: 1.5rem 1rem 4rem; }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 1.5rem;
+    }
+    .met {
+      background: var(--bg-primary);
+      border: 0.5px solid var(--border-light);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+    }
+    .met .lbl { font-size: 11px; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 7px; }
+    .met .val { font-size: 18px; font-weight: 500; font-family: 'DM Mono', monospace; color: var(--text-primary); }
+    .met .val.pos { color: var(--green); }
+    .met .val.neg { color: var(--red); }
+
+    .card {
+      background: var(--bg-primary);
+      border: 0.5px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      padding: 18px;
+      margin-bottom: 1.5rem;
+    }
+    .card-hdr {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    .card-hdr h2 { font-size: 13px; font-weight: 500; color: var(--text-secondary); }
+
+    .tabs { display: flex; gap: 4px; flex-wrap: wrap; }
+    .tab {
+      font-size: 11px;
+      font-family: 'DM Mono', monospace;
+      padding: 4px 11px;
+      border-radius: 6px;
+      border: 0.5px solid var(--border-light);
+      background: transparent;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .tab.on {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      border-color: var(--border-mid);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .field label {
+      display: block;
+      font-size: 11px;
+      color: var(--text-tertiary);
+      margin-bottom: 5px;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+    .field input, .field select {
+      width: 100%;
+      padding: 9px 11px;
+      border: 0.5px solid var(--border-mid);
+      border-radius: var(--radius-md);
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      font-size: 13px;
+      font-family: 'DM Mono', monospace;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .field input:focus, .field select:focus { border-color: var(--blue); }
+
+    .add-btn {
+      width: 100%;
+      padding: 10px;
+      background: var(--text-primary);
+      color: var(--bg-primary);
+      border: none;
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      font-weight: 500;
+      font-family: 'Syne', sans-serif;
+      cursor: pointer;
+      margin-top: 14px;
+      transition: opacity 0.15s;
+    }
+    .add-btn:hover { opacity: 0.78; }
+
+    .tbl-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+    th {
+      font-size: 10px;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 10px 13px;
+      text-align: left;
+      border-bottom: 0.5px solid var(--border-light);
+      font-weight: 400;
+    }
+    td {
+      font-size: 12px;
+      padding: 10px 13px;
+      border-bottom: 0.5px solid var(--border-light);
+      color: var(--text-primary);
+      font-family: 'DM Mono', monospace;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: var(--bg-secondary); }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 500;
+      font-family: 'Syne', sans-serif;
+    }
+    .badge.buy { background: var(--green-bg); color: var(--green-text); }
+    .badge.sell { background: var(--red-bg); color: var(--red-text); }
+
+    .del-btn {
+      background: none;
+      border: none;
+      color: var(--text-tertiary);
+      cursor: pointer;
+      font-size: 16px;
+      padding: 0 3px;
+      transition: color 0.15s;
+    }
+    .del-btn:hover { color: var(--red); }
+
+    .pos { color: var(--green); }
+    .neg { color: var(--red); }
+    .muted { color: var(--text-tertiary); }
+
+    .empty {
+      text-align: center;
+      padding: 40px;
+      color: var(--text-tertiary);
+      font-size: 13px;
+    }
+
+    .filter-row { display: flex; gap: 6px; }
+    .fbtn {
+      font-size: 11px;
+      font-family: 'DM Mono', monospace;
+      padding: 3px 10px;
+      border-radius: 5px;
+      border: 0.5px solid var(--border-light);
+      background: transparent;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .fbtn.on { background: var(--bg-secondary); color: var(--text-primary); border-color: var(--border-mid); }
+
+    .legend { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 10px; font-size: 11px; color: var(--text-secondary); }
+    .leg-item { display: flex; align-items: center; gap: 5px; }
+    .leg-sq { width: 10px; height: 10px; border-radius: 2px; display: inline-block; flex-shrink: 0; }
+
+    .footer {
+      text-align: center;
+      font-size: 11px;
+      color: var(--text-tertiary);
+      font-family: 'DM Mono', monospace;
+      margin-top: 2rem;
+    }
+
+    @media (max-width: 640px) {
+      .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .form-grid { grid-template-columns: 1fr 1fr; }
+      .topbar h1 { font-size: 15px; }
+    }
+  </style>
 </head>
 <body>
-    <h1>Welcome to My TradingView Strategy</h1>
-    <p>This is my GitHub Pages website.</p>
+
+<div class="topbar">
+  <h1>MyTradingView</h1>
+  <span id="date-lbl"></span>
+</div>
+
+<div class="app">
+
+  <div class="metrics">
+    <div class="met"><div class="lbl">Invested</div><div class="val" id="m-inv">₹0</div></div>
+    <div class="met"><div class="lbl">Current value</div><div class="val" id="m-val">₹0</div></div>
+    <div class="met"><div class="lbl">Total P&amp;L</div><div class="val" id="m-pnl">₹0</div></div>
+    <div class="met"><div class="lbl">Trades</div><div class="val" id="m-cnt">0</div></div>
+  </div>
+
+  <!-- Chart -->
+  <div class="card">
+    <div class="card-hdr">
+      <h2>Portfolio performance</h2>
+      <div class="tabs">
+        <button class="tab on" onclick="switchChart('pnl',this)">P&amp;L</button>
+        <button class="tab" onclick="switchChart('weekly',this)">Weekly growth</button>
+        <button class="tab" onclick="switchChart('alloc',this)">Allocation</button>
+        <button class="tab" onclick="switchChart('vol',this)">Volume</button>
+      </div>
+    </div>
+    <div style="position:relative;height:240px;"><canvas id="mainChart"></canvas></div>
+    <div class="legend" id="legend"></div>
+  </div>
+
+  <!-- Add trade form -->
+  <div class="card">
+    <div class="card-hdr"><h2>Record trade</h2></div>
+    <div class="form-grid">
+      <div class="field"><label>Ticker</label><input id="f-tick" placeholder="e.g. RELIANCE" maxlength="12" /></div>
+      <div class="field"><label>Type</label><select id="f-type"><option value="buy">Buy</option><option value="sell">Sell</option></select></div>
+      <div class="field"><label>Shares / units</label><input id="f-qty" type="number" placeholder="10" min="0.01" step="any" /></div>
+      <div class="field"><label>Entry price (₹)</label><input id="f-price" type="number" placeholder="2500" min="0.01" step="any" /></div>
+      <div class="field"><label>Date</label><input id="f-date" type="date" /></div>
+      <div class="field"><label>Current price (₹)</label><input id="f-cur" type="number" placeholder="optional" min="0" step="any" /></div>
+    </div>
+    <button class="add-btn" onclick="addTrade()">+ Add trade</button>
+  </div>
+
+  <!-- Trade log -->
+  <div class="card" style="padding:0;">
+    <div class="card-hdr" style="padding:16px 18px 0;">
+      <h2>Trade log</h2>
+      <div class="filter-row">
+        <button class="fbtn on" onclick="setF('all',this)">All</button>
+        <button class="fbtn" onclick="setF('buy',this)">Buys</button>
+        <button class="fbtn" onclick="setF('sell',this)">Sells</button>
+      </div>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <colgroup>
+          <col style="width:92px"><col style="width:110px"><col style="width:58px">
+          <col style="width:72px"><col style="width:106px"><col style="width:106px">
+          <col style="width:116px"><col style="width:38px">
+        </colgroup>
+        <thead>
+          <tr>
+            <th>Date</th><th>Ticker</th><th>Type</th><th>Shares</th>
+            <th>Entry</th><th>Current</th><th>P&amp;L</th><th></th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+      <div id="empty" class="empty">No trades yet. Add your first trade above.</div>
+    </div>
+  </div>
+
+  <div class="footer">Data stored locally in your browser &middot; MyTradingView</div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+  let trades = [];
+  try { trades = JSON.parse(localStorage.getItem('mytradingview_v1') || '[]'); } catch(e) {}
+
+  let flt = 'all', cMode = 'pnl', chart = null;
+
+  document.getElementById('date-lbl').textContent = new Date().toLocaleDateString('en-IN', { weekday:'short', year:'numeric', month:'short', day:'numeric' });
+  document.getElementById('f-date').value = new Date().toISOString().split('T')[0];
+
+  function save() { try { localStorage.setItem('mytradingview_v1', JSON.stringify(trades)); } catch(e) {} }
+
+  function inr(n) {
+    const abs = Math.abs(n);
+    let s;
+    if (abs >= 1e7) s = (abs / 1e7).toFixed(2) + ' Cr';
+    else if (abs >= 1e5) s = (abs / 1e5).toFixed(2) + ' L';
+    else s = abs.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    return (n < 0 ? '-' : '') + '₹' + s;
+  }
+
+  function addTrade() {
+    const tick = document.getElementById('f-tick').value.trim().toUpperCase();
+    const type = document.getElementById('f-type').value;
+    const qty  = parseFloat(document.getElementById('f-qty').value);
+    const price = parseFloat(document.getElementById('f-price').value);
+    const date  = document.getElementById('f-date').value;
+    const cur   = parseFloat(document.getElementById('f-cur').value) || null;
+    if (!tick || isNaN(qty) || qty <= 0 || isNaN(price) || price <= 0 || !date) {
+      alert('Please fill in ticker, shares, price and date.');
+      return;
+    }
+    trades.unshift({ id: Date.now(), tick, type, qty, price, date, cur });
+    save();
+    ['f-tick','f-qty','f-price','f-cur'].forEach(id => document.getElementById(id).value = '');
+    render();
+  }
+
+  function delTrade(id) { trades = trades.filter(t => t.id !== id); save(); render(); }
+  function setF(f, btn) {
+    flt = f;
+    document.querySelectorAll('.fbtn').forEach(b => b.classList.remove('on'));
+    btn.classList.add('on');
+    render();
+  }
+  function switchChart(m, btn) {
+    cMode = m;
+    document.querySelectorAll('.tab').forEach(b => b.classList.remove('on'));
+    btn.classList.add('on');
+    renderChart();
+  }
+
+  const PAL = ['#185FA5','#1D9E75','#BA7517','#993356','#534AB7','#3B6D11','#993C1D','#0F6E56','#854F0B'];
+
+  function getWeek(dateStr) {
+    const d = new Date(dateStr);
+    const jan1 = new Date(d.getFullYear(), 0, 1);
+    const wk = Math.ceil(((d - jan1) / 86400000 + jan1.getDay() + 1) / 7);
+    return d.getFullYear() + '-W' + String(wk).padStart(2, '0');
+  }
+  function wkLabel(wk) {
+    const [y, w] = wk.split('-W');
+    const jan1 = new Date(parseInt(y), 0, 1);
+    const d = new Date(jan1.getTime() + ((parseInt(w) - 1) * 7 - (jan1.getDay() || 7) + 1) * 86400000);
+    return d.toLocaleDateString('en-IN', { day:'numeric', month:'short' });
+  }
+
+  function renderChart() {
+    if (chart) { chart.destroy(); chart = null; }
+    const canvas = document.getElementById('mainChart');
+    const leg = document.getElementById('legend');
+    leg.innerHTML = '';
+    if (trades.length === 0) return;
+
+    const isDark = matchMedia('(prefers-color-scheme: dark)').matches;
+    const gridColor = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.07)';
+    const tickColor = isDark ? '#6e6d68' : '#999896';
+
+    if (cMode === 'pnl') {
+      const sorted = [...trades].sort((a, b) => a.date.localeCompare(b.date));
+      const labels = [], data = [];
+      let cum = 0;
+      sorted.forEach(t => {
+        const pnl = t.cur != null ? (t.type === 'buy' ? (t.cur - t.price) * t.qty : (t.price - t.cur) * t.qty) : 0;
+        cum += pnl;
+        labels.push(t.date + ' ' + t.tick);
+        data.push(parseFloat(cum.toFixed(2)));
+      });
+      chart = new Chart(canvas, {
+        type: 'line',
+        data: { labels, datasets: [{ label: 'Cumulative P&L', data, borderColor: '#185FA5', backgroundColor: 'rgba(24,95,165,0.08)', fill: true, tension: 0.35, pointRadius: 4, pointBackgroundColor: '#185FA5', borderWidth: 2 }] },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => (ctx.parsed.y >= 0 ? '+' : '') + inr(ctx.parsed.y) } } }, scales: { y: { grid: { color: gridColor }, ticks: { callback: v => inr(v), font: { family: 'DM Mono', size: 10 }, color: tickColor } }, x: { grid: { display: false }, ticks: { font: { family: 'DM Mono', size: 10 }, color: tickColor, maxRotation: 30 } } } }
+      });
+      leg.innerHTML = '<span class="leg-item"><span class="leg-sq" style="background:#185FA5"></span>Cumulative P&L</span>';
+
+    } else if (cMode === 'weekly') {
+      const wkMap = {};
+      [...trades].sort((a, b) => a.date.localeCompare(b.date)).forEach(t => {
+        const wk = getWeek(t.date);
+        const pnl = t.cur != null ? (t.type === 'buy' ? (t.cur - t.price) * t.qty : (t.price - t.cur) * t.qty) : 0;
+        wkMap[wk] = (wkMap[wk] || 0) + pnl;
+      });
+      const wks = Object.keys(wkMap).sort();
+      const labels = wks.map(wkLabel);
+      let cum = 0;
+      const cumData = wks.map(w => { cum += wkMap[w]; return parseFloat(cum.toFixed(2)); });
+      const barData = wks.map(w => parseFloat(wkMap[w].toFixed(2)));
+      chart = new Chart(canvas, {
+        type: 'bar',
+        data: { labels, datasets: [
+          { label: 'Weekly P&L', data: barData, backgroundColor: barData.map(v => v >= 0 ? 'rgba(29,158,117,0.75)' : 'rgba(216,90,48,0.75)'), borderRadius: 4, borderSkipped: false, yAxisID: 'y' },
+          { label: 'Cumulative', data: cumData, type: 'line', borderColor: '#185FA5', backgroundColor: 'transparent', tension: 0.35, pointRadius: 4, pointBackgroundColor: '#185FA5', borderWidth: 2, yAxisID: 'y2' }
+        ]},
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => (ctx.parsed.y >= 0 ? '+' : '') + inr(ctx.parsed.y) } } }, scales: { y: { position: 'left', grid: { color: gridColor }, ticks: { callback: v => inr(v), font: { family: 'DM Mono', size: 10 }, color: tickColor } }, y2: { position: 'right', grid: { display: false }, ticks: { callback: v => inr(v), font: { family: 'DM Mono', size: 10 }, color: '#185FA5' } }, x: { grid: { display: false }, ticks: { font: { family: 'DM Mono', size: 10 }, color: tickColor, maxRotation: 30, autoSkip: false } } } }
+      });
+      leg.innerHTML = '<span class="leg-item"><span class="leg-sq" style="background:#1D9E75"></span>Weekly gain</span><span class="leg-item"><span class="leg-sq" style="background:#D85A30"></span>Weekly loss</span><span class="leg-item"><span class="leg-sq" style="background:#185FA5"></span>Cumulative</span>';
+
+    } else if (cMode === 'alloc') {
+      const map = {};
+      trades.forEach(t => { map[t.tick] = (map[t.tick] || 0) + t.price * t.qty; });
+      const labels = Object.keys(map), data = Object.values(map);
+      const colors = labels.map((_, i) => PAL[i % PAL.length]);
+      chart = new Chart(canvas, {
+        type: 'doughnut',
+        data: { labels, datasets: [{ data, backgroundColor: colors, borderWidth: 2, borderColor: 'transparent' }] },
+        options: { responsive: true, maintainAspectRatio: false, cutout: '62%', plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ctx.label + ': ' + inr(ctx.parsed) } } } }
+      });
+      const total = data.reduce((a, b) => a + b, 0);
+      labels.forEach((l, i) => { leg.innerHTML += `<span class="leg-item"><span class="leg-sq" style="background:${colors[i]}"></span>${l} ${((data[i] / total) * 100).toFixed(1)}%</span>`; });
+
+    } else {
+      const map = {};
+      trades.forEach(t => { map[t.tick] = (map[t.tick] || 0) + t.qty; });
+      const labels = Object.keys(map), data = Object.values(map);
+      const colors = labels.map((_, i) => PAL[i % PAL.length]);
+      chart = new Chart(canvas, {
+        type: 'bar',
+        data: { labels, datasets: [{ data, backgroundColor: colors, borderRadius: 5, borderSkipped: false }] },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ctx.parsed.y.toFixed(2) + ' units' } } }, scales: { y: { grid: { color: gridColor }, ticks: { font: { family: 'DM Mono', size: 10 }, color: tickColor } }, x: { grid: { display: false }, ticks: { font: { family: 'Syne', size: 11 }, color: tickColor } } } }
+      });
+      labels.forEach((l, i) => { leg.innerHTML += `<span class="leg-item"><span class="leg-sq" style="background:${colors[i]}"></span>${l}</span>`; });
+    }
+  }
+
+  function render() {
+    const vis = flt === 'all' ? trades : trades.filter(t => t.type === flt);
+    const tbody = document.getElementById('tbody');
+    const empty = document.getElementById('empty');
+    tbody.innerHTML = '';
+    empty.style.display = vis.length === 0 ? 'block' : 'none';
+    vis.forEach(t => {
+      const cp = t.cur != null ? t.cur : t.price;
+      const pnl = t.type === 'buy' ? (cp - t.price) * t.qty : (t.price - cp) * t.qty;
+      const pc = pnl >= 0 ? 'pos' : 'neg';
+      const ps = (pnl >= 0 ? '+' : '') + inr(pnl);
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${t.date}</td>
+        <td style="font-weight:500;font-family:'Syne',sans-serif;">${t.tick}</td>
+        <td><span class="badge ${t.type}">${t.type.toUpperCase()}</span></td>
+        <td>${t.qty.toLocaleString()}</td>
+        <td>${inr(t.price)}</td>
+        <td>${t.cur != null ? inr(t.cur) : '<span class="muted">—</span>'}</td>
+        <td class="${t.cur != null ? pc : ''}">${t.cur != null ? ps : '<span class="muted">—</span>'}</td>
+        <td><button class="del-btn" onclick="delTrade(${t.id})">×</button></td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    let inv = 0, val = 0, pnl = 0;
+    trades.forEach(t => {
+      const cost = t.price * t.qty;
+      const cur  = t.cur != null ? t.cur * t.qty : cost;
+      if (t.type === 'buy') { inv += cost; val += cur; pnl += (cur - cost); }
+      else { inv += cost; val += cost; pnl += (t.cur != null ? (t.price - t.cur) * t.qty : 0); }
+    });
+
+    document.getElementById('m-inv').textContent = inr(inv);
+    document.getElementById('m-inv').className = 'val';
+    document.getElementById('m-val').textContent = inr(val);
+    document.getElementById('m-val').className = 'val';
+    document.getElementById('m-pnl').textContent = (pnl >= 0 ? '+' : '') + inr(pnl);
+    document.getElementById('m-pnl').className = 'val ' + (pnl >= 0 ? 'pos' : 'neg');
+    document.getElementById('m-cnt').textContent = trades.length;
+    renderChart();
+  }
+
+  render();
+</script>
 </body>
 </html>
