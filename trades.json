@@ -1,0 +1,10 @@
+[
+  { "id": 1, "ticker": "RELIANCE", "type": "buy", "qty": 10, "price": 2450.00, "date": "2025-01-15" },
+  { "id": 2, "ticker": "TCS",      "type": "buy", "qty": 5,  "price": 3800.00, "date": "2025-01-22" },
+  { "id": 3, "ticker": "INFY",     "type": "buy", "qty": 20, "price": 1520.00, "date": "2025-02-03" },
+  { "id": 4, "ticker": "HDFC",     "type": "buy", "qty": 8,  "price": 1680.00, "date": "2025-02-14" },
+  { "id": 5, "ticker": "WIPRO",    "type": "buy", "qty": 30, "price": 490.00,  "date": "2025-02-28" },
+  { "id": 6, "ticker": "TCS",      "type": "sell","qty": 2,  "price": 3950.00, "date": "2025-03-10" },
+  { "id": 7, "ticker": "RELIANCE", "type": "buy", "qty": 5,  "price": 2510.00, "date": "2025-03-18" },
+  { "id": 8, "ticker": "BAJFINANCE","type":"buy", "qty": 4,  "price": 6800.00, "date": "2025-03-25" }
+]
