@@ -1,10 +1,3792 @@
 [
-  { "id": 1, "ticker": "RELIANCE", "type": "buy", "qty": 10, "price": 2450.00, "date": "2025-01-15" },
-  { "id": 2, "ticker": "TCS",      "type": "buy", "qty": 5,  "price": 3800.00, "date": "2025-01-22" },
-  { "id": 3, "ticker": "INFY",     "type": "buy", "qty": 20, "price": 1520.00, "date": "2025-02-03" },
-  { "id": 4, "ticker": "HDFC",     "type": "buy", "qty": 8,  "price": 1680.00, "date": "2025-02-14" },
-  { "id": 5, "ticker": "WIPRO",    "type": "buy", "qty": 30, "price": 490.00,  "date": "2025-02-28" },
-  { "id": 6, "ticker": "TCS",      "type": "sell","qty": 2,  "price": 3950.00, "date": "2025-03-10" },
-  { "id": 7, "ticker": "RELIANCE", "type": "buy", "qty": 5,  "price": 2510.00, "date": "2025-03-18" },
-  { "id": 8, "ticker": "BAJFINANCE","type":"buy", "qty": 4,  "price": 6800.00, "date": "2025-03-25" }
+  {
+    "id": 1,
+    "ticker": "Accelya Solutions",
+    "type": "delivery",
+    "qty": 3,
+    "price": 1918.0,
+    "trade_value": 5754.0,
+    "segment": "Cash",
+    "date": "2024-07-12"
+  },
+  {
+    "id": 2,
+    "ticker": "Adani Energy Solutions",
+    "type": "delivery",
+    "qty": 131,
+    "price": 831.0,
+    "trade_value": 108860.6463,
+    "segment": "Cash",
+    "date": "2024-11-29"
+  },
+  {
+    "id": 3,
+    "ticker": "Adani Energy Solutions",
+    "type": "delivery",
+    "qty": 131,
+    "price": 830.2,
+    "trade_value": 108756.2,
+    "segment": "Cash",
+    "date": "2024-12-02"
+  },
+  {
+    "id": 4,
+    "ticker": "Adani Enterprises",
+    "type": "delivery",
+    "qty": 27,
+    "price": 2410.6,
+    "trade_value": 65086.2,
+    "segment": "Cash",
+    "date": "2024-11-29"
+  },
+  {
+    "id": 5,
+    "ticker": "Adani Enterprises",
+    "type": "delivery",
+    "qty": 27,
+    "price": 2475.55,
+    "trade_value": 66839.85,
+    "segment": "Cash",
+    "date": "2024-12-02"
+  },
+  {
+    "id": 6,
+    "ticker": "Adani Green Energy",
+    "type": "delivery",
+    "qty": 1,
+    "price": 1198.85,
+    "trade_value": 1198.85,
+    "segment": "Cash",
+    "date": "2024-11-29"
+  },
+  {
+    "id": 7,
+    "ticker": "Adani Green Energy",
+    "type": "delivery",
+    "qty": 74,
+    "price": 1192.97,
+    "trade_value": 88279.7504,
+    "segment": "Cash",
+    "date": "2024-11-29"
+  },
+  {
+    "id": 8,
+    "ticker": "Adani Green Energy",
+    "type": "delivery",
+    "qty": 25,
+    "price": 1207.25,
+    "trade_value": 30181.25,
+    "segment": "Cash",
+    "date": "2024-11-29"
+  },
+  {
+    "id": 9,
+    "ticker": "Adani Green Energy",
+    "type": "delivery",
+    "qty": 100,
+    "price": 1404.25,
+    "trade_value": 140425.0,
+    "segment": "Cash",
+    "date": "2024-12-02"
+  },
+  {
+    "id": 10,
+    "ticker": "Adani Green Energy",
+    "type": "delivery",
+    "qty": 111,
+    "price": 1333.33,
+    "trade_value": 147999.5967,
+    "segment": "Cash",
+    "date": "2024-12-03"
+  },
+  {
+    "id": 11,
+    "ticker": "Adani Green Energy",
+    "type": "delivery",
+    "qty": 125,
+    "price": 1329.0,
+    "trade_value": 166125.0,
+    "segment": "Cash",
+    "date": "2024-12-03"
+  },
+  {
+    "id": 12,
+    "ticker": "Adani Green Energy",
+    "type": "delivery",
+    "qty": 49,
+    "price": 1262.7,
+    "trade_value": 61872.3,
+    "segment": "Cash",
+    "date": "2024-12-04"
+  },
+  {
+    "id": 13,
+    "ticker": "Adani Green Energy",
+    "type": "delivery",
+    "qty": 14,
+    "price": 1269.9,
+    "trade_value": 17778.6,
+    "segment": "Cash",
+    "date": "2024-12-04"
+  },
+  {
+    "id": 14,
+    "ticker": "Adani Green Energy",
+    "type": "delivery",
+    "qty": 43,
+    "price": 1264.65,
+    "trade_value": 54379.95,
+    "segment": "Cash",
+    "date": "2024-12-04"
+  },
+  {
+    "id": 15,
+    "ticker": "Adani Green Energy",
+    "type": "delivery",
+    "qty": 72,
+    "price": 1238.11,
+    "trade_value": 89144.1,
+    "segment": "Cash",
+    "date": "2024-12-05"
+  },
+  {
+    "id": 16,
+    "ticker": "Adani Green Energy",
+    "type": "delivery",
+    "qty": 23,
+    "price": 1213.55,
+    "trade_value": 27911.5994,
+    "segment": "Cash",
+    "date": "2024-12-06"
+  },
+  {
+    "id": 17,
+    "ticker": "Adani Green Energy",
+    "type": "delivery",
+    "qty": 67,
+    "price": 1236.0,
+    "trade_value": 82812.0,
+    "segment": "Cash",
+    "date": "2024-12-06"
+  },
+  {
+    "id": 18,
+    "ticker": "Adani Green Energy",
+    "type": "delivery",
+    "qty": 36,
+    "price": 1180.75,
+    "trade_value": 42507.0,
+    "segment": "Cash",
+    "date": "2024-12-10"
+  },
+  {
+    "id": 19,
+    "ticker": "Adani Green Energy",
+    "type": "delivery",
+    "qty": 36,
+    "price": 1178.2,
+    "trade_value": 42415.2,
+    "segment": "Cash",
+    "date": "2024-12-10"
+  },
+  {
+    "id": 20,
+    "ticker": "Adani Green Energy",
+    "type": "delivery",
+    "qty": 36,
+    "price": 1172.4,
+    "trade_value": 42206.4,
+    "segment": "Cash",
+    "date": "2024-12-10"
+  },
+  {
+    "id": 21,
+    "ticker": "Adani Green Energy",
+    "type": "delivery",
+    "qty": 62,
+    "price": 1158.5,
+    "trade_value": 71827.0,
+    "segment": "Cash",
+    "date": "2024-12-11"
+  },
+  {
+    "id": 22,
+    "ticker": "Adani Green Energy",
+    "type": "delivery",
+    "qty": 20,
+    "price": 1123.6,
+    "trade_value": 22472.0,
+    "segment": "Cash",
+    "date": "2024-12-18"
+  },
+  {
+    "id": 23,
+    "ticker": "Adani Green Energy",
+    "type": "delivery",
+    "qty": 13,
+    "price": 921.98,
+    "trade_value": 11985.7998,
+    "segment": "Cash",
+    "date": "2025-01-13"
+  },
+  {
+    "id": 24,
+    "ticker": "Adani Green Energy",
+    "type": "delivery",
+    "qty": 13,
+    "price": 1043.15,
+    "trade_value": 13560.95,
+    "segment": "Cash",
+    "date": "2025-01-21"
+  },
+  {
+    "id": 25,
+    "ticker": "Adani Green Energy",
+    "type": "delivery",
+    "qty": 28,
+    "price": 974.75,
+    "trade_value": 27293.0,
+    "segment": "Cash",
+    "date": "2025-01-31"
+  },
+  {
+    "id": 26,
+    "ticker": "Adani Green Energy",
+    "type": "delivery",
+    "qty": 32,
+    "price": 908.29,
+    "trade_value": 29065.3504,
+    "segment": "Cash",
+    "date": "2025-02-12"
+  },
+  {
+    "id": 27,
+    "ticker": "Adani Green Energy",
+    "type": "delivery",
+    "qty": 18,
+    "price": 859.95,
+    "trade_value": 15479.1,
+    "segment": "Cash",
+    "date": "2025-02-17"
+  },
+  {
+    "id": 28,
+    "ticker": "Adani Green Energy",
+    "type": "delivery",
+    "qty": 50,
+    "price": 793.8,
+    "trade_value": 39690.0,
+    "segment": "Cash",
+    "date": "2025-02-28"
+  },
+  {
+    "id": 29,
+    "ticker": "Adani Green Energy",
+    "type": "delivery",
+    "qty": 50,
+    "price": 878.54,
+    "trade_value": 43926.95,
+    "segment": "Cash",
+    "date": "2025-03-13"
+  },
+  {
+    "id": 30,
+    "ticker": "Adani Green Energy",
+    "type": "intraday",
+    "qty": 700,
+    "price": 936.8,
+    "trade_value": 655760.0,
+    "segment": "Cash",
+    "date": "2025-04-28"
+  },
+  {
+    "id": 31,
+    "ticker": "Adani Green Energy",
+    "type": "intraday",
+    "qty": 200,
+    "price": 934.05,
+    "trade_value": 186810.0,
+    "segment": "Cash",
+    "date": "2025-04-28"
+  },
+  {
+    "id": 32,
+    "ticker": "Adani Green Energy",
+    "type": "intraday",
+    "qty": 500,
+    "price": 935.2,
+    "trade_value": 467600.0,
+    "segment": "Cash",
+    "date": "2025-04-28"
+  },
+  {
+    "id": 33,
+    "ticker": "Adani Green Energy",
+    "type": "intraday",
+    "qty": 540,
+    "price": 904.06,
+    "trade_value": 488190.942,
+    "segment": "Cash",
+    "date": "2025-04-30"
+  },
+  {
+    "id": 34,
+    "ticker": "Adani Green Energy",
+    "type": "intraday",
+    "qty": 40,
+    "price": 913.6,
+    "trade_value": 36544.0,
+    "segment": "Cash",
+    "date": "2025-04-30"
+  },
+  {
+    "id": 35,
+    "ticker": "Adani Green Energy",
+    "type": "intraday",
+    "qty": 500,
+    "price": 922.8,
+    "trade_value": 461400.0,
+    "segment": "Cash",
+    "date": "2025-04-30"
+  },
+  {
+    "id": 36,
+    "ticker": "Adani Green Energy",
+    "type": "intraday",
+    "qty": 500,
+    "price": 920.86,
+    "trade_value": 460430.8,
+    "segment": "Cash",
+    "date": "2025-05-02"
+  },
+  {
+    "id": 37,
+    "ticker": "Adani Green Energy",
+    "type": "intraday",
+    "qty": 500,
+    "price": 919.8,
+    "trade_value": 459900.0,
+    "segment": "Cash",
+    "date": "2025-05-02"
+  },
+  {
+    "id": 38,
+    "ticker": "Adani Green Energy",
+    "type": "intraday",
+    "qty": 250,
+    "price": 916.41,
+    "trade_value": 229103.3,
+    "segment": "Cash",
+    "date": "2025-05-02"
+  },
+  {
+    "id": 39,
+    "ticker": "Adani Green Energy",
+    "type": "intraday",
+    "qty": 250,
+    "price": 902.05,
+    "trade_value": 225512.5,
+    "segment": "Cash",
+    "date": "2025-05-02"
+  },
+  {
+    "id": 40,
+    "ticker": "Adani Green Energy",
+    "type": "delivery",
+    "qty": 52,
+    "price": 961.05,
+    "trade_value": 49974.6,
+    "segment": "Cash",
+    "date": "2025-05-13"
+  },
+  {
+    "id": 41,
+    "ticker": "Adani Green Energy",
+    "type": "delivery",
+    "qty": 52,
+    "price": 969.45,
+    "trade_value": 50411.4,
+    "segment": "Cash",
+    "date": "2025-05-13"
+  },
+  {
+    "id": 42,
+    "ticker": "Adani Green Energy",
+    "type": "delivery",
+    "qty": 52,
+    "price": 946.51,
+    "trade_value": 49218.4004,
+    "segment": "Cash",
+    "date": "2025-05-13"
+  },
+  {
+    "id": 43,
+    "ticker": "Adani Green Energy",
+    "type": "intraday",
+    "qty": 266,
+    "price": 943.0,
+    "trade_value": 250838.0,
+    "segment": "Cash",
+    "date": "2025-05-13"
+  },
+  {
+    "id": 44,
+    "ticker": "Adani Green Energy",
+    "type": "intraday",
+    "qty": 266,
+    "price": 940.55,
+    "trade_value": 250186.3,
+    "segment": "Cash",
+    "date": "2025-05-13"
+  },
+  {
+    "id": 45,
+    "ticker": "Adani Green Energy",
+    "type": "delivery",
+    "qty": 52,
+    "price": 966.15,
+    "trade_value": 50239.8,
+    "segment": "Cash",
+    "date": "2025-05-14"
+  },
+  {
+    "id": 46,
+    "ticker": "Adani Green Energy",
+    "type": "intraday",
+    "qty": 8,
+    "price": 974.1,
+    "trade_value": 7792.8,
+    "segment": "Cash",
+    "date": "2025-05-14"
+  },
+  {
+    "id": 47,
+    "ticker": "Adani Green Energy",
+    "type": "intraday",
+    "qty": 8,
+    "price": 966.0,
+    "trade_value": 7728.0,
+    "segment": "Cash",
+    "date": "2025-05-14"
+  },
+  {
+    "id": 48,
+    "ticker": "Adani Green Energy",
+    "type": "delivery",
+    "qty": 63,
+    "price": 1000.6,
+    "trade_value": 63037.8,
+    "segment": "Cash",
+    "date": "2025-06-03"
+  },
+  {
+    "id": 49,
+    "ticker": "Adani Green Energy",
+    "type": "delivery",
+    "qty": 63,
+    "price": 1005.9,
+    "trade_value": 63371.7,
+    "segment": "Cash",
+    "date": "2025-06-03"
+  },
+  {
+    "id": 50,
+    "ticker": "Adani Green Energy",
+    "type": "delivery",
+    "qty": 200,
+    "price": 1017.1,
+    "trade_value": 203420.0,
+    "segment": "Cash",
+    "date": "2025-07-30"
+  },
+  {
+    "id": 51,
+    "ticker": "Adani Green Energy",
+    "type": "delivery",
+    "qty": 200,
+    "price": 996.9,
+    "trade_value": 199380.0,
+    "segment": "Cash",
+    "date": "2025-07-31"
+  },
+  {
+    "id": 52,
+    "ticker": "Adani Green Energy",
+    "type": "delivery",
+    "qty": 200,
+    "price": 1108.69,
+    "trade_value": 221739.0,
+    "segment": "Cash",
+    "date": "2025-10-29"
+  },
+  {
+    "id": 53,
+    "ticker": "Adani Green Energy",
+    "type": "delivery",
+    "qty": 200,
+    "price": 1118.0,
+    "trade_value": 223600.0,
+    "segment": "Cash",
+    "date": "2025-10-29"
+  },
+  {
+    "id": 54,
+    "ticker": "Adani Green Energy",
+    "type": "delivery",
+    "qty": 150,
+    "price": 1125.5,
+    "trade_value": 168825.0,
+    "segment": "Cash",
+    "date": "2025-11-03"
+  },
+  {
+    "id": 55,
+    "ticker": "Adani Green Energy",
+    "type": "delivery",
+    "qty": 150,
+    "price": 1130.8,
+    "trade_value": 169620.0,
+    "segment": "Cash",
+    "date": "2025-11-03"
+  },
+  {
+    "id": 56,
+    "ticker": "Adani Green Energy",
+    "type": "delivery",
+    "qty": 100,
+    "price": 1082.5,
+    "trade_value": 108250.0,
+    "segment": "Cash",
+    "date": "2025-11-04"
+  },
+  {
+    "id": 57,
+    "ticker": "Adani Green Energy",
+    "type": "delivery",
+    "qty": 200,
+    "price": 1086.53,
+    "trade_value": 217305.9,
+    "segment": "Cash",
+    "date": "2025-11-04"
+  },
+  {
+    "id": 58,
+    "ticker": "Adani Green Energy",
+    "type": "delivery",
+    "qty": 100,
+    "price": 1100.69,
+    "trade_value": 110069.2,
+    "segment": "Cash",
+    "date": "2025-11-04"
+  },
+  {
+    "id": 59,
+    "ticker": "Adani Green Energy",
+    "type": "delivery",
+    "qty": 200,
+    "price": 1109.9,
+    "trade_value": 221980.0,
+    "segment": "Cash",
+    "date": "2025-11-04"
+  },
+  {
+    "id": 60,
+    "ticker": "Adani Green Energy",
+    "type": "delivery",
+    "qty": 200,
+    "price": 1064.5,
+    "trade_value": 212900.0,
+    "segment": "Cash",
+    "date": "2025-11-06"
+  },
+  {
+    "id": 61,
+    "ticker": "Adani Green Energy",
+    "type": "delivery",
+    "qty": 100,
+    "price": 1066.9,
+    "trade_value": 106690.0,
+    "segment": "Cash",
+    "date": "2025-11-06"
+  },
+  {
+    "id": 62,
+    "ticker": "Adani Green Energy",
+    "type": "delivery",
+    "qty": 300,
+    "price": 1079.03,
+    "trade_value": 323708.61,
+    "segment": "Cash",
+    "date": "2025-11-06"
+  },
+  {
+    "id": 63,
+    "ticker": "Adani Green Energy",
+    "type": "delivery",
+    "qty": 100,
+    "price": 1035.7,
+    "trade_value": 103570.0,
+    "segment": "Cash",
+    "date": "2025-11-11"
+  },
+  {
+    "id": 64,
+    "ticker": "Adani Green Energy",
+    "type": "delivery",
+    "qty": 200,
+    "price": 1055.3,
+    "trade_value": 211060.0,
+    "segment": "Cash",
+    "date": "2025-11-21"
+  },
+  {
+    "id": 65,
+    "ticker": "Adani Green Energy",
+    "type": "delivery",
+    "qty": 200,
+    "price": 1060.1,
+    "trade_value": 212020.0,
+    "segment": "Cash",
+    "date": "2025-11-21"
+  },
+  {
+    "id": 66,
+    "ticker": "Adani Green Energy",
+    "type": "delivery",
+    "qty": 100,
+    "price": 1007.2,
+    "trade_value": 100720.0,
+    "segment": "Cash",
+    "date": "2025-12-10"
+  },
+  {
+    "id": 67,
+    "ticker": "Adani Green Energy",
+    "type": "delivery",
+    "qty": 100,
+    "price": 1016.83,
+    "trade_value": 101682.8,
+    "segment": "Cash",
+    "date": "2025-12-10"
+  },
+  {
+    "id": 68,
+    "ticker": "Adani Green Energy",
+    "type": "delivery",
+    "qty": 100,
+    "price": 1017.9,
+    "trade_value": 101790.0,
+    "segment": "Cash",
+    "date": "2025-12-11"
+  },
+  {
+    "id": 69,
+    "ticker": "Adani Green Energy",
+    "type": "delivery",
+    "qty": 20,
+    "price": 1039.1,
+    "trade_value": 20782.0,
+    "segment": "Cash",
+    "date": "2025-12-12"
+  },
+  {
+    "id": 70,
+    "ticker": "Adani Green Energy",
+    "type": "delivery",
+    "qty": 80,
+    "price": 1036.4,
+    "trade_value": 82912.0,
+    "segment": "Cash",
+    "date": "2025-12-12"
+  },
+  {
+    "id": 71,
+    "ticker": "BEML",
+    "type": "delivery",
+    "qty": 3,
+    "price": 2179.7,
+    "trade_value": 6539.1,
+    "segment": "Cash",
+    "date": "2025-11-03"
+  },
+  {
+    "id": 72,
+    "ticker": "BEML",
+    "type": "delivery",
+    "qty": 1,
+    "price": 2023.4,
+    "trade_value": 2023.4,
+    "segment": "Cash",
+    "date": "2025-11-06"
+  },
+  {
+    "id": 73,
+    "ticker": "BEML",
+    "type": "delivery",
+    "qty": 6,
+    "price": 1862.77,
+    "trade_value": 11176.6002,
+    "segment": "Cash",
+    "date": "2025-11-26"
+  },
+  {
+    "id": 74,
+    "ticker": "BEML",
+    "type": "delivery",
+    "qty": 3,
+    "price": 1716.1,
+    "trade_value": 5148.3,
+    "segment": "Cash",
+    "date": "2025-12-15"
+  },
+  {
+    "id": 75,
+    "ticker": "BEML",
+    "type": "delivery",
+    "qty": 13,
+    "price": 1661.42,
+    "trade_value": 21598.4002,
+    "segment": "Cash",
+    "date": "2026-01-21"
+  },
+  {
+    "id": 76,
+    "ticker": "Bharat Electronics",
+    "type": "delivery",
+    "qty": 30,
+    "price": 259.25,
+    "trade_value": 7777.5,
+    "segment": "Cash",
+    "date": "2024-06-04"
+  },
+  {
+    "id": 77,
+    "ticker": "Bharat Electronics",
+    "type": "delivery",
+    "qty": 30,
+    "price": 309.85,
+    "trade_value": 9295.5,
+    "segment": "Cash",
+    "date": "2024-06-14"
+  },
+  {
+    "id": 78,
+    "ticker": "Bharat Electronics",
+    "type": "delivery",
+    "qty": 100,
+    "price": 307.65,
+    "trade_value": 30765.0,
+    "segment": "Cash",
+    "date": "2024-11-29"
+  },
+  {
+    "id": 79,
+    "ticker": "Bharat Electronics",
+    "type": "delivery",
+    "qty": 20,
+    "price": 406.75,
+    "trade_value": 8135.0,
+    "segment": "Cash",
+    "date": "2025-06-17"
+  },
+  {
+    "id": 80,
+    "ticker": "Bharat Electronics",
+    "type": "delivery",
+    "qty": 80,
+    "price": 409.92,
+    "trade_value": 32793.504,
+    "segment": "Cash",
+    "date": "2025-10-30"
+  },
+  {
+    "id": 81,
+    "ticker": "Bharat Electronics",
+    "type": "delivery",
+    "qty": 99,
+    "price": 397.6,
+    "trade_value": 39362.4,
+    "segment": "Cash",
+    "date": "2026-01-21"
+  },
+  {
+    "id": 82,
+    "ticker": "Bharat Electronics",
+    "type": "delivery",
+    "qty": 74,
+    "price": 457.4,
+    "trade_value": 33847.5482,
+    "segment": "Cash",
+    "date": "2026-02-01"
+  },
+  {
+    "id": 83,
+    "ticker": "Bharat Electronics",
+    "type": "delivery",
+    "qty": 25,
+    "price": 414.7,
+    "trade_value": 10367.5,
+    "segment": "Cash",
+    "date": "2026-03-24"
+  },
+  {
+    "id": 84,
+    "ticker": "Bharti Airtel",
+    "type": "delivery",
+    "qty": 1,
+    "price": 2095.0,
+    "trade_value": 2095.0,
+    "segment": "Cash",
+    "date": "2025-12-01"
+  },
+  {
+    "id": 85,
+    "ticker": "Bharti Airtel",
+    "type": "delivery",
+    "qty": 2,
+    "price": 2094.4,
+    "trade_value": 4188.8,
+    "segment": "Cash",
+    "date": "2025-12-01"
+  },
+  {
+    "id": 86,
+    "ticker": "Bharti Airtel",
+    "type": "delivery",
+    "qty": 7,
+    "price": 1796.6,
+    "trade_value": 12576.2,
+    "segment": "Cash",
+    "date": "2026-03-24"
+  },
+  {
+    "id": 87,
+    "ticker": "BLUESTONE",
+    "type": "delivery",
+    "qty": 36,
+    "price": 0.0,
+    "trade_value": 0.0,
+    "segment": "Cash",
+    "date": "2025-08-18"
+  },
+  {
+    "id": 88,
+    "ticker": "BlueStone Jewellery & Lifestyle",
+    "type": "delivery",
+    "qty": 36,
+    "price": 575.0,
+    "trade_value": 20700.0,
+    "segment": "Cash",
+    "date": "2025-09-05"
+  },
+  {
+    "id": 89,
+    "ticker": "BSE",
+    "type": "delivery",
+    "qty": 2,
+    "price": 2774.7,
+    "trade_value": 5549.4,
+    "segment": "Cash",
+    "date": "2025-06-12"
+  },
+  {
+    "id": 90,
+    "ticker": "BSE",
+    "type": "delivery",
+    "qty": 1,
+    "price": 2836.6,
+    "trade_value": 2836.6,
+    "segment": "Cash",
+    "date": "2025-06-12"
+  },
+  {
+    "id": 91,
+    "ticker": "BSE",
+    "type": "delivery",
+    "qty": 1,
+    "price": 2808.0,
+    "trade_value": 2808.0,
+    "segment": "Cash",
+    "date": "2025-06-12"
+  },
+  {
+    "id": 92,
+    "ticker": "BSE",
+    "type": "delivery",
+    "qty": 1,
+    "price": 2823.8,
+    "trade_value": 2823.8,
+    "segment": "Cash",
+    "date": "2025-06-12"
+  },
+  {
+    "id": 93,
+    "ticker": "BSE",
+    "type": "delivery",
+    "qty": 8,
+    "price": 2321.0,
+    "trade_value": 18568.0,
+    "segment": "Cash",
+    "date": "2025-09-05"
+  },
+  {
+    "id": 94,
+    "ticker": "BSE",
+    "type": "delivery",
+    "qty": 1,
+    "price": 2833.5,
+    "trade_value": 2833.5,
+    "segment": "Cash",
+    "date": "2025-11-24"
+  },
+  {
+    "id": 95,
+    "ticker": "BSE",
+    "type": "delivery",
+    "qty": 12,
+    "price": 2837.4,
+    "trade_value": 34048.8,
+    "segment": "Cash",
+    "date": "2025-11-24"
+  },
+  {
+    "id": 96,
+    "ticker": "Capillary Technologies",
+    "type": "delivery",
+    "qty": 24,
+    "price": 613.1,
+    "trade_value": 14714.4,
+    "segment": "Cash",
+    "date": "2025-11-21"
+  },
+  {
+    "id": 97,
+    "ticker": "Capillary Technologies",
+    "type": "delivery",
+    "qty": 62,
+    "price": 619.0,
+    "trade_value": 38378.0,
+    "segment": "Cash",
+    "date": "2025-11-24"
+  },
+  {
+    "id": 98,
+    "ticker": "Capillary Technologies",
+    "type": "delivery",
+    "qty": 2,
+    "price": 603.5,
+    "trade_value": 1207.0,
+    "segment": "Cash",
+    "date": "2025-11-24"
+  },
+  {
+    "id": 99,
+    "ticker": "Capillary Technologies",
+    "type": "delivery",
+    "qty": 88,
+    "price": 741.3,
+    "trade_value": 65234.4,
+    "segment": "Cash",
+    "date": "2025-11-26"
+  },
+  {
+    "id": 100,
+    "ticker": "Capillary Technologies",
+    "type": "delivery",
+    "qty": 88,
+    "price": 721.85,
+    "trade_value": 63522.8,
+    "segment": "Cash",
+    "date": "2025-11-26"
+  },
+  {
+    "id": 101,
+    "ticker": "Capillary Technologies",
+    "type": "delivery",
+    "qty": 88,
+    "price": 732.34,
+    "trade_value": 64445.6472,
+    "segment": "Cash",
+    "date": "2025-11-26"
+  },
+  {
+    "id": 102,
+    "ticker": "Dr Reddys Laboratories",
+    "type": "delivery",
+    "qty": 2,
+    "price": 1245.5,
+    "trade_value": 2491.0,
+    "segment": "Cash",
+    "date": "2025-06-03"
+  },
+  {
+    "id": 103,
+    "ticker": "Dr Reddys Laboratories",
+    "type": "delivery",
+    "qty": 2,
+    "price": 1246.63,
+    "trade_value": 2493.25,
+    "segment": "Cash",
+    "date": "2025-05-29"
+  },
+  {
+    "id": 104,
+    "ticker": "E2E Networks",
+    "type": "delivery",
+    "qty": 2,
+    "price": 5487.65,
+    "trade_value": 10975.3,
+    "segment": "Cash",
+    "date": "2024-11-07"
+  },
+  {
+    "id": 105,
+    "ticker": "E2E Networks",
+    "type": "delivery",
+    "qty": 2,
+    "price": 4367.25,
+    "trade_value": 8734.5,
+    "segment": "Cash",
+    "date": "2024-12-06"
+  },
+  {
+    "id": 106,
+    "ticker": "ECOS (INDIA) MOB & HOSP L",
+    "type": "delivery",
+    "qty": 20,
+    "price": 432.9,
+    "trade_value": 8658.0,
+    "segment": "Cash",
+    "date": "2024-09-04"
+  },
+  {
+    "id": 107,
+    "ticker": "ECOS Mobility",
+    "type": "delivery",
+    "qty": 20,
+    "price": 533.25,
+    "trade_value": 10665.0,
+    "segment": "Cash",
+    "date": "2024-09-19"
+  },
+  {
+    "id": 108,
+    "ticker": "Eternal",
+    "type": "delivery",
+    "qty": 20,
+    "price": 301.5,
+    "trade_value": 6030.0,
+    "segment": "Cash",
+    "date": "2025-12-01"
+  },
+  {
+    "id": 109,
+    "ticker": "Eternal",
+    "type": "delivery",
+    "qty": 1,
+    "price": 296.9,
+    "trade_value": 296.9,
+    "segment": "Cash",
+    "date": "2025-12-15"
+  },
+  {
+    "id": 110,
+    "ticker": "Eternal",
+    "type": "delivery",
+    "qty": 79,
+    "price": 277.85,
+    "trade_value": 21950.15,
+    "segment": "Cash",
+    "date": "2025-12-31"
+  },
+  {
+    "id": 111,
+    "ticker": "Eternal",
+    "type": "delivery",
+    "qty": 100,
+    "price": 284.05,
+    "trade_value": 28405.0,
+    "segment": "Cash",
+    "date": "2026-02-03"
+  },
+  {
+    "id": 112,
+    "ticker": "Hindustan Aeronautics",
+    "type": "delivery",
+    "qty": 8,
+    "price": 4416.87,
+    "trade_value": 35334.9504,
+    "segment": "Cash",
+    "date": "2024-09-30"
+  },
+  {
+    "id": 113,
+    "ticker": "Hindustan Aeronautics",
+    "type": "delivery",
+    "qty": 20,
+    "price": 4453.2,
+    "trade_value": 89064.0,
+    "segment": "Cash",
+    "date": "2024-11-29"
+  },
+  {
+    "id": 114,
+    "ticker": "Hindustan Aeronautics",
+    "type": "delivery",
+    "qty": 16,
+    "price": 4632.11,
+    "trade_value": 74113.7008,
+    "segment": "Cash",
+    "date": "2025-10-30"
+  },
+  {
+    "id": 115,
+    "ticker": "Hindustan Aeronautics",
+    "type": "delivery",
+    "qty": 20,
+    "price": 4675.8,
+    "trade_value": 93516.0,
+    "segment": "Cash",
+    "date": "2025-10-31"
+  },
+  {
+    "id": 116,
+    "ticker": "Hindustan Aeronautics",
+    "type": "delivery",
+    "qty": 4,
+    "price": 4316.1,
+    "trade_value": 17264.4,
+    "segment": "Cash",
+    "date": "2025-12-15"
+  },
+  {
+    "id": 117,
+    "ticker": "Hindustan Aeronautics",
+    "type": "delivery",
+    "qty": 40,
+    "price": 4502.2,
+    "trade_value": 180088.0,
+    "segment": "Cash",
+    "date": "2026-02-03"
+  },
+  {
+    "id": 118,
+    "ticker": "Hindustan Aeronautics",
+    "type": "delivery",
+    "qty": 40,
+    "price": 4508.67,
+    "trade_value": 180346.9,
+    "segment": "Cash",
+    "date": "2026-02-03"
+  },
+  {
+    "id": 119,
+    "ticker": "Hindustan Aeronautics",
+    "type": "delivery",
+    "qty": 125,
+    "price": 4215.0,
+    "trade_value": 526875.0,
+    "segment": "Cash",
+    "date": "2026-02-04"
+  },
+  {
+    "id": 120,
+    "ticker": "Hindustan Aeronautics",
+    "type": "delivery",
+    "qty": 39,
+    "price": 4050.6,
+    "trade_value": 157973.4,
+    "segment": "Cash",
+    "date": "2026-02-05"
+  },
+  {
+    "id": 121,
+    "ticker": "Hindustan Aeronautics",
+    "type": "delivery",
+    "qty": 39,
+    "price": 3970.1,
+    "trade_value": 154833.9,
+    "segment": "Cash",
+    "date": "2026-02-05"
+  },
+  {
+    "id": 122,
+    "ticker": "Hindustan Aeronautics",
+    "type": "delivery",
+    "qty": 65,
+    "price": 4249.3,
+    "trade_value": 276204.5,
+    "segment": "Cash",
+    "date": "2026-02-17"
+  },
+  {
+    "id": 123,
+    "ticker": "Hindustan Aeronautics",
+    "type": "delivery",
+    "qty": 25,
+    "price": 3871.88,
+    "trade_value": 96797.1,
+    "segment": "Cash",
+    "date": "2026-03-06"
+  },
+  {
+    "id": 124,
+    "ticker": "IDFC First Bank",
+    "type": "delivery",
+    "qty": 24,
+    "price": 77.9,
+    "trade_value": 1869.6,
+    "segment": "Cash",
+    "date": "2024-07-15"
+  },
+  {
+    "id": 125,
+    "ticker": "IDFC First Bank",
+    "type": "delivery",
+    "qty": 34,
+    "price": 72.18,
+    "trade_value": 2454.12,
+    "segment": "Cash",
+    "date": "2024-09-18"
+  },
+  {
+    "id": 126,
+    "ticker": "Indian Oil Corporation",
+    "type": "intraday",
+    "qty": 288,
+    "price": 159.35,
+    "trade_value": 45892.8,
+    "segment": "Cash",
+    "date": "2024-05-14"
+  },
+  {
+    "id": 127,
+    "ticker": "Indian Oil Corporation",
+    "type": "intraday",
+    "qty": 288,
+    "price": 159.5,
+    "trade_value": 45936.0,
+    "segment": "Cash",
+    "date": "2024-05-14"
+  },
+  {
+    "id": 128,
+    "ticker": "Indian Oil Corporation",
+    "type": "delivery",
+    "qty": 285,
+    "price": 161.8,
+    "trade_value": 46111.974,
+    "segment": "Cash",
+    "date": "2024-05-15"
+  },
+  {
+    "id": 129,
+    "ticker": "Indian Oil Corporation",
+    "type": "delivery",
+    "qty": 47,
+    "price": 167.3,
+    "trade_value": 7863.1,
+    "segment": "Cash",
+    "date": "2024-07-12"
+  },
+  {
+    "id": 130,
+    "ticker": "Indian Oil Corporation",
+    "type": "delivery",
+    "qty": 68,
+    "price": 166.33,
+    "trade_value": 11310.44,
+    "segment": "Cash",
+    "date": "2024-07-23"
+  },
+  {
+    "id": 131,
+    "ticker": "Indian Oil Corporation",
+    "type": "delivery",
+    "qty": 276,
+    "price": 144.93,
+    "trade_value": 39999.3276,
+    "segment": "Cash",
+    "date": "2024-11-01"
+  },
+  {
+    "id": 132,
+    "ticker": "Indian Oil Corporation",
+    "type": "delivery",
+    "qty": 275,
+    "price": 144.9,
+    "trade_value": 39847.5,
+    "segment": "Cash",
+    "date": "2024-11-01"
+  },
+  {
+    "id": 133,
+    "ticker": "Indian Oil Corporation",
+    "type": "delivery",
+    "qty": 1,
+    "price": 144.73,
+    "trade_value": 144.73,
+    "segment": "Cash",
+    "date": "2024-11-01"
+  },
+  {
+    "id": 134,
+    "ticker": "Indian Oil Corporation",
+    "type": "delivery",
+    "qty": 100,
+    "price": 140.43,
+    "trade_value": 14042.5,
+    "segment": "Cash",
+    "date": "2024-11-05"
+  },
+  {
+    "id": 135,
+    "ticker": "Indian Oil Corporation",
+    "type": "delivery",
+    "qty": 100,
+    "price": 139.37,
+    "trade_value": 13937.0,
+    "segment": "Cash",
+    "date": "2024-11-05"
+  },
+  {
+    "id": 136,
+    "ticker": "Indian Oil Corporation",
+    "type": "delivery",
+    "qty": 200,
+    "price": 142.32,
+    "trade_value": 28464.0,
+    "segment": "Cash",
+    "date": "2024-12-06"
+  },
+  {
+    "id": 137,
+    "ticker": "Indian Oil Corporation",
+    "type": "delivery",
+    "qty": 200,
+    "price": 141.65,
+    "trade_value": 28329.08,
+    "segment": "Cash",
+    "date": "2024-12-06"
+  },
+  {
+    "id": 138,
+    "ticker": "Indian Oil Corporation",
+    "type": "delivery",
+    "qty": 300,
+    "price": 142.85,
+    "trade_value": 42855.0,
+    "segment": "Cash",
+    "date": "2024-12-10"
+  },
+  {
+    "id": 139,
+    "ticker": "Indian Oil Corporation",
+    "type": "delivery",
+    "qty": 500,
+    "price": 143.47,
+    "trade_value": 71735.0,
+    "segment": "Cash",
+    "date": "2024-12-11"
+  },
+  {
+    "id": 140,
+    "ticker": "Indian Oil Corporation",
+    "type": "delivery",
+    "qty": 4,
+    "price": 142.8,
+    "trade_value": 571.2,
+    "segment": "Cash",
+    "date": "2024-12-16"
+  },
+  {
+    "id": 141,
+    "ticker": "Indian Oil Corporation",
+    "type": "delivery",
+    "qty": 21,
+    "price": 129.81,
+    "trade_value": 2726.01,
+    "segment": "Cash",
+    "date": "2025-01-22"
+  },
+  {
+    "id": 142,
+    "ticker": "Indian Oil Corporation",
+    "type": "delivery",
+    "qty": 2,
+    "price": 119.97,
+    "trade_value": 239.94,
+    "segment": "Cash",
+    "date": "2025-02-12"
+  },
+  {
+    "id": 143,
+    "ticker": "Indian Oil Corporation",
+    "type": "delivery",
+    "qty": 73,
+    "price": 116.87,
+    "trade_value": 8531.51,
+    "segment": "Cash",
+    "date": "2025-02-17"
+  },
+  {
+    "id": 144,
+    "ticker": "Indian Oil Corporation",
+    "type": "delivery",
+    "qty": 400,
+    "price": 118.93,
+    "trade_value": 47570.6,
+    "segment": "Cash",
+    "date": "2025-02-18"
+  },
+  {
+    "id": 145,
+    "ticker": "Indian Oil Corporation",
+    "type": "delivery",
+    "qty": 4,
+    "price": 113.63,
+    "trade_value": 454.52,
+    "segment": "Cash",
+    "date": "2025-02-28"
+  },
+  {
+    "id": 146,
+    "ticker": "Indian Oil Corporation",
+    "type": "delivery",
+    "qty": 500,
+    "price": 113.58,
+    "trade_value": 56790.0,
+    "segment": "Cash",
+    "date": "2025-02-28"
+  },
+  {
+    "id": 147,
+    "ticker": "Indian Oil Corporation",
+    "type": "delivery",
+    "qty": 2,
+    "price": 124.7,
+    "trade_value": 249.4,
+    "segment": "Cash",
+    "date": "2025-03-17"
+  },
+  {
+    "id": 148,
+    "ticker": "Indian Oil Corporation",
+    "type": "delivery",
+    "qty": 1006,
+    "price": 133.46,
+    "trade_value": 134257.3396,
+    "segment": "Cash",
+    "date": "2025-04-25"
+  },
+  {
+    "id": 149,
+    "ticker": "Indian Oil Corporation",
+    "type": "delivery",
+    "qty": 19,
+    "price": 135.99,
+    "trade_value": 2583.81,
+    "segment": "Cash",
+    "date": "2025-04-29"
+  },
+  {
+    "id": 150,
+    "ticker": "Indian Oil Corporation",
+    "type": "delivery",
+    "qty": 19,
+    "price": 137.79,
+    "trade_value": 2618.01,
+    "segment": "Cash",
+    "date": "2025-04-29"
+  },
+  {
+    "id": 151,
+    "ticker": "Indian Oil Corporation",
+    "type": "delivery",
+    "qty": 647,
+    "price": 149.23,
+    "trade_value": 96551.81,
+    "segment": "Cash",
+    "date": "2025-05-05"
+  },
+  {
+    "id": 152,
+    "ticker": "Indian Oil Corporation",
+    "type": "delivery",
+    "qty": 3,
+    "price": 144.0,
+    "trade_value": 432.0,
+    "segment": "Cash",
+    "date": "2025-05-06"
+  },
+  {
+    "id": 153,
+    "ticker": "Indian Oil Corporation",
+    "type": "delivery",
+    "qty": 24,
+    "price": 143.99,
+    "trade_value": 3455.76,
+    "segment": "Cash",
+    "date": "2025-05-06"
+  },
+  {
+    "id": 154,
+    "ticker": "Indian Oil Corporation",
+    "type": "delivery",
+    "qty": 62,
+    "price": 143.4,
+    "trade_value": 8890.8,
+    "segment": "Cash",
+    "date": "2025-05-26"
+  },
+  {
+    "id": 155,
+    "ticker": "Indian Oil Corporation",
+    "type": "delivery",
+    "qty": 455,
+    "price": 139.88,
+    "trade_value": 63645.4,
+    "segment": "Cash",
+    "date": "2025-06-04"
+  },
+  {
+    "id": 156,
+    "ticker": "Indian Oil Corporation",
+    "type": "delivery",
+    "qty": 1,
+    "price": 142.27,
+    "trade_value": 142.27,
+    "segment": "Cash",
+    "date": "2025-06-25"
+  },
+  {
+    "id": 157,
+    "ticker": "Indian Oil Corporation",
+    "type": "delivery",
+    "qty": 368,
+    "price": 151.22,
+    "trade_value": 55647.672,
+    "segment": "Cash",
+    "date": "2025-07-23"
+  },
+  {
+    "id": 158,
+    "ticker": "Indian Oil Corporation",
+    "type": "delivery",
+    "qty": 19,
+    "price": 147.19,
+    "trade_value": 2796.61,
+    "segment": "Cash",
+    "date": "2025-07-29"
+  },
+  {
+    "id": 159,
+    "ticker": "Indian Oil Corporation",
+    "type": "delivery",
+    "qty": 368,
+    "price": 147.93,
+    "trade_value": 54437.0624,
+    "segment": "Cash",
+    "date": "2025-07-30"
+  },
+  {
+    "id": 160,
+    "ticker": "Indian Oil Corporation",
+    "type": "delivery",
+    "qty": 35,
+    "price": 144.68,
+    "trade_value": 5063.8,
+    "segment": "Cash",
+    "date": "2025-07-31"
+  },
+  {
+    "id": 161,
+    "ticker": "Indian Oil Corporation",
+    "type": "delivery",
+    "qty": 2,
+    "price": 141.47,
+    "trade_value": 282.94,
+    "segment": "Cash",
+    "date": "2025-08-07"
+  },
+  {
+    "id": 162,
+    "ticker": "Indian Oil Corporation",
+    "type": "delivery",
+    "qty": 206,
+    "price": 140.88,
+    "trade_value": 29022.1246,
+    "segment": "Cash",
+    "date": "2025-08-08"
+  },
+  {
+    "id": 163,
+    "ticker": "Indian Oil Corporation",
+    "type": "delivery",
+    "qty": 500,
+    "price": 165.39,
+    "trade_value": 82693.05,
+    "segment": "Cash",
+    "date": "2025-10-30"
+  },
+  {
+    "id": 164,
+    "ticker": "Indian Oil Corporation",
+    "type": "delivery",
+    "qty": 500,
+    "price": 164.67,
+    "trade_value": 82335.0,
+    "segment": "Cash",
+    "date": "2025-10-31"
+  },
+  {
+    "id": 165,
+    "ticker": "Indian Oil Corporation",
+    "type": "delivery",
+    "qty": 1037,
+    "price": 162.3,
+    "trade_value": 168305.1,
+    "segment": "Cash",
+    "date": "2025-12-05"
+  },
+  {
+    "id": 166,
+    "ticker": "Indian Oil Corporation",
+    "type": "delivery",
+    "qty": 630,
+    "price": 163.73,
+    "trade_value": 103149.9,
+    "segment": "Cash",
+    "date": "2025-12-12"
+  },
+  {
+    "id": 167,
+    "ticker": "Indian Oil Corporation",
+    "type": "delivery",
+    "qty": 630,
+    "price": 162.66,
+    "trade_value": 102475.8,
+    "segment": "Cash",
+    "date": "2025-12-12"
+  },
+  {
+    "id": 168,
+    "ticker": "Indian Oil Corporation",
+    "type": "delivery",
+    "qty": 145,
+    "price": 166.72,
+    "trade_value": 24174.4,
+    "segment": "Cash",
+    "date": "2025-12-15"
+  },
+  {
+    "id": 169,
+    "ticker": "Indian Oil Corporation",
+    "type": "delivery",
+    "qty": 145,
+    "price": 165.14,
+    "trade_value": 23945.3,
+    "segment": "Cash",
+    "date": "2025-12-15"
+  },
+  {
+    "id": 170,
+    "ticker": "Indian Oil Corporation",
+    "type": "delivery",
+    "qty": 3037,
+    "price": 162.04,
+    "trade_value": 492115.48,
+    "segment": "Cash",
+    "date": "2026-01-30"
+  },
+  {
+    "id": 171,
+    "ticker": "Indian Oil Corporation",
+    "type": "delivery",
+    "qty": 1500,
+    "price": 161.8,
+    "trade_value": 242706.3,
+    "segment": "Cash",
+    "date": "2026-02-01"
+  },
+  {
+    "id": 172,
+    "ticker": "Indian Oil Corporation",
+    "type": "delivery",
+    "qty": 1000,
+    "price": 161.77,
+    "trade_value": 161765.3,
+    "segment": "Cash",
+    "date": "2026-02-01"
+  },
+  {
+    "id": 173,
+    "ticker": "Indian Oil Corporation",
+    "type": "delivery",
+    "qty": 2500,
+    "price": 165.73,
+    "trade_value": 414334.0,
+    "segment": "Cash",
+    "date": "2026-02-03"
+  },
+  {
+    "id": 174,
+    "ticker": "Indian Oil Corporation",
+    "type": "delivery",
+    "qty": 20,
+    "price": 175.77,
+    "trade_value": 3515.4,
+    "segment": "Cash",
+    "date": "2026-02-05"
+  },
+  {
+    "id": 175,
+    "ticker": "Indian Oil Corporation",
+    "type": "delivery",
+    "qty": 200,
+    "price": 179.29,
+    "trade_value": 35858.0,
+    "segment": "Cash",
+    "date": "2026-02-24"
+  },
+  {
+    "id": 176,
+    "ticker": "Indian Oil Corporation",
+    "type": "delivery",
+    "qty": 280,
+    "price": 172.68,
+    "trade_value": 48350.4,
+    "segment": "Cash",
+    "date": "2026-03-06"
+  },
+  {
+    "id": 177,
+    "ticker": "Indian Oil Corporation",
+    "type": "delivery",
+    "qty": 500,
+    "price": 161.18,
+    "trade_value": 80590.0,
+    "segment": "Cash",
+    "date": "2026-03-11"
+  },
+  {
+    "id": 178,
+    "ticker": "Indian Oil Corporation",
+    "type": "delivery",
+    "qty": 500,
+    "price": 160.11,
+    "trade_value": 80054.5,
+    "segment": "Cash",
+    "date": "2026-03-11"
+  },
+  {
+    "id": 179,
+    "ticker": "Indian Oil Corporation",
+    "type": "delivery",
+    "qty": 500,
+    "price": 160.15,
+    "trade_value": 80075.0,
+    "segment": "Cash",
+    "date": "2026-03-11"
+  },
+  {
+    "id": 180,
+    "ticker": "Indian Oil Corporation",
+    "type": "delivery",
+    "qty": 505,
+    "price": 159.85,
+    "trade_value": 80724.048,
+    "segment": "Cash",
+    "date": "2026-03-12"
+  },
+  {
+    "id": 181,
+    "ticker": "Indian Oil Corporation",
+    "type": "delivery",
+    "qty": 505,
+    "price": 159.3,
+    "trade_value": 80447.611,
+    "segment": "Cash",
+    "date": "2026-03-12"
+  },
+  {
+    "id": 182,
+    "ticker": "Indian Oil Corporation",
+    "type": "delivery",
+    "qty": 513,
+    "price": 157.42,
+    "trade_value": 80756.46,
+    "segment": "Cash",
+    "date": "2026-03-13"
+  },
+  {
+    "id": 183,
+    "ticker": "Indusind Bank",
+    "type": "delivery",
+    "qty": 62,
+    "price": 702.3,
+    "trade_value": 43542.6,
+    "segment": "Cash",
+    "date": "2025-03-17"
+  },
+  {
+    "id": 184,
+    "ticker": "Indusind Bank",
+    "type": "delivery",
+    "qty": 62,
+    "price": 819.2,
+    "trade_value": 50790.4,
+    "segment": "Cash",
+    "date": "2025-04-25"
+  },
+  {
+    "id": 185,
+    "ticker": "Indusind Bank",
+    "type": "intraday",
+    "qty": 600,
+    "price": 838.8,
+    "trade_value": 503281.5,
+    "segment": "Cash",
+    "date": "2025-04-28"
+  },
+  {
+    "id": 186,
+    "ticker": "Indusind Bank",
+    "type": "intraday",
+    "qty": 200,
+    "price": 835.15,
+    "trade_value": 167030.0,
+    "segment": "Cash",
+    "date": "2025-04-28"
+  },
+  {
+    "id": 187,
+    "ticker": "Indusind Bank",
+    "type": "intraday",
+    "qty": 400,
+    "price": 835.8,
+    "trade_value": 334320.0,
+    "segment": "Cash",
+    "date": "2025-04-28"
+  },
+  {
+    "id": 188,
+    "ticker": "Integra Essentia",
+    "type": "delivery",
+    "qty": 348,
+    "price": 4.31,
+    "trade_value": 1499.88,
+    "segment": "Cash",
+    "date": "2024-06-14"
+  },
+  {
+    "id": 189,
+    "ticker": "Integra Essentia - RE",
+    "type": "delivery",
+    "qty": 58,
+    "price": 1.42,
+    "trade_value": 82.36,
+    "segment": "Cash",
+    "date": "2024-06-18"
+  },
+  {
+    "id": 190,
+    "ticker": "Ircon International",
+    "type": "delivery",
+    "qty": 25,
+    "price": 288.6,
+    "trade_value": 7215.0,
+    "segment": "Cash",
+    "date": "2024-07-23"
+  },
+  {
+    "id": 191,
+    "ticker": "Ircon International",
+    "type": "delivery",
+    "qty": 3,
+    "price": 269.8,
+    "trade_value": 809.4,
+    "segment": "Cash",
+    "date": "2024-08-06"
+  },
+  {
+    "id": 192,
+    "ticker": "Ircon International",
+    "type": "delivery",
+    "qty": 17,
+    "price": 264.9,
+    "trade_value": 4503.3,
+    "segment": "Cash",
+    "date": "2024-08-09"
+  },
+  {
+    "id": 193,
+    "ticker": "Ircon International",
+    "type": "delivery",
+    "qty": 11,
+    "price": 223.25,
+    "trade_value": 2455.75,
+    "segment": "Cash",
+    "date": "2024-09-20"
+  },
+  {
+    "id": 194,
+    "ticker": "Ircon International",
+    "type": "delivery",
+    "qty": 7,
+    "price": 226.73,
+    "trade_value": 1587.1002,
+    "segment": "Cash",
+    "date": "2024-09-30"
+  },
+  {
+    "id": 195,
+    "ticker": "Ircon International",
+    "type": "delivery",
+    "qty": 119,
+    "price": 227.17,
+    "trade_value": 27033.0515,
+    "segment": "Cash",
+    "date": "2024-09-30"
+  },
+  {
+    "id": 196,
+    "ticker": "Ircon International",
+    "type": "intraday",
+    "qty": 100,
+    "price": 207.16,
+    "trade_value": 20716.0,
+    "segment": "Cash",
+    "date": "2024-11-08"
+  },
+  {
+    "id": 197,
+    "ticker": "Ircon International",
+    "type": "intraday",
+    "qty": 100,
+    "price": 205.25,
+    "trade_value": 20525.0,
+    "segment": "Cash",
+    "date": "2024-11-08"
+  },
+  {
+    "id": 198,
+    "ticker": "Ircon International",
+    "type": "delivery",
+    "qty": 257,
+    "price": 218.37,
+    "trade_value": 56121.09,
+    "segment": "Cash",
+    "date": "2024-12-05"
+  },
+  {
+    "id": 199,
+    "ticker": "IREDA",
+    "type": "delivery",
+    "qty": 28,
+    "price": 230.64,
+    "trade_value": 6457.92,
+    "segment": "Cash",
+    "date": "2024-09-18"
+  },
+  {
+    "id": 200,
+    "ticker": "IREDA",
+    "type": "delivery",
+    "qty": 53,
+    "price": 218.36,
+    "trade_value": 11573.08,
+    "segment": "Cash",
+    "date": "2024-12-05"
+  },
+  {
+    "id": 201,
+    "ticker": "IRFC",
+    "type": "delivery",
+    "qty": 236,
+    "price": 157.1,
+    "trade_value": 37075.6,
+    "segment": "Cash",
+    "date": "2024-05-16"
+  },
+  {
+    "id": 202,
+    "ticker": "IRFC",
+    "type": "delivery",
+    "qty": 51,
+    "price": 181.68,
+    "trade_value": 9265.68,
+    "segment": "Cash",
+    "date": "2024-08-06"
+  },
+  {
+    "id": 203,
+    "ticker": "IRFC",
+    "type": "delivery",
+    "qty": 449,
+    "price": 149.51,
+    "trade_value": 67131.786,
+    "segment": "Cash",
+    "date": "2024-11-29"
+  },
+  {
+    "id": 204,
+    "ticker": "ITC",
+    "type": "delivery",
+    "qty": 17,
+    "price": 482.5,
+    "trade_value": 8202.5,
+    "segment": "Cash",
+    "date": "2024-07-23"
+  },
+  {
+    "id": 205,
+    "ticker": "ITC",
+    "type": "delivery",
+    "qty": 17,
+    "price": 472.75,
+    "trade_value": 8036.75,
+    "segment": "Cash",
+    "date": "2024-12-06"
+  },
+  {
+    "id": 206,
+    "ticker": "Jayaswal Neco Industries",
+    "type": "delivery",
+    "qty": 1,
+    "price": 44.1,
+    "trade_value": 44.1,
+    "segment": "Cash",
+    "date": "2025-04-29"
+  },
+  {
+    "id": 207,
+    "ticker": "Jayaswal Neco Industries",
+    "type": "delivery",
+    "qty": 57,
+    "price": 44.09,
+    "trade_value": 2513.2725,
+    "segment": "Cash",
+    "date": "2025-04-29"
+  },
+  {
+    "id": 208,
+    "ticker": "Jayaswal Neco Industries",
+    "type": "delivery",
+    "qty": 2,
+    "price": 45.16,
+    "trade_value": 90.32,
+    "segment": "Cash",
+    "date": "2025-04-29"
+  },
+  {
+    "id": 209,
+    "ticker": "Jayaswal Neco Industries",
+    "type": "delivery",
+    "qty": 40,
+    "price": 39.35,
+    "trade_value": 1574.0,
+    "segment": "Cash",
+    "date": "2025-05-02"
+  },
+  {
+    "id": 210,
+    "ticker": "Jayaswal Neco Industries",
+    "type": "delivery",
+    "qty": 100,
+    "price": 40.56,
+    "trade_value": 4055.97,
+    "segment": "Cash",
+    "date": "2025-05-05"
+  },
+  {
+    "id": 211,
+    "ticker": "Jio Financial Services",
+    "type": "delivery",
+    "qty": 29,
+    "price": 334.6,
+    "trade_value": 9703.4,
+    "segment": "Cash",
+    "date": "2024-07-23"
+  },
+  {
+    "id": 212,
+    "ticker": "Jio Financial Services",
+    "type": "delivery",
+    "qty": 50,
+    "price": 342.0,
+    "trade_value": 17100.0,
+    "segment": "Cash",
+    "date": "2024-12-04"
+  },
+  {
+    "id": 213,
+    "ticker": "KPIT Technologies",
+    "type": "delivery",
+    "qty": 2,
+    "price": 1857.7,
+    "trade_value": 3715.4,
+    "segment": "Cash",
+    "date": "2024-07-12"
+  },
+  {
+    "id": 214,
+    "ticker": "LG Electronics",
+    "type": "delivery",
+    "qty": 13,
+    "price": 1660.3,
+    "trade_value": 21583.9,
+    "segment": "Cash",
+    "date": "2025-10-17"
+  },
+  {
+    "id": 215,
+    "ticker": "LGEINDIA",
+    "type": "delivery",
+    "qty": 13,
+    "price": 0.0,
+    "trade_value": 0.0,
+    "segment": "Cash",
+    "date": "2025-10-13"
+  },
+  {
+    "id": 216,
+    "ticker": "LIC of India",
+    "type": "delivery",
+    "qty": 35,
+    "price": 1160.1,
+    "trade_value": 40603.5,
+    "segment": "Cash",
+    "date": "2024-07-25"
+  },
+  {
+    "id": 217,
+    "ticker": "LIC of India",
+    "type": "delivery",
+    "qty": 50,
+    "price": 986.6,
+    "trade_value": 49330.0,
+    "segment": "Cash",
+    "date": "2024-12-06"
+  },
+  {
+    "id": 218,
+    "ticker": "LIC of India",
+    "type": "delivery",
+    "qty": 100,
+    "price": 864.3,
+    "trade_value": 86430.0,
+    "segment": "Cash",
+    "date": "2025-12-12"
+  },
+  {
+    "id": 219,
+    "ticker": "LIC of India",
+    "type": "delivery",
+    "qty": 100,
+    "price": 839.39,
+    "trade_value": 83939.5,
+    "segment": "Cash",
+    "date": "2026-02-03"
+  },
+  {
+    "id": 220,
+    "ticker": "Mahindra & Mahindra",
+    "type": "delivery",
+    "qty": 1,
+    "price": 3641.7,
+    "trade_value": 3641.7,
+    "segment": "Cash",
+    "date": "2025-11-06"
+  },
+  {
+    "id": 221,
+    "ticker": "Mahindra & Mahindra",
+    "type": "delivery",
+    "qty": 1,
+    "price": 3576.5,
+    "trade_value": 3576.5,
+    "segment": "Cash",
+    "date": "2025-11-07"
+  },
+  {
+    "id": 222,
+    "ticker": "Mahindra & Mahindra",
+    "type": "delivery",
+    "qty": 1,
+    "price": 3695.0,
+    "trade_value": 3695.0,
+    "segment": "Cash",
+    "date": "2025-11-11"
+  },
+  {
+    "id": 223,
+    "ticker": "Mahindra & Mahindra",
+    "type": "delivery",
+    "qty": 8,
+    "price": 3693.9,
+    "trade_value": 29551.2,
+    "segment": "Cash",
+    "date": "2025-11-11"
+  },
+  {
+    "id": 224,
+    "ticker": "Mahindra & Mahindra",
+    "type": "delivery",
+    "qty": 3,
+    "price": 3332.4,
+    "trade_value": 9997.2,
+    "segment": "Cash",
+    "date": "2026-03-06"
+  },
+  {
+    "id": 225,
+    "ticker": "Mahindra & Mahindra",
+    "type": "delivery",
+    "qty": 3,
+    "price": 2993.0,
+    "trade_value": 8979.0,
+    "segment": "Cash",
+    "date": "2026-03-24"
+  },
+  {
+    "id": 226,
+    "ticker": "NBCC",
+    "type": "delivery",
+    "qty": 400,
+    "price": 117.05,
+    "trade_value": 46820.0,
+    "segment": "Cash",
+    "date": "2025-05-29"
+  },
+  {
+    "id": 227,
+    "ticker": "NBCC",
+    "type": "delivery",
+    "qty": 400,
+    "price": 124.2,
+    "trade_value": 49681.36,
+    "segment": "Cash",
+    "date": "2025-06-03"
+  },
+  {
+    "id": 228,
+    "ticker": "NHPC",
+    "type": "delivery",
+    "qty": 49,
+    "price": 95.02,
+    "trade_value": 4655.98,
+    "segment": "Cash",
+    "date": "2024-09-18"
+  },
+  {
+    "id": 229,
+    "ticker": "NHPC",
+    "type": "delivery",
+    "qty": 100,
+    "price": 82.86,
+    "trade_value": 8286.0,
+    "segment": "Cash",
+    "date": "2024-12-06"
+  },
+  {
+    "id": 230,
+    "ticker": "Nippon Gold ETF (GOLDBEES)",
+    "type": "delivery",
+    "qty": 10,
+    "price": 81.76,
+    "trade_value": 817.6,
+    "segment": "Cash",
+    "date": "2025-07-14"
+  },
+  {
+    "id": 231,
+    "ticker": "Nippon Gold ETF (GOLDBEES)",
+    "type": "delivery",
+    "qty": 500,
+    "price": 82.67,
+    "trade_value": 41335.0,
+    "segment": "Cash",
+    "date": "2025-07-22"
+  },
+  {
+    "id": 232,
+    "ticker": "Nippon Gold ETF (GOLDBEES)",
+    "type": "delivery",
+    "qty": 510,
+    "price": 81.63,
+    "trade_value": 41631.3,
+    "segment": "Cash",
+    "date": "2025-07-29"
+  },
+  {
+    "id": 233,
+    "ticker": "Nippon Gold ETF (GOLDBEES)",
+    "type": "delivery",
+    "qty": 35,
+    "price": 105.22,
+    "trade_value": 3682.7,
+    "segment": "Cash",
+    "date": "2025-10-14"
+  },
+  {
+    "id": 234,
+    "ticker": "Nippon Gold ETF (GOLDBEES)",
+    "type": "delivery",
+    "qty": 65,
+    "price": 99.05,
+    "trade_value": 6438.25,
+    "segment": "Cash",
+    "date": "2025-10-30"
+  },
+  {
+    "id": 235,
+    "ticker": "Nippon Gold ETF (GOLDBEES)",
+    "type": "delivery",
+    "qty": 92,
+    "price": 110.88,
+    "trade_value": 10200.96,
+    "segment": "Cash",
+    "date": "2025-12-22"
+  },
+  {
+    "id": 236,
+    "ticker": "Nippon Gold ETF (GOLDBEES)",
+    "type": "delivery",
+    "qty": 1,
+    "price": 114.63,
+    "trade_value": 114.63,
+    "segment": "Cash",
+    "date": "2025-12-29"
+  },
+  {
+    "id": 237,
+    "ticker": "Nippon Gold ETF (GOLDBEES)",
+    "type": "delivery",
+    "qty": 297,
+    "price": 132.65,
+    "trade_value": 39395.9808,
+    "segment": "Cash",
+    "date": "2026-01-21"
+  },
+  {
+    "id": 238,
+    "ticker": "Nippon Gold ETF (GOLDBEES)",
+    "type": "delivery",
+    "qty": 110,
+    "price": 135.52,
+    "trade_value": 14907.2,
+    "segment": "Cash",
+    "date": "2026-01-30"
+  },
+  {
+    "id": 239,
+    "ticker": "Nippon Gold ETF (GOLDBEES)",
+    "type": "delivery",
+    "qty": 210,
+    "price": 121.06,
+    "trade_value": 25423.356,
+    "segment": "Cash",
+    "date": "2026-02-01"
+  },
+  {
+    "id": 240,
+    "ticker": "Nippon Gold ETF (GOLDBEES)",
+    "type": "delivery",
+    "qty": 810,
+    "price": 124.64,
+    "trade_value": 100956.294,
+    "segment": "Cash",
+    "date": "2026-02-17"
+  },
+  {
+    "id": 241,
+    "ticker": "Nippon Nifty 50 ETF (NIFTYBEES)",
+    "type": "delivery",
+    "qty": 5,
+    "price": 283.75,
+    "trade_value": 1418.75,
+    "segment": "Cash",
+    "date": "2025-07-15"
+  },
+  {
+    "id": 242,
+    "ticker": "Nippon Nifty 50 ETF (NIFTYBEES)",
+    "type": "delivery",
+    "qty": 350,
+    "price": 282.5,
+    "trade_value": 98875.0,
+    "segment": "Cash",
+    "date": "2025-07-22"
+  },
+  {
+    "id": 243,
+    "ticker": "Nippon Nifty 50 ETF (NIFTYBEES)",
+    "type": "delivery",
+    "qty": 355,
+    "price": 278.52,
+    "trade_value": 98875.665,
+    "segment": "Cash",
+    "date": "2025-07-29"
+  },
+  {
+    "id": 244,
+    "ticker": "Nippon Nifty 50 ETF (NIFTYBEES)",
+    "type": "delivery",
+    "qty": 2,
+    "price": 295.27,
+    "trade_value": 590.54,
+    "segment": "Cash",
+    "date": "2025-12-29"
+  },
+  {
+    "id": 245,
+    "ticker": "Nippon Silver ETF (SILVERBEES)",
+    "type": "delivery",
+    "qty": 10,
+    "price": 109.47,
+    "trade_value": 1094.7,
+    "segment": "Cash",
+    "date": "2025-07-14"
+  },
+  {
+    "id": 246,
+    "ticker": "Nippon Silver ETF (SILVERBEES)",
+    "type": "delivery",
+    "qty": 500,
+    "price": 110.14,
+    "trade_value": 55070.0,
+    "segment": "Cash",
+    "date": "2025-07-22"
+  },
+  {
+    "id": 247,
+    "ticker": "Nippon Silver ETF (SILVERBEES)",
+    "type": "delivery",
+    "qty": 510,
+    "price": 109.32,
+    "trade_value": 55751.415,
+    "segment": "Cash",
+    "date": "2025-07-29"
+  },
+  {
+    "id": 248,
+    "ticker": "Nippon Silver ETF (SILVERBEES)",
+    "type": "delivery",
+    "qty": 350,
+    "price": 177.97,
+    "trade_value": 62289.5,
+    "segment": "Cash",
+    "date": "2025-10-14"
+  },
+  {
+    "id": 249,
+    "ticker": "Nippon Silver ETF (SILVERBEES)",
+    "type": "delivery",
+    "qty": 200,
+    "price": 162.8,
+    "trade_value": 32560.0,
+    "segment": "Cash",
+    "date": "2025-10-17"
+  },
+  {
+    "id": 250,
+    "ticker": "Nippon Silver ETF (SILVERBEES)",
+    "type": "delivery",
+    "qty": 100,
+    "price": 148.4,
+    "trade_value": 14840.0,
+    "segment": "Cash",
+    "date": "2025-10-20"
+  },
+  {
+    "id": 251,
+    "ticker": "Nippon Silver ETF (SILVERBEES)",
+    "type": "delivery",
+    "qty": 50,
+    "price": 144.48,
+    "trade_value": 7224.0,
+    "segment": "Cash",
+    "date": "2025-10-21"
+  },
+  {
+    "id": 252,
+    "ticker": "Nippon Silver ETF (SILVERBEES)",
+    "type": "delivery",
+    "qty": 213,
+    "price": 141.33,
+    "trade_value": 30103.29,
+    "segment": "Cash",
+    "date": "2025-10-27"
+  },
+  {
+    "id": 253,
+    "ticker": "Nippon Silver ETF (SILVERBEES)",
+    "type": "delivery",
+    "qty": 87,
+    "price": 142.98,
+    "trade_value": 12439.26,
+    "segment": "Cash",
+    "date": "2025-11-03"
+  },
+  {
+    "id": 254,
+    "ticker": "Nippon Silver ETF (SILVERBEES)",
+    "type": "delivery",
+    "qty": 1000,
+    "price": 168.51,
+    "trade_value": 168512.8,
+    "segment": "Cash",
+    "date": "2025-12-05"
+  },
+  {
+    "id": 255,
+    "ticker": "Nippon Silver ETF (SILVERBEES)",
+    "type": "delivery",
+    "qty": 5,
+    "price": 242.57,
+    "trade_value": 1212.85,
+    "segment": "Cash",
+    "date": "2025-12-29"
+  },
+  {
+    "id": 256,
+    "ticker": "Nippon Silver ETF (SILVERBEES)",
+    "type": "delivery",
+    "qty": 8,
+    "price": 218.94,
+    "trade_value": 1751.52,
+    "segment": "Cash",
+    "date": "2025-12-30"
+  },
+  {
+    "id": 257,
+    "ticker": "Nippon Silver ETF (SILVERBEES)",
+    "type": "delivery",
+    "qty": 538,
+    "price": 218.89,
+    "trade_value": 117762.82,
+    "segment": "Cash",
+    "date": "2025-12-30"
+  },
+  {
+    "id": 258,
+    "ticker": "Nippon Silver ETF (SILVERBEES)",
+    "type": "delivery",
+    "qty": 346,
+    "price": 297.18,
+    "trade_value": 102824.9028,
+    "segment": "Cash",
+    "date": "2026-01-20"
+  },
+  {
+    "id": 259,
+    "ticker": "Nippon Silver ETF (SILVERBEES)",
+    "type": "delivery",
+    "qty": 70,
+    "price": 307.8,
+    "trade_value": 21546.0,
+    "segment": "Cash",
+    "date": "2026-01-21"
+  },
+  {
+    "id": 260,
+    "ticker": "Nippon Silver ETF (SILVERBEES)",
+    "type": "delivery",
+    "qty": 967,
+    "price": 311.04,
+    "trade_value": 300777.8074,
+    "segment": "Cash",
+    "date": "2026-01-27"
+  },
+  {
+    "id": 261,
+    "ticker": "Nippon Silver ETF (SILVERBEES)",
+    "type": "delivery",
+    "qty": 967,
+    "price": 312.4,
+    "trade_value": 302090.8,
+    "segment": "Cash",
+    "date": "2026-01-27"
+  },
+  {
+    "id": 262,
+    "ticker": "Nippon Silver ETF (SILVERBEES)",
+    "type": "delivery",
+    "qty": 233,
+    "price": 315.82,
+    "trade_value": 73586.06,
+    "segment": "Cash",
+    "date": "2026-01-30"
+  },
+  {
+    "id": 263,
+    "ticker": "Nippon Silver ETF (SILVERBEES)",
+    "type": "delivery",
+    "qty": 106,
+    "price": 252.5,
+    "trade_value": 26765.0,
+    "segment": "Cash",
+    "date": "2026-02-01"
+  },
+  {
+    "id": 264,
+    "ticker": "Nippon Silver ETF (SILVERBEES)",
+    "type": "delivery",
+    "qty": 150,
+    "price": 207.97,
+    "trade_value": 31194.765,
+    "segment": "Cash",
+    "date": "2026-02-02"
+  },
+  {
+    "id": 265,
+    "ticker": "Nippon Silver ETF (SILVERBEES)",
+    "type": "delivery",
+    "qty": 150,
+    "price": 206.63,
+    "trade_value": 30994.5,
+    "segment": "Cash",
+    "date": "2026-02-02"
+  },
+  {
+    "id": 266,
+    "ticker": "Nippon Silver ETF (SILVERBEES)",
+    "type": "delivery",
+    "qty": 1000,
+    "price": 233.19,
+    "trade_value": 233186.0,
+    "segment": "Cash",
+    "date": "2026-02-19"
+  },
+  {
+    "id": 267,
+    "ticker": "Nippon Silver ETF (SILVERBEES)",
+    "type": "delivery",
+    "qty": 1000,
+    "price": 231.72,
+    "trade_value": 231718.0,
+    "segment": "Cash",
+    "date": "2026-02-19"
+  },
+  {
+    "id": 268,
+    "ticker": "NTPC",
+    "type": "delivery",
+    "qty": 10,
+    "price": 410.15,
+    "trade_value": 4101.5,
+    "segment": "Cash",
+    "date": "2024-10-24"
+  },
+  {
+    "id": 269,
+    "ticker": "NTPC",
+    "type": "delivery",
+    "qty": 10,
+    "price": 370.85,
+    "trade_value": 3708.5,
+    "segment": "Cash",
+    "date": "2024-12-06"
+  },
+  {
+    "id": 270,
+    "ticker": "NTPC Green Energy",
+    "type": "intraday",
+    "qty": 420,
+    "price": 127.25,
+    "trade_value": 53445.0,
+    "segment": "Cash",
+    "date": "2024-11-28"
+  },
+  {
+    "id": 271,
+    "ticker": "NTPC Green Energy",
+    "type": "intraday",
+    "qty": 419,
+    "price": 128.73,
+    "trade_value": 53937.87,
+    "segment": "Cash",
+    "date": "2024-11-28"
+  },
+  {
+    "id": 272,
+    "ticker": "NTPC Green Energy",
+    "type": "intraday",
+    "qty": 1,
+    "price": 127.89,
+    "trade_value": 127.89,
+    "segment": "Cash",
+    "date": "2024-11-28"
+  },
+  {
+    "id": 273,
+    "ticker": "NTPC Green Energy",
+    "type": "delivery",
+    "qty": 2,
+    "price": 124.64,
+    "trade_value": 249.28,
+    "segment": "Cash",
+    "date": "2024-11-29"
+  },
+  {
+    "id": 274,
+    "ticker": "NTPC Green Energy",
+    "type": "delivery",
+    "qty": 16,
+    "price": 129.59,
+    "trade_value": 2073.44,
+    "segment": "Cash",
+    "date": "2024-11-29"
+  },
+  {
+    "id": 275,
+    "ticker": "NTPC Green Energy",
+    "type": "delivery",
+    "qty": 10,
+    "price": 129.81,
+    "trade_value": 1298.1,
+    "segment": "Cash",
+    "date": "2024-11-29"
+  },
+  {
+    "id": 276,
+    "ticker": "NTPC Green Energy",
+    "type": "delivery",
+    "qty": 400,
+    "price": 129.93,
+    "trade_value": 51972.0,
+    "segment": "Cash",
+    "date": "2024-11-29"
+  },
+  {
+    "id": 277,
+    "ticker": "NTPC Green Energy",
+    "type": "delivery",
+    "qty": 428,
+    "price": 146.81,
+    "trade_value": 62834.68,
+    "segment": "Cash",
+    "date": "2024-12-04"
+  },
+  {
+    "id": 278,
+    "ticker": "One 97 Communications",
+    "type": "delivery",
+    "qty": 2,
+    "price": 1351.5,
+    "trade_value": 2703.0,
+    "segment": "Cash",
+    "date": "2025-12-01"
+  },
+  {
+    "id": 279,
+    "ticker": "One 97 Communications",
+    "type": "delivery",
+    "qty": 1,
+    "price": 1300.3,
+    "trade_value": 1300.3,
+    "segment": "Cash",
+    "date": "2025-12-15"
+  },
+  {
+    "id": 280,
+    "ticker": "Physicswallah",
+    "type": "delivery",
+    "qty": 274,
+    "price": 141.32,
+    "trade_value": 38720.3374,
+    "segment": "Cash",
+    "date": "2025-11-19"
+  },
+  {
+    "id": 281,
+    "ticker": "Physicswallah",
+    "type": "delivery",
+    "qty": 174,
+    "price": 148.8,
+    "trade_value": 25891.2,
+    "segment": "Cash",
+    "date": "2025-11-19"
+  },
+  {
+    "id": 282,
+    "ticker": "Physicswallah",
+    "type": "delivery",
+    "qty": 174,
+    "price": 150.7,
+    "trade_value": 26221.8,
+    "segment": "Cash",
+    "date": "2025-11-19"
+  },
+  {
+    "id": 283,
+    "ticker": "Protean e-Gov Technologies (NSDL)",
+    "type": "delivery",
+    "qty": 15,
+    "price": 991.4,
+    "trade_value": 14871.0,
+    "segment": "Cash",
+    "date": "2025-06-10"
+  },
+  {
+    "id": 284,
+    "ticker": "Protean e-Gov Technologies (NSDL)",
+    "type": "delivery",
+    "qty": 10,
+    "price": 988.27,
+    "trade_value": 9882.75,
+    "segment": "Cash",
+    "date": "2025-06-10"
+  },
+  {
+    "id": 285,
+    "ticker": "Protean e-Gov Technologies (NSDL)",
+    "type": "delivery",
+    "qty": 75,
+    "price": 816.09,
+    "trade_value": 61206.9,
+    "segment": "Cash",
+    "date": "2025-07-23"
+  },
+  {
+    "id": 286,
+    "ticker": "Protean e-Gov Technologies (NSDL)",
+    "type": "delivery",
+    "qty": 75,
+    "price": 808.11,
+    "trade_value": 60607.95,
+    "segment": "Cash",
+    "date": "2025-07-30"
+  },
+  {
+    "id": 287,
+    "ticker": "PWL",
+    "type": "delivery",
+    "qty": 274,
+    "price": 0.0,
+    "trade_value": 0.0,
+    "segment": "Cash",
+    "date": "2025-11-17"
+  },
+  {
+    "id": 288,
+    "ticker": "Rail Vikas Nigam",
+    "type": "delivery",
+    "qty": 30,
+    "price": 283.85,
+    "trade_value": 8515.5,
+    "segment": "Cash",
+    "date": "2024-05-03"
+  },
+  {
+    "id": 289,
+    "ticker": "Rail Vikas Nigam",
+    "type": "delivery",
+    "qty": 50,
+    "price": 555.8,
+    "trade_value": 27790.0,
+    "segment": "Cash",
+    "date": "2024-09-13"
+  },
+  {
+    "id": 290,
+    "ticker": "Rail Vikas Nigam",
+    "type": "delivery",
+    "qty": 16,
+    "price": 510.65,
+    "trade_value": 8170.4,
+    "segment": "Cash",
+    "date": "2024-09-19"
+  },
+  {
+    "id": 291,
+    "ticker": "Rail Vikas Nigam",
+    "type": "delivery",
+    "qty": 20,
+    "price": 523.0,
+    "trade_value": 10460.0,
+    "segment": "Cash",
+    "date": "2024-09-26"
+  },
+  {
+    "id": 292,
+    "ticker": "Rail Vikas Nigam",
+    "type": "delivery",
+    "qty": 10,
+    "price": 465.45,
+    "trade_value": 4654.5,
+    "segment": "Cash",
+    "date": "2024-10-07"
+  },
+  {
+    "id": 293,
+    "ticker": "Rail Vikas Nigam",
+    "type": "intraday",
+    "qty": 46,
+    "price": 448.1,
+    "trade_value": 20612.6,
+    "segment": "Cash",
+    "date": "2024-11-08"
+  },
+  {
+    "id": 294,
+    "ticker": "Rail Vikas Nigam",
+    "type": "intraday",
+    "qty": 46,
+    "price": 455.4,
+    "trade_value": 20948.4,
+    "segment": "Cash",
+    "date": "2024-11-08"
+  },
+  {
+    "id": 295,
+    "ticker": "Rail Vikas Nigam",
+    "type": "delivery",
+    "qty": 122,
+    "price": 441.72,
+    "trade_value": 53889.901,
+    "segment": "Cash",
+    "date": "2024-11-28"
+  },
+  {
+    "id": 296,
+    "ticker": "Rail Vikas Nigam",
+    "type": "delivery",
+    "qty": 250,
+    "price": 436.25,
+    "trade_value": 109062.7,
+    "segment": "Cash",
+    "date": "2024-11-29"
+  },
+  {
+    "id": 297,
+    "ticker": "Rail Vikas Nigam",
+    "type": "delivery",
+    "qty": 100,
+    "price": 410.4,
+    "trade_value": 41040.0,
+    "segment": "Cash",
+    "date": "2025-05-26"
+  },
+  {
+    "id": 298,
+    "ticker": "Rail Vikas Nigam",
+    "type": "intraday",
+    "qty": 95,
+    "price": 399.98,
+    "trade_value": 37997.7485,
+    "segment": "Cash",
+    "date": "2025-06-24"
+  },
+  {
+    "id": 299,
+    "ticker": "Rail Vikas Nigam",
+    "type": "intraday",
+    "qty": 95,
+    "price": 398.0,
+    "trade_value": 37810.0,
+    "segment": "Cash",
+    "date": "2025-06-24"
+  },
+  {
+    "id": 300,
+    "ticker": "Rail Vikas Nigam",
+    "type": "delivery",
+    "qty": 82,
+    "price": 341.55,
+    "trade_value": 28007.1,
+    "segment": "Cash",
+    "date": "2025-08-11"
+  },
+  {
+    "id": 301,
+    "ticker": "Rail Vikas Nigam",
+    "type": "delivery",
+    "qty": 5,
+    "price": 320.3,
+    "trade_value": 1601.5,
+    "segment": "Cash",
+    "date": "2025-11-06"
+  },
+  {
+    "id": 302,
+    "ticker": "Rail Vikas Nigam",
+    "type": "delivery",
+    "qty": 113,
+    "price": 315.7,
+    "trade_value": 35674.1,
+    "segment": "Cash",
+    "date": "2025-11-11"
+  },
+  {
+    "id": 303,
+    "ticker": "Rail Vikas Nigam",
+    "type": "delivery",
+    "qty": 300,
+    "price": 337.8,
+    "trade_value": 101340.0,
+    "segment": "Cash",
+    "date": "2026-01-30"
+  },
+  {
+    "id": 304,
+    "ticker": "Rail Vikas Nigam",
+    "type": "delivery",
+    "qty": 300,
+    "price": 350.85,
+    "trade_value": 105254.91,
+    "segment": "Cash",
+    "date": "2026-02-01"
+  },
+  {
+    "id": 305,
+    "ticker": "Rashtriya Chemicals & Fertilizers",
+    "type": "delivery",
+    "qty": 1,
+    "price": 185.69,
+    "trade_value": 185.69,
+    "segment": "Cash",
+    "date": "2024-06-19"
+  },
+  {
+    "id": 306,
+    "ticker": "Rashtriya Chemicals & Fertilizers",
+    "type": "delivery",
+    "qty": 19,
+    "price": 200.46,
+    "trade_value": 3808.6887,
+    "segment": "Cash",
+    "date": "2024-06-20"
+  },
+  {
+    "id": 307,
+    "ticker": "Rashtriya Chemicals & Fertilizers",
+    "type": "delivery",
+    "qty": 20,
+    "price": 185.2,
+    "trade_value": 3704.03,
+    "segment": "Cash",
+    "date": "2024-09-18"
+  },
+  {
+    "id": 308,
+    "ticker": "REC",
+    "type": "delivery",
+    "qty": 190,
+    "price": 430.55,
+    "trade_value": 81804.5,
+    "segment": "Cash",
+    "date": "2025-04-28"
+  },
+  {
+    "id": 309,
+    "ticker": "REC",
+    "type": "delivery",
+    "qty": 50,
+    "price": 380.25,
+    "trade_value": 19012.5,
+    "segment": "Cash",
+    "date": "2025-10-30"
+  },
+  {
+    "id": 310,
+    "ticker": "REC",
+    "type": "delivery",
+    "qty": 1,
+    "price": 358.45,
+    "trade_value": 358.45,
+    "segment": "Cash",
+    "date": "2025-11-07"
+  },
+  {
+    "id": 311,
+    "ticker": "REC",
+    "type": "delivery",
+    "qty": 149,
+    "price": 358.2,
+    "trade_value": 53371.8,
+    "segment": "Cash",
+    "date": "2025-11-26"
+  },
+  {
+    "id": 312,
+    "ticker": "REC",
+    "type": "delivery",
+    "qty": 400,
+    "price": 359.15,
+    "trade_value": 143660.0,
+    "segment": "Cash",
+    "date": "2026-01-30"
+  },
+  {
+    "id": 313,
+    "ticker": "REC",
+    "type": "delivery",
+    "qty": 400,
+    "price": 361.0,
+    "trade_value": 144400.0,
+    "segment": "Cash",
+    "date": "2026-01-30"
+  },
+  {
+    "id": 314,
+    "ticker": "REC",
+    "type": "delivery",
+    "qty": 400,
+    "price": 382.55,
+    "trade_value": 153020.0,
+    "segment": "Cash",
+    "date": "2026-02-05"
+  },
+  {
+    "id": 315,
+    "ticker": "REC",
+    "type": "delivery",
+    "qty": 400,
+    "price": 384.0,
+    "trade_value": 153600.0,
+    "segment": "Cash",
+    "date": "2026-02-05"
+  },
+  {
+    "id": 316,
+    "ticker": "Reliance Industries",
+    "type": "delivery",
+    "qty": 1,
+    "price": 1370.8,
+    "trade_value": 1370.8,
+    "segment": "Cash",
+    "date": "2025-04-28"
+  },
+  {
+    "id": 317,
+    "ticker": "Reliance Industries",
+    "type": "intraday",
+    "qty": 1,
+    "price": 1370.8,
+    "trade_value": 1370.8,
+    "segment": "Cash",
+    "date": "2025-04-28"
+  },
+  {
+    "id": 318,
+    "ticker": "Reliance Industries",
+    "type": "delivery",
+    "qty": 74,
+    "price": 1370.5,
+    "trade_value": 101417.0,
+    "segment": "Cash",
+    "date": "2025-04-28"
+  },
+  {
+    "id": 319,
+    "ticker": "Reliance Industries",
+    "type": "intraday",
+    "qty": 1,
+    "price": 1369.9,
+    "trade_value": 1369.9,
+    "segment": "Cash",
+    "date": "2025-04-28"
+  },
+  {
+    "id": 320,
+    "ticker": "Reliance Industries",
+    "type": "delivery",
+    "qty": 70,
+    "price": 1392.66,
+    "trade_value": 97486.102,
+    "segment": "Cash",
+    "date": "2025-04-29"
+  },
+  {
+    "id": 321,
+    "ticker": "Reliance Industries",
+    "type": "delivery",
+    "qty": 5,
+    "price": 1392.6,
+    "trade_value": 6963.0,
+    "segment": "Cash",
+    "date": "2025-04-29"
+  },
+  {
+    "id": 322,
+    "ticker": "Reliance Industries",
+    "type": "delivery",
+    "qty": 20,
+    "price": 1473.9,
+    "trade_value": 29478.0,
+    "segment": "Cash",
+    "date": "2026-02-03"
+  },
+  {
+    "id": 323,
+    "ticker": "Reliance Industries",
+    "type": "delivery",
+    "qty": 20,
+    "price": 1444.8,
+    "trade_value": 28896.0,
+    "segment": "Cash",
+    "date": "2026-02-05"
+  },
+  {
+    "id": 324,
+    "ticker": "Reliance Power",
+    "type": "delivery",
+    "qty": 3,
+    "price": 58.36,
+    "trade_value": 175.08,
+    "segment": "Cash",
+    "date": "2025-05-30"
+  },
+  {
+    "id": 325,
+    "ticker": "Reliance Power",
+    "type": "delivery",
+    "qty": 189,
+    "price": 57.34,
+    "trade_value": 10837.26,
+    "segment": "Cash",
+    "date": "2025-05-30"
+  },
+  {
+    "id": 326,
+    "ticker": "Reliance Power",
+    "type": "delivery",
+    "qty": 11,
+    "price": 57.69,
+    "trade_value": 634.59,
+    "segment": "Cash",
+    "date": "2025-05-30"
+  },
+  {
+    "id": 327,
+    "ticker": "Reliance Power",
+    "type": "delivery",
+    "qty": 203,
+    "price": 59.5,
+    "trade_value": 12078.5,
+    "segment": "Cash",
+    "date": "2025-06-03"
+  },
+  {
+    "id": 328,
+    "ticker": "Reliance Power",
+    "type": "delivery",
+    "qty": 100,
+    "price": 63.8,
+    "trade_value": 6380.0,
+    "segment": "Cash",
+    "date": "2025-06-24"
+  },
+  {
+    "id": 329,
+    "ticker": "Reliance Power",
+    "type": "delivery",
+    "qty": 100,
+    "price": 46.13,
+    "trade_value": 4613.0,
+    "segment": "Cash",
+    "date": "2025-11-03"
+  },
+  {
+    "id": 330,
+    "ticker": "Rural Electrification Corporation",
+    "type": "delivery",
+    "qty": 25,
+    "price": 486.4,
+    "trade_value": 12160.0,
+    "segment": "Cash",
+    "date": "2024-06-04"
+  },
+  {
+    "id": 331,
+    "ticker": "Rural Electrification Corporation",
+    "type": "delivery",
+    "qty": 5,
+    "price": 488.45,
+    "trade_value": 2442.25,
+    "segment": "Cash",
+    "date": "2024-06-04"
+  },
+  {
+    "id": 332,
+    "ticker": "Rural Electrification Corporation",
+    "type": "delivery",
+    "qty": 10,
+    "price": 532.15,
+    "trade_value": 5321.5,
+    "segment": "Cash",
+    "date": "2024-06-14"
+  },
+  {
+    "id": 333,
+    "ticker": "Rural Electrification Corporation",
+    "type": "delivery",
+    "qty": 50,
+    "price": 597.35,
+    "trade_value": 29867.5,
+    "segment": "Cash",
+    "date": "2024-07-23"
+  },
+  {
+    "id": 334,
+    "ticker": "Rural Electrification Corporation",
+    "type": "delivery",
+    "qty": 100,
+    "price": 547.55,
+    "trade_value": 54755.0,
+    "segment": "Cash",
+    "date": "2024-12-04"
+  },
+  {
+    "id": 335,
+    "ticker": "Rural Electrification Corporation",
+    "type": "delivery",
+    "qty": 10,
+    "price": 429.45,
+    "trade_value": 4294.5,
+    "segment": "Cash",
+    "date": "2025-03-20"
+  },
+  {
+    "id": 336,
+    "ticker": "Shivalik Bimetal Controls",
+    "type": "delivery",
+    "qty": 10,
+    "price": 672.91,
+    "trade_value": 6729.1,
+    "segment": "Cash",
+    "date": "2024-07-12"
+  },
+  {
+    "id": 337,
+    "ticker": "Shivalik Bimetal Controls",
+    "type": "delivery",
+    "qty": 10,
+    "price": 592.5,
+    "trade_value": 5925.0,
+    "segment": "Cash",
+    "date": "2024-09-18"
+  },
+  {
+    "id": 338,
+    "ticker": "SJVN",
+    "type": "delivery",
+    "qty": 35,
+    "price": 138.19,
+    "trade_value": 4836.65,
+    "segment": "Cash",
+    "date": "2024-07-23"
+  },
+  {
+    "id": 339,
+    "ticker": "SJVN",
+    "type": "delivery",
+    "qty": 72,
+    "price": 142.5,
+    "trade_value": 10260.0,
+    "segment": "Cash",
+    "date": "2024-08-16"
+  },
+  {
+    "id": 340,
+    "ticker": "SJVN",
+    "type": "delivery",
+    "qty": 21,
+    "price": 130.8,
+    "trade_value": 2746.8,
+    "segment": "Cash",
+    "date": "2024-09-19"
+  },
+  {
+    "id": 341,
+    "ticker": "SJVN",
+    "type": "delivery",
+    "qty": 132,
+    "price": 114.65,
+    "trade_value": 15133.1664,
+    "segment": "Cash",
+    "date": "2024-11-06"
+  },
+  {
+    "id": 342,
+    "ticker": "SJVN",
+    "type": "delivery",
+    "qty": 132,
+    "price": 114.0,
+    "trade_value": 15048.0,
+    "segment": "Cash",
+    "date": "2024-11-06"
+  },
+  {
+    "id": 343,
+    "ticker": "SJVN",
+    "type": "delivery",
+    "qty": 221,
+    "price": 117.54,
+    "trade_value": 25976.34,
+    "segment": "Cash",
+    "date": "2024-12-06"
+  },
+  {
+    "id": 344,
+    "ticker": "State Bank of India",
+    "type": "delivery",
+    "qty": 80,
+    "price": 960.85,
+    "trade_value": 76868.0,
+    "segment": "Cash",
+    "date": "2025-12-12"
+  },
+  {
+    "id": 345,
+    "ticker": "State Bank of India",
+    "type": "delivery",
+    "qty": 20,
+    "price": 961.0,
+    "trade_value": 19220.0,
+    "segment": "Cash",
+    "date": "2025-12-12"
+  },
+  {
+    "id": 346,
+    "ticker": "State Bank of India",
+    "type": "delivery",
+    "qty": 99,
+    "price": 1040.51,
+    "trade_value": 103010.1039,
+    "segment": "Cash",
+    "date": "2026-01-20"
+  },
+  {
+    "id": 347,
+    "ticker": "State Bank of India",
+    "type": "delivery",
+    "qty": 1,
+    "price": 1059.45,
+    "trade_value": 1059.45,
+    "segment": "Cash",
+    "date": "2026-01-28"
+  },
+  {
+    "id": 348,
+    "ticker": "State Bank of India",
+    "type": "delivery",
+    "qty": 2,
+    "price": 1060.3,
+    "trade_value": 2120.6,
+    "segment": "Cash",
+    "date": "2026-02-03"
+  },
+  {
+    "id": 349,
+    "ticker": "State Bank of India",
+    "type": "delivery",
+    "qty": 40,
+    "price": 1164.9,
+    "trade_value": 46596.0,
+    "segment": "Cash",
+    "date": "2026-03-06"
+  },
+  {
+    "id": 350,
+    "ticker": "State Bank of India",
+    "type": "delivery",
+    "qty": 4,
+    "price": 1087.5,
+    "trade_value": 4350.0,
+    "segment": "Cash",
+    "date": "2026-03-09"
+  },
+  {
+    "id": 351,
+    "ticker": "State Bank of India",
+    "type": "delivery",
+    "qty": 7,
+    "price": 1085.9,
+    "trade_value": 7601.3,
+    "segment": "Cash",
+    "date": "2026-03-09"
+  },
+  {
+    "id": 352,
+    "ticker": "Tata Motors",
+    "type": "delivery",
+    "qty": 2,
+    "price": 682.1,
+    "trade_value": 1364.2,
+    "segment": "Cash",
+    "date": "2025-06-17"
+  },
+  {
+    "id": 353,
+    "ticker": "Tata Motors",
+    "type": "delivery",
+    "qty": 3,
+    "price": 687.95,
+    "trade_value": 2063.85,
+    "segment": "Cash",
+    "date": "2025-09-05"
+  },
+  {
+    "id": 354,
+    "ticker": "Tata Motors",
+    "type": "delivery",
+    "qty": 10,
+    "price": 396.15,
+    "trade_value": 3961.5,
+    "segment": "Cash",
+    "date": "2025-10-14"
+  },
+  {
+    "id": 355,
+    "ticker": "Tata Motors",
+    "type": "delivery",
+    "qty": 100,
+    "price": 396.75,
+    "trade_value": 39675.0,
+    "segment": "Cash",
+    "date": "2025-10-16"
+  },
+  {
+    "id": 356,
+    "ticker": "Tata Motors",
+    "type": "delivery",
+    "qty": 5,
+    "price": 323.0,
+    "trade_value": 1615.0,
+    "segment": "Cash",
+    "date": "2025-11-24"
+  },
+  {
+    "id": 357,
+    "ticker": "Tata Motors Passenger Vehicles",
+    "type": "delivery",
+    "qty": 4,
+    "price": 359.8,
+    "trade_value": 1439.2,
+    "segment": "Cash",
+    "date": "2025-11-27"
+  },
+  {
+    "id": 358,
+    "ticker": "Tata Motors Passenger Vehicles",
+    "type": "delivery",
+    "qty": 119,
+    "price": 349.15,
+    "trade_value": 41548.85,
+    "segment": "Cash",
+    "date": "2026-01-30"
+  },
+  {
+    "id": 359,
+    "ticker": "Tata Power",
+    "type": "delivery",
+    "qty": 45,
+    "price": 418.25,
+    "trade_value": 18821.25,
+    "segment": "Cash",
+    "date": "2024-07-23"
+  },
+  {
+    "id": 360,
+    "ticker": "Tata Power",
+    "type": "delivery",
+    "qty": 50,
+    "price": 422.75,
+    "trade_value": 21137.5,
+    "segment": "Cash",
+    "date": "2024-12-05"
+  },
+  {
+    "id": 361,
+    "ticker": "Tata Power",
+    "type": "delivery",
+    "qty": 5,
+    "price": 391.4,
+    "trade_value": 1957.0,
+    "segment": "Cash",
+    "date": "2025-06-19"
+  },
+  {
+    "id": 362,
+    "ticker": "Tata Power",
+    "type": "delivery",
+    "qty": 95,
+    "price": 408.15,
+    "trade_value": 38774.25,
+    "segment": "Cash",
+    "date": "2025-10-31"
+  },
+  {
+    "id": 363,
+    "ticker": "Tata Power",
+    "type": "delivery",
+    "qty": 100,
+    "price": 376.05,
+    "trade_value": 37605.0,
+    "segment": "Cash",
+    "date": "2025-12-30"
+  },
+  {
+    "id": 364,
+    "ticker": "TMCV",
+    "type": "delivery",
+    "qty": 5,
+    "price": 0.0,
+    "trade_value": 0.0,
+    "segment": "Cash",
+    "date": "2025-10-14"
+  },
+  {
+    "id": 365,
+    "ticker": "Trent",
+    "type": "delivery",
+    "qty": 1,
+    "price": 7899.9,
+    "trade_value": 7899.9,
+    "segment": "Cash",
+    "date": "2024-10-08"
+  },
+  {
+    "id": 366,
+    "ticker": "Trent",
+    "type": "delivery",
+    "qty": 1,
+    "price": 7111.0,
+    "trade_value": 7111.0,
+    "segment": "Cash",
+    "date": "2024-12-06"
+  },
+  {
+    "id": 367,
+    "ticker": "Trent",
+    "type": "delivery",
+    "qty": 2,
+    "price": 5690.5,
+    "trade_value": 11381.0,
+    "segment": "Cash",
+    "date": "2025-06-17"
+  },
+  {
+    "id": 368,
+    "ticker": "Trent",
+    "type": "delivery",
+    "qty": 8,
+    "price": 4335.7,
+    "trade_value": 34685.6,
+    "segment": "Cash",
+    "date": "2025-11-11"
+  },
+  {
+    "id": 369,
+    "ticker": "Trent",
+    "type": "delivery",
+    "qty": 10,
+    "price": 4226.0,
+    "trade_value": 42260.0,
+    "segment": "Cash",
+    "date": "2025-12-30"
+  },
+  {
+    "id": 370,
+    "ticker": "TRUALT",
+    "type": "delivery",
+    "qty": 30,
+    "price": 0.0,
+    "trade_value": 0.0,
+    "segment": "Cash",
+    "date": "2025-10-01"
+  },
+  {
+    "id": 371,
+    "ticker": "Trualt Bioenergy",
+    "type": "delivery",
+    "qty": 30,
+    "price": 399.0,
+    "trade_value": 11970.0,
+    "segment": "Cash",
+    "date": "2025-12-30"
+  },
+  {
+    "id": 372,
+    "ticker": "Ujjivan Small Finance Bank",
+    "type": "delivery",
+    "qty": 12,
+    "price": 42.19,
+    "trade_value": 506.28,
+    "segment": "Cash",
+    "date": "2024-08-09"
+  },
+  {
+    "id": 373,
+    "ticker": "Ujjivan Small Finance Bank",
+    "type": "delivery",
+    "qty": 8,
+    "price": 44.15,
+    "trade_value": 353.2,
+    "segment": "Cash",
+    "date": "2024-09-04"
+  },
+  {
+    "id": 374,
+    "ticker": "Ujjivan Small Finance Bank",
+    "type": "delivery",
+    "qty": 40,
+    "price": 42.92,
+    "trade_value": 1716.8,
+    "segment": "Cash",
+    "date": "2024-09-18"
+  },
+  {
+    "id": 375,
+    "ticker": "Vedanta",
+    "type": "intraday",
+    "qty": 45,
+    "price": 462.65,
+    "trade_value": 20819.25,
+    "segment": "Cash",
+    "date": "2024-11-08"
+  },
+  {
+    "id": 376,
+    "ticker": "Vedanta",
+    "type": "intraday",
+    "qty": 45,
+    "price": 461.0,
+    "trade_value": 20745.0,
+    "segment": "Cash",
+    "date": "2024-11-08"
+  },
+  {
+    "id": 377,
+    "ticker": "WEWORK",
+    "type": "delivery",
+    "qty": 46,
+    "price": 0.0,
+    "trade_value": 0.0,
+    "segment": "Cash",
+    "date": "2025-10-09"
+  },
+  {
+    "id": 378,
+    "ticker": "WeWork India Management",
+    "type": "delivery",
+    "qty": 46,
+    "price": 602.59,
+    "trade_value": 27719.301,
+    "segment": "Cash",
+    "date": "2025-12-30"
+  },
+  {
+    "id": 379,
+    "ticker": "Zerodha Liquid ETF (LIQUIDCASE)",
+    "type": "delivery",
+    "qty": 44,
+    "price": 113.31,
+    "trade_value": 4985.64,
+    "segment": "Cash",
+    "date": "2026-03-25"
+  }
 ]
