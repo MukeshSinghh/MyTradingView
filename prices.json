@@ -1,23 +1,19 @@
 {
-  "updated": "2026-04-08",
+  "updated": "2026-04-10",
   "prices": {
-    "BEL":                 315.00,
-    "BHARTIARTL":         1760.00,
-    "Eternal":             225.00,
-    "HAL":                3950.00,
-    "IOC":                 130.00,
-    "LICI":                850.00,
-    "M&M":                2750.00,
+    "BEL":                 442.00,
+    "BHARTIARTL":         1868.00,
+    "HAL":                4100.00,
+    "IOC":                 143.00,
+    "M&M":                3250.00,
     "NipponGOLDBEES":      122.81,
-    "NipponNIFTYBEES":     245.00,
-    "NipponSILVERBEES":    115.00,
-    "PAYTM":               740.00,
-    "Protean":            1250.00,
-    "REC":                 400.00,
-    "RVNL":                355.00,
-    "Reliance":           1327.90,
-    "SJVN":                 85.00,
-    "SBIN":               1020.95,
-    "ZerodhaLIQUIDCASE":   113.50
+    "NipponNIFTYBEES":     271.00,
+    "NipponSILVERBEES":    227.50,
+    "PAYTM":              1122.00,
+    "Protean":             537.00,
+    "REC":                 350.00,
+    "RVNL":                276.00,
+    "SBIN":               1059.00,
+    "ZerodhaLIQUIDCASE":   113.57
   }
 }
