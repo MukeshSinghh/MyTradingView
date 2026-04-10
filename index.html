@@ -157,11 +157,78 @@ td.ticker{color:var(--fg0);font-weight:500;font-family:'Bricolage Grotesque',san
 .view{display:none;}
 .view.active{display:block;}
 
+/* ── SCROLLABLE CHART ── */
+.chart-scroll-wrap{
+  overflow-x:auto;
+  overflow-y:hidden;
+  -webkit-overflow-scrolling:touch;
+  touch-action:pan-x pan-y;
+  /* subtle fade hint on right edge */
+  background:
+    linear-gradient(to right,var(--bg1) 0%,transparent 32px) left center,
+    linear-gradient(to left, var(--bg1) 0%,transparent 32px) right center;
+  background-size:32px 100%, 32px 100%;
+  background-repeat:no-repeat;
+  background-attachment:local,local;
+  margin:0 -2px;
+  padding:0 2px;
+  border-radius:0 0 var(--r8) var(--r8);
+  /* Scrollbar styling */
+  scrollbar-width:thin;
+  scrollbar-color:var(--bg4) transparent;
+}
+.chart-scroll-wrap::-webkit-scrollbar{height:4px;}
+.chart-scroll-wrap::-webkit-scrollbar-track{background:transparent;}
+.chart-scroll-wrap::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:2px;}
+/* The inner sizing wrapper — width expands based on data */
+.chart-inner{
+  position:relative;
+  height:260px;
+  min-width:100%;
+}
+
+/* ── NAV SCROLL ON MOBILE ── */
+.nav-views{
+  overflow-x:auto;
+  overflow-y:hidden;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
+}
+.nav-views::-webkit-scrollbar{display:none;}
+
+/* ── METRICS BAR ── */
 @media(max-width:640px){
-  .metrics{grid-template-columns:repeat(2,minmax(0,1fr));}
+  .metrics{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:6px;
+  }
+  /* Make 5th metric span full width on mobile */
+  .metrics .met:last-child{grid-column:1/-1;}
   nav{padding:0 12px;}
   .nav-views{gap:0;}
   .nav-btn{padding:6px 9px;font-size:11px;}
+  main{padding:1rem 0.75rem 4rem;}
+  .card{padding:14px 12px;}
+  .card-hdr{flex-wrap:wrap;gap:8px;}
+  .card-hdr h2{white-space:nowrap;}
+  .chart-tabs{flex-wrap:wrap;gap:4px;}
+  .settings-panel{
+    right:8px;left:8px;width:auto;
+    top:54px;
+  }
+  /* Port grid single column */
+  .port-grid{grid-template-columns:1fr;}
+  /* Table font shrink */
+  td,th{font-size:11px;padding:7px 8px;}
+  td.ticker{font-size:12px;}
+  .met .val{font-size:15px;}
+  .met .lbl{font-size:9px;}
+  /* Updated tag hide on very small screens */
+  .updated-tag{display:none;}
+}
+@media(max-width:400px){
+  .nav-logo{font-size:13px;margin-right:12px;}
+  .settings-btn{padding:5px 8px;font-size:11px;}
 }
 </style>
 </head>
@@ -252,7 +319,7 @@ td.ticker{color:var(--fg0);font-weight:500;font-family:'Bricolage Grotesque',san
           <button class="ctab" onclick="switchMainChart('alloc',this)">Allocation</button>
         </div>
       </div>
-      <div style="position:relative;height:260px;"><canvas id="chartMain"></canvas></div>
+      <div class="chart-scroll-wrap"><div class="chart-inner" id="chartMainWrap"><canvas id="chartMain"></canvas></div></div>
       <div class="legend" id="legendMain"></div>
     </div>
 
@@ -281,7 +348,7 @@ td.ticker{color:var(--fg0);font-weight:500;font-family:'Bricolage Grotesque',san
           <button class="ctab" onclick="switchPLChart('ticker',this)">By ticker</button>
         </div>
       </div>
-      <div style="position:relative;height:260px;"><canvas id="chartPL"></canvas></div>
+      <div class="chart-scroll-wrap"><div class="chart-inner" id="chartPLWrap"><canvas id="chartPL"></canvas></div></div>
       <div class="legend" id="legendPL"></div>
     </div>
     <div class="card">
@@ -304,7 +371,7 @@ td.ticker{color:var(--fg0);font-weight:500;font-family:'Bricolage Grotesque',san
           <button class="ctab" onclick="switchPortChart('weights',this)">Weights</button>
         </div>
       </div>
-      <div style="position:relative;height:260px;"><canvas id="chartPort"></canvas></div>
+      <div class="chart-scroll-wrap"><div class="chart-inner" id="chartPortWrap"><canvas id="chartPort"></canvas></div></div>
       <div class="legend" id="legendPort"></div>
     </div>
     <div class="port-grid" id="port-grid"></div>
@@ -314,7 +381,7 @@ td.ticker{color:var(--fg0);font-weight:500;font-family:'Bricolage Grotesque',san
   <div class="view" id="view-weekly">
     <div class="card">
       <div class="card-hdr"><h2>Weekly growth</h2></div>
-      <div style="position:relative;height:260px;"><canvas id="chartWeekly"></canvas></div>
+      <div class="chart-scroll-wrap"><div class="chart-inner" id="chartWeeklyWrap"><canvas id="chartWeekly"></canvas></div></div>
       <div class="legend" id="legendWeekly"></div>
     </div>
     <div class="card wk-table">
@@ -461,7 +528,36 @@ function getWeekKey(d){ const dt=new Date(d); const j=new Date(dt.getFullYear(),
 function wkLabel(wk){ const [y,w]=wk.split('-W'); const j=new Date(parseInt(y),0,1); const d=new Date(j.getTime()+((parseInt(w)-1)*7-(j.getDay()||7)+1)*86400000); return d.toLocaleDateString('en-IN',{day:'numeric',month:'short'}); }
 
 /* ─── CHART HELPER ─── */
-function mkChart(id,cfg){ if(charts[id]) charts[id].destroy(); charts[id]=new Chart(document.getElementById(id),cfg); }
+const MIN_PX_PER_POINT = 28; // minimum pixels per data label before we expand
+const CHART_MIN_H = 260;
+
+function setChartWidth(canvasId, numPoints){
+  // Map canvas id → wrapper id
+  const wrapMap = {
+    chartMain:'chartMainWrap', chartPL:'chartPLWrap',
+    chartPort:'chartPortWrap', chartWeekly:'chartWeeklyWrap'
+  };
+  const wrap = document.getElementById(wrapMap[canvasId]);
+  if(!wrap) return;
+  // For bar/line charts with many points, expand; for doughnut keep natural
+  const parentW = wrap.parentElement ? wrap.parentElement.offsetWidth || 360 : 360;
+  const needed = numPoints * MIN_PX_PER_POINT;
+  wrap.style.width = needed > parentW ? needed + 'px' : '100%';
+}
+
+function mkChart(id,cfg){
+  if(charts[id]) charts[id].destroy();
+  // Determine number of x-axis points for width sizing
+  const type = cfg.type;
+  let pts = 0;
+  if(type !== 'doughnut' && type !== 'pie'){
+    const ds = cfg.data && cfg.data.datasets && cfg.data.datasets[0];
+    pts = ds ? (ds.data||[]).length : 0;
+    if(cfg.data && cfg.data.labels) pts = Math.max(pts, cfg.data.labels.length);
+  }
+  setChartWidth(id, pts);
+  charts[id]=new Chart(document.getElementById(id),cfg);
+}
 const gridC='rgba(255,255,255,0.05)'; const tickC='#4a4945';
 
 /* ─── METRICS ─── */
@@ -507,7 +603,7 @@ function switchMainChart(m,btn){
     const labels=[],data=[];
     let cum=0;
     sorted.forEach(t=>{ const cm=cmp(t.ticker)||t.price; const pl=t.type==='buy'?(cm-t.price)*t.qty:(t.price-cm)*t.qty; cum+=pl; labels.push(t.date); data.push(parseFloat(cum.toFixed(2))); });
-    mkChart('chartMain',{type:'line',data:{labels,datasets:[{label:'P&L',data,borderColor:'#22c98a',backgroundColor:'rgba(34,201,138,0.06)',fill:true,tension:0.35,pointRadius:3,pointBackgroundColor:'#22c98a',borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>(ctx.parsed.y>=0?'+':'')+inr(ctx.parsed.y)}}},scales:{y:{grid:{color:gridC},ticks:{callback:v=>inr(v),font:{family:'IBM Plex Mono',size:10},color:tickC}},x:{grid:{display:false},ticks:{font:{family:'IBM Plex Mono',size:10},color:tickC,maxRotation:30}}}}});
+    mkChart('chartMain',{type:'line',data:{labels,datasets:[{label:'P&L',data,borderColor:'#22c98a',backgroundColor:'rgba(34,201,138,0.06)',fill:true,tension:0.35,pointRadius:3,pointBackgroundColor:'#22c98a',borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>(ctx.parsed.y>=0?'+':'')+inr(ctx.parsed.y)}}},scales:{y:{grid:{color:gridC},ticks:{callback:v=>inr(v),font:{family:'IBM Plex Mono',size:10},color:tickC}},x:{grid:{display:false},ticks:{font:{family:'IBM Plex Mono',size:10},color:tickC,maxRotation:45,autoSkip:true,maxTicksLimit:12}}}}});
     leg.innerHTML='<span class="leg-item"><span class="leg-sq" style="background:#22c98a"></span>Cumulative P&L</span>';
 
   } else if(m==='value'){
@@ -554,14 +650,14 @@ function switchPLChart(m,btn){
     const sorted=[...TRADES].sort((a,b)=>a.date.localeCompare(b.date));
     const labels=[],data=[]; let cum=0;
     sorted.forEach(t=>{ const cm=cmp(t.ticker)||t.price; const pl=t.type==='buy'?(cm-t.price)*t.qty:(t.price-cm)*t.qty; cum+=pl; labels.push(t.date+'\n'+t.ticker); data.push(parseFloat(cum.toFixed(2))); });
-    mkChart('chartPL',{type:'line',data:{labels,datasets:[{data,borderColor:'#4a9eff',backgroundColor:'rgba(74,158,255,0.06)',fill:true,tension:0.4,pointRadius:4,pointBackgroundColor:data.map(v=>v>=0?'#22c98a':'#f05a35'),borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>(ctx.parsed.y>=0?'+':'')+inr(ctx.parsed.y)}}},scales:{y:{grid:{color:gridC},ticks:{callback:v=>inr(v),font:{family:'IBM Plex Mono',size:10},color:tickC}},x:{grid:{display:false},ticks:{font:{family:'IBM Plex Mono',size:10},color:tickC,maxRotation:30}}}}});
+    mkChart('chartPL',{type:'line',data:{labels,datasets:[{data,borderColor:'#4a9eff',backgroundColor:'rgba(74,158,255,0.06)',fill:true,tension:0.4,pointRadius:4,pointBackgroundColor:data.map(v=>v>=0?'#22c98a':'#f05a35'),borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>(ctx.parsed.y>=0?'+':'')+inr(ctx.parsed.y)}}},scales:{y:{grid:{color:gridC},ticks:{callback:v=>inr(v),font:{family:'IBM Plex Mono',size:10},color:tickC}},x:{grid:{display:false},ticks:{font:{family:'IBM Plex Mono',size:10},color:tickC,maxRotation:45,autoSkip:true,maxTicksLimit:12}}}}});
     leg.innerHTML='<span class="leg-item"><span class="leg-sq" style="background:#4a9eff"></span>Cumulative P&L (green dot = gain, red = loss)</span>';
 
   } else if(m==='pertrade'){
     const sorted=[...TRADES].sort((a,b)=>a.date.localeCompare(b.date));
     const labels=sorted.map(t=>t.date+' '+t.ticker);
     const data=sorted.map(t=>{ const cm=cmp(t.ticker)||t.price; return parseFloat(((t.type==='buy'?(cm-t.price):(t.price-cm))*t.qty).toFixed(2)); });
-    mkChart('chartPL',{type:'bar',data:{labels,datasets:[{data,backgroundColor:data.map(v=>v>=0?'rgba(34,201,138,0.7)':'rgba(240,90,53,0.7)'),borderRadius:3,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>(ctx.parsed.y>=0?'+':'')+inr(ctx.parsed.y)}}},scales:{y:{grid:{color:gridC},ticks:{callback:v=>inr(v),font:{family:'IBM Plex Mono',size:10},color:tickC}},x:{grid:{display:false},ticks:{font:{family:'IBM Plex Mono',size:10},color:tickC,maxRotation:40}}}}});
+    mkChart('chartPL',{type:'bar',data:{labels,datasets:[{data,backgroundColor:data.map(v=>v>=0?'rgba(34,201,138,0.7)':'rgba(240,90,53,0.7)'),borderRadius:3,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>(ctx.parsed.y>=0?'+':'')+inr(ctx.parsed.y)}}},scales:{y:{grid:{color:gridC},ticks:{callback:v=>inr(v),font:{family:'IBM Plex Mono',size:10},color:tickC}},x:{grid:{display:false},ticks:{font:{family:'IBM Plex Mono',size:10},color:tickC,maxRotation:45,autoSkip:false}}}}});
     leg.innerHTML='<span class="leg-item"><span class="leg-sq" style="background:#22c98a"></span>Gain</span><span class="leg-item"><span class="leg-sq" style="background:#f05a35"></span>Loss</span>';
 
   } else {
@@ -621,7 +717,7 @@ function switchPortChart(m,btn){
       Object.entries(map).forEach(([tk,d])=>{ if(d.qty>0){ const cm=cmp(tk)||d.cost/d.qty; val+=cm*d.qty; inv+=d.cost; } });
       snapshots.push({label:t.date+' '+t.ticker,val:parseFloat(val.toFixed(2)),inv:parseFloat(inv.toFixed(2))});
     });
-    mkChart('chartPort',{type:'line',data:{labels:snapshots.map(s=>s.label),datasets:[{label:'Portfolio value',data:snapshots.map(s=>s.val),borderColor:'#4a9eff',backgroundColor:'rgba(74,158,255,0.05)',fill:true,tension:0.35,pointRadius:3,borderWidth:2},{label:'Invested',data:snapshots.map(s=>s.inv),borderColor:'rgba(245,166,35,0.6)',backgroundColor:'transparent',tension:0.35,pointRadius:0,borderDash:[4,3],borderWidth:1.5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>ctx.dataset.label+': '+inr(ctx.parsed.y)}}},scales:{y:{grid:{color:gridC},ticks:{callback:v=>inr(v),font:{family:'IBM Plex Mono',size:10},color:tickC}},x:{grid:{display:false},ticks:{font:{family:'IBM Plex Mono',size:10},color:tickC,maxRotation:30}}}}});
+    mkChart('chartPort',{type:'line',data:{labels:snapshots.map(s=>s.label),datasets:[{label:'Portfolio value',data:snapshots.map(s=>s.val),borderColor:'#4a9eff',backgroundColor:'rgba(74,158,255,0.05)',fill:true,tension:0.35,pointRadius:3,borderWidth:2},{label:'Invested',data:snapshots.map(s=>s.inv),borderColor:'rgba(245,166,35,0.6)',backgroundColor:'transparent',tension:0.35,pointRadius:0,borderDash:[4,3],borderWidth:1.5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>ctx.dataset.label+': '+inr(ctx.parsed.y)}}},scales:{y:{grid:{color:gridC},ticks:{callback:v=>inr(v),font:{family:'IBM Plex Mono',size:10},color:tickC}},x:{grid:{display:false},ticks:{font:{family:'IBM Plex Mono',size:10},color:tickC,maxRotation:45,autoSkip:true,maxTicksLimit:12}}}}});
     leg.innerHTML='<span class="leg-item"><span class="leg-sq" style="background:#4a9eff"></span>Portfolio value</span><span class="leg-item"><span class="leg-sq" style="background:#f5a623;opacity:0.7"></span>Invested</span>';
   } else {
     const labels=h.map(p=>p.ticker),data=h.map(p=>parseFloat((avgCost(p.ticker)*p.qty).toFixed(2))),colors=labels.map((_,i)=>PAL[i%PAL.length]);
@@ -649,7 +745,7 @@ function renderWeekly(){
   mkChart('chartWeekly',{type:'bar',data:{labels,datasets:[
     {label:'Weekly P&L',data:barData,backgroundColor:barData.map(v=>v>=0?'rgba(34,201,138,0.7)':'rgba(240,90,53,0.7)'),borderRadius:4,borderSkipped:false,yAxisID:'y'},
     {label:'Cumulative',data:cumData,type:'line',borderColor:'#4a9eff',backgroundColor:'transparent',tension:0.35,pointRadius:4,pointBackgroundColor:'#4a9eff',borderWidth:2,yAxisID:'y2'}
-  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>(ctx.parsed.y>=0?'+':'')+inr(ctx.parsed.y)}}},scales:{y:{position:'left',grid:{color:gridC},ticks:{callback:v=>inr(v),font:{family:'IBM Plex Mono',size:10},color:tickC}},y2:{position:'right',grid:{display:false},ticks:{callback:v=>inr(v),font:{family:'IBM Plex Mono',size:10},color:'#4a9eff'}},x:{grid:{display:false},ticks:{font:{family:'IBM Plex Mono',size:10},color:tickC,maxRotation:30,autoSkip:false}}}}});
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>(ctx.parsed.y>=0?'+':'')+inr(ctx.parsed.y)}}},scales:{y:{position:'left',grid:{color:gridC},ticks:{callback:v=>inr(v),font:{family:'IBM Plex Mono',size:10},color:tickC}},y2:{position:'right',grid:{display:false},ticks:{callback:v=>inr(v),font:{family:'IBM Plex Mono',size:10},color:'#4a9eff'}},x:{grid:{display:false},ticks:{font:{family:'IBM Plex Mono',size:10},color:tickC,maxRotation:45,autoSkip:false}}}}});
   document.getElementById('legendWeekly').innerHTML='<span class="leg-item"><span class="leg-sq" style="background:#22c98a"></span>Weekly gain</span><span class="leg-item"><span class="leg-sq" style="background:#f05a35"></span>Weekly loss</span><span class="leg-item"><span class="leg-sq" style="background:#4a9eff"></span>Cumulative</span>';
 
   /* Table */
@@ -705,6 +801,16 @@ function closeSettingsOutside(e){ if(e.target===document.getElementById('setting
 
 /* ─── BOOT ─── */
 autoLoad();
+
+/* Re-render charts on resize / orientation change so they fit correctly */
+let resizeTimer;
+window.addEventListener('resize', ()=>{
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(()=>{ renderView(currentView); }, 200);
+});
+window.addEventListener('orientationchange', ()=>{
+  setTimeout(()=>{ renderAll(); }, 300);
+});
 </script>
 </body>
 </html>
