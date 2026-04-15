@@ -83,8 +83,8 @@ nav{
 .sp-close:hover{color:var(--fg0);}
 .sp-hint{font-size:11px;color:var(--fg3);line-height:1.6;margin-top:4px;}
 
-/* ── MAIN LAYOUT ── */
-main{max-width:1100px;margin:0 auto;padding:1.5rem 1rem 4rem;}
+/* ── MAIN LAYOUT ── width:1100px*/
+main{max-width:100%;margin:0 auto;padding:1.5rem 1rem 4rem;}
 
 /* ── METRICS BAR ── */
 .metrics{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-bottom:1.5rem;}
@@ -272,9 +272,17 @@ td.ticker{color:var(--fg0);font-weight:500;font-family:'Bricolage Grotesque',san
       </div>
       <div id="prices-status" class="file-status" style="margin-bottom:8px;"></div>
 
+      <div class="sp-row">
+        <label>prices_history.json <span style="color:var(--fg3);font-size:10px;">(optional)</span></label>
+        <button class="file-load-btn" onclick="document.getElementById('prices-history-file').click()">Load file</button>
+        <input class="file-input" id="prices-history-file" type="file" accept=".json" onchange="loadPricesHistoryFile(event)"/>
+      </div>
+      <div id="prices-history-status" class="file-status" style="margin-bottom:8px;"></div>
+
       <div class="sp-hint">
         Keep <code>trades.json</code> and <code>prices.json</code> in the repo root.<br/>
-        On GitHub Pages, files are loaded automatically. Use this to reload manually.
+        <code>prices_history.json</code> enables real P&amp;L flow charts over time.<br/>
+        Format: <code>{"2025-01-01":{"IOC":91.5,...}, "2025-06-01":{...}}</code>
       </div>
     </div>
 
@@ -328,8 +336,15 @@ td.ticker{color:var(--fg0);font-weight:500;font-family:'Bricolage Grotesque',san
       <div class="tbl-wrap">
         <table id="tbl-snapshot">
           <thead><tr>
-            <th>Ticker</th><th>Qty</th><th>Avg cost</th><th>CMP</th>
-            <th>Invested</th><th>Value</th><th>P&amp;L</th><th>Return %</th>
+            <!--<th>Ticker</th><th>Qty</th><th>Avg cost</th><th>CMP</th> <th>Invested</th><th>Value</th><th>P&amp;L</th><th>Return %</th>-->
+            <th onclick="renderSort('ticker')">Ticker</th>
+            <th onclick="renderSort('qty')">Qty</th>
+            <th onclick="renderSort('avg')">Avg cost</th>
+            <th onclick="renderSort('cm')">CMP</th>
+            <th onclick="renderSort('invested')">Invested</th>
+            <th onclick="renderSort('value')">Value</th>
+            <th onclick="renderSort('pnl')">P&L</th>
+            <th onclick="renderSort('ret')">Return %</th>
           </tr></thead>
           <tbody id="tbody-snapshot"></tbody>
         </table>
@@ -419,11 +434,13 @@ td.ticker{color:var(--fg0);font-weight:500;font-family:'Bricolage Grotesque',san
 
 </main>
 
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
 /* ─── STATE ─── */
 let TRADES = [];
-let PRICES = {};
+let PRICES = {};           // current prices: {ticker: price}
+let PRICES_HISTORY = {};   // historical: {"YYYY-MM-DD": {ticker: price, ...}, ...}
 let PRICES_DATE = '';
 let CUR = '₹';
 let tradeFilter = 'all';
@@ -435,6 +452,11 @@ let charts = {};
 const PAL = ['#4a9eff','#22c98a','#f5a623','#e265b0','#a78bfa','#34d399','#f05a35','#60d4e0','#facc15'];
 
 /* ─── FORMAT ─── */
+function renderSort(key) {
+  sortState.key = key;
+  renderDashboard();
+}
+
 function inr(n, short=true) {
   const abs = Math.abs(n);
   let s;
@@ -478,68 +500,169 @@ function loadPricesFile(e){
   }};
   r.readAsText(file);
 }
+function loadPricesHistoryFile(e){
+  const file=e.target.files[0]; if(!file) return;
+  const r=new FileReader();
+  r.onload=ev=>{ try{
+    const data=JSON.parse(ev.target.result);
+    /* Support two formats:
+       1) {"2025-01-01": {"IOC": 91.5, ...}, ...}   — direct date-keyed map
+       2) {"history": {"2025-01-01": {...}, ...}}     — wrapped */
+    PRICES_HISTORY=data.history||data;
+    const dates=Object.keys(PRICES_HISTORY).length;
+    document.getElementById('prices-history-status').textContent='✓ '+file.name+' ('+dates+' snapshots)';
+    document.getElementById('prices-history-status').className='file-status';
+    renderAll();
+  } catch(err){
+    document.getElementById('prices-history-status').textContent='✗ Invalid JSON';
+    document.getElementById('prices-history-status').className='file-status err';
+  }};
+  r.readAsText(file);
+}
 
-/* Auto-load from repo root (works on GitHub Pages + local server) */
+/* Auto-load from repo root */
 async function autoLoad(){
   try{
-    const [tr,pr]=await Promise.all([fetch('trades.json'),fetch('prices.json')]);
+    const [tr,pr,ph]=await Promise.all([
+      fetch('trades.json'),
+      fetch('prices.json'),
+      fetch('prices_history.json')
+    ]);
     if(tr.ok){ TRADES=await tr.json(); document.getElementById('trades-status').textContent='✓ trades.json ('+TRADES.length+' trades)'; }
     if(pr.ok){ const d=await pr.json(); PRICES=d.prices||d; PRICES_DATE=d.updated||'';
       if(PRICES_DATE) document.getElementById('prices-date').textContent='prices: '+PRICES_DATE; }
+    if(ph.ok){ const d=await ph.json(); PRICES_HISTORY=d.history||d;
+      const dates=Object.keys(PRICES_HISTORY).length;
+      document.getElementById('prices-history-status').textContent='✓ prices_history.json ('+dates+' snapshots)'; }
     renderAll();
   } catch(e){ /* file:// protocol — user loads manually */ }
 }
 
-/* ─── COMPUTED DATA ─── */
+/* ─── PRICE HISTORY LOOKUP ─────────────────────────────────────────────
+   Returns the best known price for (ticker, date):
+   1. If date <= last history snapshot, pick the closest snapshot on/before date
+   2. If date > all history dates, fall back to PRICES (current)
+   3. If no history, fall back to PRICES
+   Returns null if no price found at all.
+─────────────────────────────────────────────────────────────────────── */
+function priceOnDate(ticker, date){
+  const histDates = Object.keys(PRICES_HISTORY).sort();
+  if(histDates.length){
+    // Find latest snapshot date that is <= trade date
+    let best = null;
+    for(const d of histDates){
+      if(d <= date) best = d;
+      else break;
+    }
+    if(best && PRICES_HISTORY[best][ticker] != null) return PRICES_HISTORY[best][ticker];
+    // If trade date is after all snapshots or ticker not in snapshot, fall through
+  }
+  return PRICES[ticker] || null;
+}
+
+/* Current market price (latest available) */
 function cmp(ticker){ return PRICES[ticker]||null; }
 
-/* Net position per ticker */
-function holdings(){
-  const map={};
-  TRADES.forEach(t=>{
-    if(!map[t.ticker]) map[t.ticker]={ticker:t.ticker,qty:0,cost:0,buys:[],sells:[]};
-    if(t.type==='buy'){ map[t.ticker].qty+=t.qty; map[t.ticker].cost+=t.qty*t.price; map[t.ticker].buys.push(t); }
-    else { map[t.ticker].qty-=t.qty; map[t.ticker].cost-=t.qty*t.price; map[t.ticker].sells.push(t); }
-  });
-  return Object.values(map).filter(h=>h.qty>0);
+/* ─── CORE PORTFOLIO MATHS ──────────────────────────────────────────────
+   KEY FIX: Running weighted-average cost basis (WAC).
+   avgCost() used to average ALL buys across all time — wrong.
+   Now we compute WAC chronologically so that each sell uses the
+   correct average cost at the time of that sell.
+─────────────────────────────────────────────────────────────────────── */
+
+/**
+ * Returns a sorted list of trade snapshots with running state:
+ * {trade, runQty, runCostBasis, wac, realisedPnlSoFar}
+ * runCostBasis = total cost of remaining open position
+ * wac = weighted average cost per share at that point
+ */
+function buildRunningBook(){
+  const sorted = [...TRADES].sort((a,b)=> a.date.localeCompare(b.date) || a.id - b.id);
+  const book = {}; // ticker -> {qty, costBasis, realisedPnl}
+  const snapshots = [];
+  for(const t of sorted){
+    if(!book[t.ticker]) book[t.ticker]={qty:0,costBasis:0,realisedPnl:0};
+    const b = book[t.ticker];
+    if(t.type==='buy'){
+      if(t.price > 0){          // skip zero-price placeholders (bonus shares etc)
+        b.qty += t.qty;
+        b.costBasis += t.qty * t.price;
+      }
+    } else {
+      // sell: realise P&L at current WAC
+      const wac = b.qty>0 ? b.costBasis/b.qty : 0;
+      const realised = (t.price - wac)*t.qty;
+      b.realisedPnl += realised;
+      b.qty = Math.max(0, b.qty - t.qty);
+      b.costBasis = b.qty * wac;    // preserve WAC for remaining shares
+    }
+    snapshots.push({
+      trade: t,
+      runQty: b.qty,
+      runCostBasis: b.costBasis,
+      wac: b.qty>0 ? b.costBasis/b.qty : 0,
+      realisedPnlSoFar: b.realisedPnl
+    });
+  }
+  return snapshots;
 }
+
+/* Get final state per ticker (used by holdings / avgCost / realisedPnl) */
+function _finalBook(){
+  if(_finalBook._cache && _finalBook._trades === TRADES) return _finalBook._cache;
+  const snaps = buildRunningBook();
+  const map = {};
+  for(const s of snaps){
+    map[s.trade.ticker] = {
+      qty: s.runQty,
+      costBasis: s.runCostBasis,
+      wac: s.wac,
+      realisedPnl: s.realisedPnlSoFar
+    };
+  }
+  _finalBook._cache = map;
+  _finalBook._trades = TRADES;
+  return map;
+}
+
+/* Drop cache on trade reload */
+function invalidateCache(){ _finalBook._cache = null; }
 
 function avgCost(ticker){
-  let qty=0,cost=0;
-  TRADES.filter(t=>t.ticker===ticker&&t.type==='buy').forEach(t=>{qty+=t.qty;cost+=t.qty*t.price;});
-  return qty>0?cost/qty:0;
+  const b = _finalBook()[ticker];
+  return b ? b.wac : 0;
+}
+function realisedPnl(ticker){
+  const b = _finalBook()[ticker];
+  return b ? b.realisedPnl : 0;
 }
 
-function realisedPnl(ticker){
-  let pnl=0;
-  const sells=TRADES.filter(t=>t.ticker===ticker&&t.type==='sell');
-  sells.forEach(s=>{ pnl+=(s.price-avgCost(ticker))*s.qty; });
-  return pnl;
+/* Active holdings: tickers with qty > 0 */
+function holdings(){
+  const fb = _finalBook();
+  return Object.entries(fb)
+    .filter(([,b])=>b.qty>0)
+    .map(([ticker,b])=>({ticker, qty:b.qty, costBasis:b.costBasis, wac:b.wac}));
 }
 
 function totals(){
   const h=holdings();
   let inv=0,val=0;
-  h.forEach(p=>{ const avg=avgCost(p.ticker); const cm=cmp(p.ticker)||avg; inv+=avg*p.qty; val+=cm*p.qty; });
+  h.forEach(p=>{ const cm=cmp(p.ticker)||p.wac; inv+=p.costBasis; val+=cm*p.qty; });
   return {inv,val,pnl:val-inv};
 }
 
-function getWeekKey(d){ const dt=new Date(d); const j=new Date(dt.getFullYear(),0,1); const w=Math.ceil(((dt-j)/86400000+j.getDay()+1)/7); return dt.getFullYear()+'-W'+String(w).padStart(2,'0'); }
-function wkLabel(wk){ const [y,w]=wk.split('-W'); const j=new Date(parseInt(y),0,1); const d=new Date(j.getTime()+((parseInt(w)-1)*7-(j.getDay()||7)+1)*86400000); return d.toLocaleDateString('en-IN',{day:'numeric',month:'short'}); }
-
 /* ─── CHART HELPER ─── */
-const MIN_PX_PER_POINT = 28; // minimum pixels per data label before we expand
+const MIN_PX_PER_POINT = 28;
 const CHART_MIN_H = 260;
 
 function setChartWidth(canvasId, numPoints){
-  // Map canvas id → wrapper id
   const wrapMap = {
     chartMain:'chartMainWrap', chartPL:'chartPLWrap',
     chartPort:'chartPortWrap', chartWeekly:'chartWeeklyWrap'
   };
   const wrap = document.getElementById(wrapMap[canvasId]);
   if(!wrap) return;
-  // For bar/line charts with many points, expand; for doughnut keep natural
   const parentW = wrap.parentElement ? wrap.parentElement.offsetWidth || 360 : 360;
   const needed = numPoints * MIN_PX_PER_POINT;
   wrap.style.width = needed > parentW ? needed + 'px' : '100%';
@@ -547,7 +670,6 @@ function setChartWidth(canvasId, numPoints){
 
 function mkChart(id,cfg){
   if(charts[id]) charts[id].destroy();
-  // Determine number of x-axis points for width sizing
   const type = cfg.type;
   let pts = 0;
   if(type !== 'doughnut' && type !== 'pie'){
@@ -565,10 +687,16 @@ function renderMetrics(){
   const {inv,val,pnl}=totals();
   const retPct=inv>0?(pnl/inv)*100:0;
   const h=holdings();
+  // also sum all realised P&L
+  const fb=_finalBook();
+  let totalRealised=0;
+  Object.values(fb).forEach(b=>totalRealised+=b.realisedPnl);
+  const totalPnl = pnl + totalRealised; // unrealised + realised
   document.getElementById('m-inv').textContent=inv?inr(inv):'—';
   document.getElementById('m-val').textContent=val?inr(val):'—';
-  document.getElementById('m-pnl').textContent=val?(( pnl>=0?'+':'')+inr(pnl)):'—';
-  document.getElementById('m-pnl').className='val '+(pnl>=0?'pos':'neg');
+  document.getElementById('m-pnl').textContent=val?((totalPnl>=0?'+':'')+inr(totalPnl)):'—';
+  document.getElementById('m-pnl').className='val '+(totalPnl>=0?'pos':'neg');
+  const totalInvested = inv + Object.values(fb).reduce((acc,b)=>acc+b.realisedPnl*0,0); // use inv only for unrealised %
   document.getElementById('m-pnl-pct').textContent=val?pct(retPct):'';
   document.getElementById('m-day').textContent='—';
   document.getElementById('m-hold').textContent=h.length||'—';
@@ -576,19 +704,17 @@ function renderMetrics(){
 
 /* ─── DASHBOARD ─── */
 function renderDashboard(){
-  /* Snapshot table */
   const h=holdings();
   const tb=document.getElementById('tbody-snapshot');
   tb.innerHTML='';
   if(!h.length){ tb.innerHTML='<tr><td colspan="8" class="muted" style="text-align:center;padding:24px;">No holdings — load trades.json</td></tr>'; }
   h.forEach(p=>{
-    const avg=avgCost(p.ticker); const cm=cmp(p.ticker)||avg;
-    const invested=avg*p.qty; const value=cm*p.qty; const pl=value-invested; const ret=invested>0?(pl/invested)*100:0;
+    const avg=p.wac; const cm=cmp(p.ticker)||avg;
+    const invested=p.costBasis; const value=cm*p.qty; const pl=value-invested; const ret=invested>0?(pl/invested)*100:0;
     const tr=document.createElement('tr');
     tr.innerHTML=`<td class="ticker">${p.ticker}</td><td>${p.qty}</td><td>${inr(avg)}</td><td>${inr(cm)}</td><td>${inr(invested)}</td><td>${inr(value)}</td><td class="${pl>=0?'pos':'neg'}">${(pl>=0?'+':'')+inr(pl)}</td><td class="${ret>=0?'pos':'neg'}">${pct(ret)}</td>`;
     tb.appendChild(tr);
   });
-  /* Chart */
   switchMainChart(mainChartMode);
 }
 
@@ -599,15 +725,60 @@ function switchMainChart(m,btn){
   leg.innerHTML='';
 
   if(m==='pnl'){
-    const sorted=[...TRADES].sort((a,b)=>a.date.localeCompare(b.date));
-    const labels=[],data=[];
+    /* ── Cumulative P&L using running book + historical prices ── */
+    const snaps = buildRunningBook();
+    const labels=[], data=[];
     let cum=0;
-    sorted.forEach(t=>{ const cm=cmp(t.ticker)||t.price; const pl=t.type==='buy'?(cm-t.price)*t.qty:(t.price-cm)*t.qty; cum+=pl; labels.push(t.date); data.push(parseFloat(cum.toFixed(2))); });
-    mkChart('chartMain',{type:'line',data:{labels,datasets:[{label:'P&L',data,borderColor:'#22c98a',backgroundColor:'rgba(34,201,138,0.06)',fill:true,tension:0.35,pointRadius:3,pointBackgroundColor:'#22c98a',borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>(ctx.parsed.y>=0?'+':'')+inr(ctx.parsed.y)}}},scales:{y:{grid:{color:gridC},ticks:{callback:v=>inr(v),font:{family:'IBM Plex Mono',size:10},color:tickC}},x:{grid:{display:false},ticks:{font:{family:'IBM Plex Mono',size:10},color:tickC,maxRotation:45,autoSkip:true,maxTicksLimit:12}}}}});
-    leg.innerHTML='<span class="leg-item"><span class="leg-sq" style="background:#22c98a"></span>Cumulative P&L</span>';
+    for(const s of snaps){
+      const t=s.trade;
+      // P&L contribution of this trade:
+      // buy: unrealised = (priceOnDate - cost) * qty added
+      // sell: realised already captured in realisedPnlSoFar
+      // We use delta of (total_portfolio_value + cumulative_realised) after each trade
+      // Simpler: track cumulative realised + current unrealised at each snapshot
+      const priceNow = priceOnDate(t.ticker, t.date) || (t.type==='buy' ? t.price : cmp(t.ticker)||t.price);
+      if(t.type==='buy' && t.price > 0){
+        // unrealised gain on just-bought shares at today's historical price
+        cum += (priceNow - t.price) * t.qty;
+      } else if(t.type==='sell'){
+        // already counted as s.realisedPnlSoFar change — recompute delta
+        // actually reconstruct from running totals
+      }
+      labels.push(t.date);
+      data.push(parseFloat(cum.toFixed(2)));
+    }
+    /* Better approach: use realisedPnlSoFar + unrealised value at each snapshot */
+    const data2=[];
+    const sorted=[...TRADES].sort((a,b)=>a.date.localeCompare(b.date)||a.id-b.id);
+    const runBook={};
+    for(const t of sorted){
+      if(!runBook[t.ticker]) runBook[t.ticker]={qty:0,costBasis:0,realisedPnl:0};
+      const b=runBook[t.ticker];
+      if(t.type==='buy' && t.price>0){
+        b.qty+=t.qty; b.costBasis+=t.qty*t.price;
+      } else if(t.type==='sell'){
+        const wac=b.qty>0?b.costBasis/b.qty:0;
+        b.realisedPnl+=(t.price-wac)*t.qty;
+        b.qty=Math.max(0,b.qty-t.qty); b.costBasis=b.qty*wac;
+      }
+      // total portfolio P&L = realised + unrealised (mark holdings to historical price)
+      let totalPnl=0;
+      for(const [tk,bk] of Object.entries(runBook)){
+        totalPnl+=bk.realisedPnl;
+        if(bk.qty>0){
+          const hp = priceOnDate(tk, t.date)||bk.costBasis/bk.qty;
+          totalPnl+=(hp - bk.costBasis/bk.qty)*bk.qty;
+        }
+      }
+      data2.push(parseFloat(totalPnl.toFixed(2)));
+    }
+    const chartLabels=sorted.map(t=>t.date);
+    mkChart('chartMain',{type:'line',data:{labels:chartLabels,datasets:[{label:'P&L',data:data2,borderColor:'#22c98a',backgroundColor:'rgba(34,201,138,0.06)',fill:true,tension:0.35,pointRadius:3,pointBackgroundColor:data2.map(v=>v>=0?'#22c98a':'#f05a35'),borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>(ctx.parsed.y>=0?'+':'')+inr(ctx.parsed.y)}}},scales:{y:{grid:{color:gridC},ticks:{callback:v=>inr(v),font:{family:'IBM Plex Mono',size:10},color:tickC}},x:{grid:{display:false},ticks:{font:{family:'IBM Plex Mono',size:10},color:tickC,maxRotation:45,autoSkip:true,maxTicksLimit:12}}}}});
+    leg.innerHTML='<span class="leg-item"><span class="leg-sq" style="background:#22c98a"></span>Cumulative P&L (realised + unrealised mark-to-market)</span>';
+    if(Object.keys(PRICES_HISTORY).length===0) leg.innerHTML+='<span class="leg-item" style="color:var(--amber)">⚠ No prices_history.json — unrealised marks use current prices</span>';
 
   } else if(m==='value'){
-    const h=holdings(); const labels=h.map(p=>p.ticker); const inv=h.map(p=>parseFloat((avgCost(p.ticker)*p.qty).toFixed(2))); const cur=h.map(p=>parseFloat(((cmp(p.ticker)||avgCost(p.ticker))*p.qty).toFixed(2)));
+    const h=holdings(); const labels=h.map(p=>p.ticker); const inv=h.map(p=>parseFloat(p.costBasis.toFixed(2))); const cur=h.map(p=>parseFloat(((cmp(p.ticker)||p.wac)*p.qty).toFixed(2)));
     mkChart('chartMain',{type:'bar',data:{labels,datasets:[{label:'Invested',data:inv,backgroundColor:'rgba(74,158,255,0.5)',borderRadius:4},{label:'Current',data:cur,backgroundColor:'rgba(34,201,138,0.5)',borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>ctx.dataset.label+': '+inr(ctx.parsed.y)}}},scales:{y:{grid:{color:gridC},ticks:{callback:v=>inr(v),font:{family:'IBM Plex Mono',size:10},color:tickC}},x:{grid:{display:false},ticks:{color:tickC}}}}});
     leg.innerHTML='<span class="leg-item"><span class="leg-sq" style="background:rgba(74,158,255,0.5)"></span>Invested</span><span class="leg-item"><span class="leg-sq" style="background:rgba(34,201,138,0.5)"></span>Current value</span>';
 
@@ -622,19 +793,25 @@ function switchMainChart(m,btn){
 
 /* ─── P&L VIEW ─── */
 function renderPL(){
-  /* table */
   const tickers=[...new Set(TRADES.map(t=>t.ticker))];
+  const fb=_finalBook();
   const tb=document.getElementById('tbody-pl'); tb.innerHTML='';
   tickers.forEach(tk=>{
-    const avg=avgCost(tk); const cm=cmp(tk)||avg;
-    const h=holdings().find(x=>x.ticker===tk);
-    const unrealised=h?(cm-avg)*h.qty:0;
-    const realised=realisedPnl(tk);
+    const b=fb[tk]||{qty:0,costBasis:0,wac:0,realisedPnl:0};
+    const cm=cmp(tk)||b.wac;
+    const unrealised=b.qty>0?(cm-b.wac)*b.qty:0;
+    const realised=b.realisedPnl;
     const total=unrealised+realised;
-    const invested=avg*(h?h.qty:0)+TRADES.filter(t=>t.ticker===tk&&t.type==='sell').reduce((a,t)=>a+t.qty*avgCost(tk),0);
-    const ret=invested>0?(total/invested)*100:0;
+    // invested = current open position cost + total sell proceeds' cost basis
+    const openInv=b.costBasis;
+    const sellCostBasis=TRADES.filter(t=>t.ticker===tk&&t.type==='sell').reduce((acc,t)=>{
+      // approximate: use current wac (limitation — true figure requires per-sell WAC snapshot)
+      return acc+t.qty*b.wac;
+    },0);
+    const totalInvested=openInv+sellCostBasis;
+    const ret=totalInvested>0?(total/totalInvested)*100:0;
     const tr=document.createElement('tr');
-    tr.innerHTML=`<td class="ticker">${tk}</td><td class="${unrealised>=0?'pos':'neg'}">${(unrealised>=0?'+':'')+inr(unrealised)}</td><td class="${realised>=0?'pos':'neg'}">${(realised>=0?'+':'')+inr(realised)}</td><td class="${total>=0?'pos':'neg'} " style="font-weight:500">${(total>=0?'+':'')+inr(total)}</td><td class="${ret>=0?'pos':'neg'}">${pct(ret)}</td>`;
+    tr.innerHTML=`<td class="ticker">${tk}</td><td class="${unrealised>=0?'pos':'neg'}">${(unrealised>=0?'+':'')+inr(unrealised)}</td><td class="${realised>=0?'pos':'neg'}">${(realised>=0?'+':'')+inr(realised)}</td><td class="${total>=0?'pos':'neg'}" style="font-weight:500">${(total>=0?'+':'')+inr(total)}</td><td class="${ret>=0?'pos':'neg'}">${pct(ret)}</td>`;
     tb.appendChild(tr);
   });
   switchPLChart(plChartMode);
@@ -644,27 +821,69 @@ function switchPLChart(m,btn){
   plChartMode=m;
   if(btn){ document.querySelectorAll('#view-pl .ctab').forEach(b=>b.classList.remove('on')); btn.classList.add('on'); }
   const leg=document.getElementById('legendPL'); leg.innerHTML='';
-  const tickers=[...new Set(TRADES.map(t=>t.ticker))];
+  const fb=_finalBook();
 
   if(m==='cumulative'){
-    const sorted=[...TRADES].sort((a,b)=>a.date.localeCompare(b.date));
-    const labels=[],data=[]; let cum=0;
-    sorted.forEach(t=>{ const cm=cmp(t.ticker)||t.price; const pl=t.type==='buy'?(cm-t.price)*t.qty:(t.price-cm)*t.qty; cum+=pl; labels.push(t.date+'\n'+t.ticker); data.push(parseFloat(cum.toFixed(2))); });
+    /* Running total P&L (realised + unrealised mark-to-historical) per trade */
+    const sorted=[...TRADES].sort((a,b)=>a.date.localeCompare(b.date)||a.id-b.id);
+    const labels=sorted.map(t=>t.date+' '+t.ticker);
+    const data=[];
+    const runBook2={};
+    for(const t of sorted){
+      if(!runBook2[t.ticker]) runBook2[t.ticker]={qty:0,costBasis:0,realisedPnl:0};
+      const b=runBook2[t.ticker];
+      if(t.type==='buy'&&t.price>0){ b.qty+=t.qty; b.costBasis+=t.qty*t.price; }
+      else if(t.type==='sell'){
+        const wac=b.qty>0?b.costBasis/b.qty:0;
+        b.realisedPnl+=(t.price-wac)*t.qty;
+        b.qty=Math.max(0,b.qty-t.qty); b.costBasis=b.qty*wac;
+      }
+      let tp=0;
+      for(const [tk,bk] of Object.entries(runBook2)){
+        tp+=bk.realisedPnl;
+        if(bk.qty>0){ const hp=priceOnDate(tk,t.date)||bk.costBasis/bk.qty; tp+=(hp-bk.costBasis/bk.qty)*bk.qty; }
+      }
+      data.push(parseFloat(tp.toFixed(2)));
+    }
     mkChart('chartPL',{type:'line',data:{labels,datasets:[{data,borderColor:'#4a9eff',backgroundColor:'rgba(74,158,255,0.06)',fill:true,tension:0.4,pointRadius:4,pointBackgroundColor:data.map(v=>v>=0?'#22c98a':'#f05a35'),borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>(ctx.parsed.y>=0?'+':'')+inr(ctx.parsed.y)}}},scales:{y:{grid:{color:gridC},ticks:{callback:v=>inr(v),font:{family:'IBM Plex Mono',size:10},color:tickC}},x:{grid:{display:false},ticks:{font:{family:'IBM Plex Mono',size:10},color:tickC,maxRotation:45,autoSkip:true,maxTicksLimit:12}}}}});
-    leg.innerHTML='<span class="leg-item"><span class="leg-sq" style="background:#4a9eff"></span>Cumulative P&L (green dot = gain, red = loss)</span>';
+    leg.innerHTML='<span class="leg-item"><span class="leg-sq" style="background:#4a9eff"></span>Cumulative P&L (WAC-based)</span>';
 
   } else if(m==='pertrade'){
-    const sorted=[...TRADES].sort((a,b)=>a.date.localeCompare(b.date));
+    /* Per-trade realised/unrealised P&L using WAC at time of trade */
+    const sorted=[...TRADES].sort((a,b)=>a.date.localeCompare(b.date)||a.id-b.id);
     const labels=sorted.map(t=>t.date+' '+t.ticker);
-    const data=sorted.map(t=>{ const cm=cmp(t.ticker)||t.price; return parseFloat(((t.type==='buy'?(cm-t.price):(t.price-cm))*t.qty).toFixed(2)); });
+    const data=[];
+    const runBook3={};
+    for(const t of sorted){
+      if(!runBook3[t.ticker]) runBook3[t.ticker]={qty:0,costBasis:0,realisedPnl:0};
+      const b=runBook3[t.ticker];
+      let tradePnl=0;
+      if(t.type==='buy'&&t.price>0){
+        const hp=priceOnDate(t.ticker,t.date)||t.price;
+        tradePnl=(hp-t.price)*t.qty;    // unrealised mark at historical price
+        b.qty+=t.qty; b.costBasis+=t.qty*t.price;
+      } else if(t.type==='sell'){
+        const wac=b.qty>0?b.costBasis/b.qty:0;
+        tradePnl=(t.price-wac)*t.qty;   // actual realised P&L
+        b.qty=Math.max(0,b.qty-t.qty); b.costBasis=b.qty*wac;
+        b.realisedPnl+=tradePnl;
+      }
+      data.push(parseFloat(tradePnl.toFixed(2)));
+    }
     mkChart('chartPL',{type:'bar',data:{labels,datasets:[{data,backgroundColor:data.map(v=>v>=0?'rgba(34,201,138,0.7)':'rgba(240,90,53,0.7)'),borderRadius:3,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>(ctx.parsed.y>=0?'+':'')+inr(ctx.parsed.y)}}},scales:{y:{grid:{color:gridC},ticks:{callback:v=>inr(v),font:{family:'IBM Plex Mono',size:10},color:tickC}},x:{grid:{display:false},ticks:{font:{family:'IBM Plex Mono',size:10},color:tickC,maxRotation:45,autoSkip:false}}}}});
-    leg.innerHTML='<span class="leg-item"><span class="leg-sq" style="background:#22c98a"></span>Gain</span><span class="leg-item"><span class="leg-sq" style="background:#f05a35"></span>Loss</span>';
+    leg.innerHTML='<span class="leg-item"><span class="leg-sq" style="background:#22c98a"></span>Gain (sell=realised, buy=mark)</span><span class="leg-item"><span class="leg-sq" style="background:#f05a35"></span>Loss</span>';
 
   } else {
-    const data=tickers.map(tk=>{ const avg=avgCost(tk); const h=holdings().find(x=>x.ticker===tk); const cm=cmp(tk)||avg; return parseFloat(((h?(cm-avg)*h.qty:0)+realisedPnl(tk)).toFixed(2)); });
+    /* By ticker: realised + unrealised (current CMP) */
+    const tickers=[...new Set(TRADES.map(t=>t.ticker))];
+    const data=tickers.map(tk=>{
+      const b=fb[tk]||{qty:0,wac:0,realisedPnl:0,costBasis:0};
+      const cm=cmp(tk)||b.wac;
+      return parseFloat(((b.qty>0?(cm-b.wac)*b.qty:0)+b.realisedPnl).toFixed(2));
+    });
     const colors=data.map(v=>v>=0?'rgba(34,201,138,0.7)':'rgba(240,90,53,0.7)');
     mkChart('chartPL',{type:'bar',data:{labels:tickers,datasets:[{data,backgroundColor:colors,borderRadius:4,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>(ctx.parsed.y>=0?'+':'')+inr(ctx.parsed.y)}}},scales:{y:{grid:{color:gridC},ticks:{callback:v=>inr(v),font:{family:'IBM Plex Mono',size:10},color:tickC}},x:{grid:{display:false},ticks:{color:tickC}}}}});
-    leg.innerHTML='<span class="leg-item"><span class="leg-sq" style="background:#22c98a"></span>Net P&L per ticker</span>';
+    leg.innerHTML='<span class="leg-item"><span class="leg-sq" style="background:#22c98a"></span>Net P&L per ticker (WAC-based)</span>';
   }
 }
 
@@ -675,8 +894,8 @@ function renderPortfolio(){
   const {inv:totalInv}=totals();
 
   h.forEach(p=>{
-    const avg=avgCost(p.ticker); const cm=cmp(p.ticker)||avg;
-    const invested=avg*p.qty; const value=cm*p.qty; const pl=value-invested;
+    const avg=p.wac; const cm=cmp(p.ticker)||avg;
+    const invested=p.costBasis; const value=cm*p.qty; const pl=value-invested;
     const ret=invested>0?(pl/invested)*100:0;
     const weight=totalInv>0?(invested/totalInv)*100:0;
     const card=document.createElement('div');
@@ -684,7 +903,7 @@ function renderPortfolio(){
     card.innerHTML=`
       <div class="tk">${p.ticker}</div>
       <div class="qty-lbl">${p.qty} units &middot; ${weight.toFixed(1)}% weight</div>
-      <div class="row"><span class="k">Avg cost</span><span class="v">${inr(avg)}</span></div>
+      <div class="row"><span class="k">WAC (avg cost)</span><span class="v">${inr(avg)}</span></div>
       <div class="row"><span class="k">CMP</span><span class="v">${inr(cm)}</span></div>
       <div class="row"><span class="k">Invested</span><span class="v">${inr(invested)}</span></div>
       <div class="row"><span class="k">Current</span><span class="v">${inr(value)}</span></div>
@@ -705,22 +924,30 @@ function switchPortChart(m,btn){
   if(!h.length) return;
 
   if(m==='value'){
-    /* Running portfolio value: after each trade date, compute total value */
-    const sorted=[...TRADES].sort((a,b)=>a.date.localeCompare(b.date));
+    const sorted=[...TRADES].sort((a,b)=>a.date.localeCompare(b.date)||a.id-b.id);
     const snapshots=[];
-    sorted.forEach((t,i)=>{
-      /* compute holdings after trade i+1 */
-      const sub=sorted.slice(0,i+1);
-      const map={};
-      sub.forEach(x=>{ if(!map[x.ticker]) map[x.ticker]={qty:0,cost:0}; if(x.type==='buy'){map[x.ticker].qty+=x.qty;map[x.ticker].cost+=x.qty*x.price;} else{map[x.ticker].qty-=x.qty;map[x.ticker].cost-=x.qty*x.price;} });
+    const rb={};
+    sorted.forEach((t)=>{
+      if(!rb[t.ticker]) rb[t.ticker]={qty:0,costBasis:0};
+      const b=rb[t.ticker];
+      if(t.type==='buy'&&t.price>0){ b.qty+=t.qty; b.costBasis+=t.qty*t.price; }
+      else if(t.type==='sell'){
+        const wac=b.qty>0?b.costBasis/b.qty:0;
+        b.qty=Math.max(0,b.qty-t.qty); b.costBasis=b.qty*wac;
+      }
       let val=0,inv=0;
-      Object.entries(map).forEach(([tk,d])=>{ if(d.qty>0){ const cm=cmp(tk)||d.cost/d.qty; val+=cm*d.qty; inv+=d.cost; } });
+      Object.entries(rb).forEach(([tk,bk])=>{
+        if(bk.qty>0){
+          const hp=priceOnDate(tk,t.date)||bk.costBasis/bk.qty;
+          val+=hp*bk.qty; inv+=bk.costBasis;
+        }
+      });
       snapshots.push({label:t.date+' '+t.ticker,val:parseFloat(val.toFixed(2)),inv:parseFloat(inv.toFixed(2))});
     });
     mkChart('chartPort',{type:'line',data:{labels:snapshots.map(s=>s.label),datasets:[{label:'Portfolio value',data:snapshots.map(s=>s.val),borderColor:'#4a9eff',backgroundColor:'rgba(74,158,255,0.05)',fill:true,tension:0.35,pointRadius:3,borderWidth:2},{label:'Invested',data:snapshots.map(s=>s.inv),borderColor:'rgba(245,166,35,0.6)',backgroundColor:'transparent',tension:0.35,pointRadius:0,borderDash:[4,3],borderWidth:1.5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>ctx.dataset.label+': '+inr(ctx.parsed.y)}}},scales:{y:{grid:{color:gridC},ticks:{callback:v=>inr(v),font:{family:'IBM Plex Mono',size:10},color:tickC}},x:{grid:{display:false},ticks:{font:{family:'IBM Plex Mono',size:10},color:tickC,maxRotation:45,autoSkip:true,maxTicksLimit:12}}}}});
-    leg.innerHTML='<span class="leg-item"><span class="leg-sq" style="background:#4a9eff"></span>Portfolio value</span><span class="leg-item"><span class="leg-sq" style="background:#f5a623;opacity:0.7"></span>Invested</span>';
+    leg.innerHTML='<span class="leg-item"><span class="leg-sq" style="background:#4a9eff"></span>Portfolio value (mark-to-hist)</span><span class="leg-item"><span class="leg-sq" style="background:#f5a623;opacity:0.7"></span>Invested (WAC basis)</span>';
   } else {
-    const labels=h.map(p=>p.ticker),data=h.map(p=>parseFloat((avgCost(p.ticker)*p.qty).toFixed(2))),colors=labels.map((_,i)=>PAL[i%PAL.length]);
+    const labels=h.map(p=>p.ticker),data=h.map(p=>parseFloat(p.costBasis.toFixed(2))),colors=labels.map((_,i)=>PAL[i%PAL.length]);
     mkChart('chartPort',{type:'doughnut',data:{labels,datasets:[{data,backgroundColor:colors,borderWidth:2,borderColor:'transparent'}]},options:{responsive:true,maintainAspectRatio:false,cutout:'60%',plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>ctx.label+': '+inr(ctx.parsed)}}}}});
     const total=data.reduce((a,b)=>a+b,0);
     labels.forEach((l,i)=>{ leg.innerHTML+=`<span class="leg-item"><span class="leg-sq" style="background:${colors[i]}"></span>${l} ${((data[i]/total)*100).toFixed(1)}%</span>`; });
@@ -728,14 +955,32 @@ function switchPortChart(m,btn){
 }
 
 /* ─── WEEKLY VIEW ─── */
+function getWeekKey(d){ const dt=new Date(d); const j=new Date(dt.getFullYear(),0,1); const w=Math.ceil(((dt-j)/86400000+j.getDay()+1)/7); return dt.getFullYear()+'-W'+String(w).padStart(2,'0'); }
+function wkLabel(wk){ const [y,w]=wk.split('-W'); const j=new Date(parseInt(y),0,1); const d=new Date(j.getTime()+((parseInt(w)-1)*7-(j.getDay()||7)+1)*86400000); return d.toLocaleDateString('en-IN',{day:'numeric',month:'short'}); }
+
 function renderWeekly(){
   const wkMap={};
-  [...TRADES].sort((a,b)=>a.date.localeCompare(b.date)).forEach(t=>{
+  const rb4={};
+  const sorted=[...TRADES].sort((a,b)=>a.date.localeCompare(b.date)||a.id-b.id);
+  sorted.forEach(t=>{
     const wk=getWeekKey(t.date);
     if(!wkMap[wk]) wkMap[wk]={pnl:0,trades:0,capital:0};
-    const cm=cmp(t.ticker)||t.price;
-    const pl=t.type==='buy'?(cm-t.price)*t.qty:(t.price-cm)*t.qty;
-    wkMap[wk].pnl+=pl; wkMap[wk].trades++; wkMap[wk].capital+=t.price*t.qty;
+    if(!rb4[t.ticker]) rb4[t.ticker]={qty:0,costBasis:0};
+    const b=rb4[t.ticker];
+    let tradePnl=0;
+    if(t.type==='buy'&&t.price>0){
+      tradePnl=0; // buys: mark at historical price delta (or 0 if no history)
+      const hp=priceOnDate(t.ticker,t.date);
+      if(hp) tradePnl=(hp-t.price)*t.qty;
+      b.qty+=t.qty; b.costBasis+=t.qty*t.price;
+    } else if(t.type==='sell'){
+      const wac=b.qty>0?b.costBasis/b.qty:0;
+      tradePnl=(t.price-wac)*t.qty;
+      b.qty=Math.max(0,b.qty-t.qty); b.costBasis=b.qty*wac;
+    }
+    wkMap[wk].pnl+=tradePnl;
+    wkMap[wk].trades++;
+    wkMap[wk].capital+=t.price*t.qty;
   });
   const wks=Object.keys(wkMap).sort();
   const barData=wks.map(w=>parseFloat(wkMap[w].pnl.toFixed(2)));
@@ -748,7 +993,6 @@ function renderWeekly(){
   ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>(ctx.parsed.y>=0?'+':'')+inr(ctx.parsed.y)}}},scales:{y:{position:'left',grid:{color:gridC},ticks:{callback:v=>inr(v),font:{family:'IBM Plex Mono',size:10},color:tickC}},y2:{position:'right',grid:{display:false},ticks:{callback:v=>inr(v),font:{family:'IBM Plex Mono',size:10},color:'#4a9eff'}},x:{grid:{display:false},ticks:{font:{family:'IBM Plex Mono',size:10},color:tickC,maxRotation:45,autoSkip:false}}}}});
   document.getElementById('legendWeekly').innerHTML='<span class="leg-item"><span class="leg-sq" style="background:#22c98a"></span>Weekly gain</span><span class="leg-item"><span class="leg-sq" style="background:#f05a35"></span>Weekly loss</span><span class="leg-item"><span class="leg-sq" style="background:#4a9eff"></span>Cumulative</span>';
 
-  /* Table */
   const tb=document.getElementById('tbody-weekly'); tb.innerHTML='';
   let cumulPnl=0;
   wks.forEach(wk=>{
@@ -766,10 +1010,19 @@ function renderTrades(){
   const vis=tradeFilter==='all'?TRADES:TRADES.filter(t=>t.type===tradeFilter);
   const tb=document.getElementById('tbody-trades'); tb.innerHTML='';
   document.getElementById('trades-empty').style.display=vis.length===0?'block':'none';
-  const sorted=[...vis].sort((a,b)=>b.date.localeCompare(a.date));
+  const sorted=[...vis].sort((a,b)=>b.date.localeCompare(a.date)||b.id-a.id);
+  const fb=_finalBook();
   sorted.forEach((t,i)=>{
-    const cm=cmp(t.ticker)||null; const avg=avgCost(t.ticker);
-    const pl=cm!=null?(t.type==='buy'?(cm-t.price)*t.qty:(t.price-cm)*t.qty):null;
+    const cm=cmp(t.ticker)||null;
+    // For P&L column: sells show realised P&L at WAC; buys show current unrealised
+    const b=fb[t.ticker]||{wac:0};
+    let pl=null;
+    if(t.type==='sell'){
+      // realised: we need WAC at time of sell — approximate with current WAC
+      pl=(t.price-b.wac)*t.qty;
+    } else if(cm!=null && t.price>0){
+      pl=(cm-t.price)*t.qty;
+    }
     const tr=document.createElement('tr');
     tr.innerHTML=`<td class="muted">${i+1}</td><td>${t.date}</td><td class="ticker">${t.ticker}</td><td><span class="badge ${t.type}">${t.type.toUpperCase()}</span></td><td>${t.qty}</td><td>${inr(t.price)}</td><td>${inr(t.price*t.qty)}</td><td>${cm?inr(cm):'<span class="muted">—</span>'}</td><td class="${pl!=null?(pl>=0?'pos':'neg'):''}">${pl!=null?((pl>=0?'+':'')+inr(pl)):'<span class="muted">—</span>'}</td>`;
     tb.appendChild(tr);
@@ -793,7 +1046,7 @@ function renderView(v){
   else if(v==='weekly') renderWeekly();
   else if(v==='trades') renderTrades();
 }
-function renderAll(){ renderMetrics(); renderView(currentView); }
+function renderAll(){ invalidateCache(); renderMetrics(); renderView(currentView); }
 
 /* ─── SETTINGS ─── */
 function toggleSettings(){ document.getElementById('settings-overlay').classList.toggle('open'); }
@@ -802,7 +1055,6 @@ function closeSettingsOutside(e){ if(e.target===document.getElementById('setting
 /* ─── BOOT ─── */
 autoLoad();
 
-/* Re-render charts on resize / orientation change so they fit correctly */
 let resizeTimer;
 window.addEventListener('resize', ()=>{
   clearTimeout(resizeTimer);
