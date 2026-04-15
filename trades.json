@@ -505,5 +505,5 @@
  {"id": 496, "ticker": "M&M", "type": "buy", "qty": 3, "price": 2993, "trade_value": 8979, "date": "2026-03-24" ,"account": "DHAN-M" },
  {"id": 497, "ticker": "ZerodhaLIQUIDCASE", "type": "buy", "qty": 44, "price": 113.31, "trade_value": 4985.64, "date": "2026-03-25" ,"account": "DHAN-M" },
  {"id": 498, "ticker": "IOC", "type": "buy", "qty": 2330, "price": 153, "trade_value": 355000, "date": "2026-04-02" ,"account": "Shoonya" },
- {"id": 499, "ticker": "PROTEAN", "type": "buy", "qty": 25, "price": 539.81, "trade_value": 13495, "date": "2026-04-10" ,"account": "DHAN-M" }
+ {"id": 499, "ticker": "Protean", "type": "buy", "qty": 25, "price": 539.81, "trade_value": 13495, "date": "2026-04-10" ,"account": "DHAN-M" }
 ]
