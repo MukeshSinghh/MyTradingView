@@ -83,8 +83,8 @@ nav{
 .sp-close:hover{color:var(--fg0);}
 .sp-hint{font-size:11px;color:var(--fg3);line-height:1.6;margin-top:4px;}
 
-/* ── MAIN LAYOUT ── width:1100px*/
-main{max-width:100%;margin:0 auto;padding:1.5rem 1rem 4rem;}
+/* ── MAIN LAYOUT ── 1100px*/
+main{max-width:95%;margin:0 auto;padding:1.5rem 1rem 4rem;}
 
 /* ── METRICS BAR ── */
 .metrics{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-bottom:1.5rem;}
@@ -242,6 +242,7 @@ td.ticker{color:var(--fg0);font-weight:500;font-family:'Bricolage Grotesque',san
     <button class="nav-btn" onclick="showView('pl',this)">P &amp; L</button>
     <button class="nav-btn" onclick="showView('portfolio',this)">Portfolio</button>
     <button class="nav-btn" onclick="showView('weekly',this)">Weekly</button>
+    <button class="nav-btn" onclick="showView('monthly',this)">Monthly</button>
     <button class="nav-btn" onclick="showView('trades',this)">Trades</button>
   </div>
   <div class="nav-right">
@@ -336,15 +337,8 @@ td.ticker{color:var(--fg0);font-weight:500;font-family:'Bricolage Grotesque',san
       <div class="tbl-wrap">
         <table id="tbl-snapshot">
           <thead><tr>
-            <!--<th>Ticker</th><th>Qty</th><th>Avg cost</th><th>CMP</th> <th>Invested</th><th>Value</th><th>P&amp;L</th><th>Return %</th>-->
-            <th onclick="renderSort('ticker')">Ticker</th>
-            <th onclick="renderSort('qty')">Qty</th>
-            <th onclick="renderSort('avg')">Avg cost</th>
-            <th onclick="renderSort('cm')">CMP</th>
-            <th onclick="renderSort('invested')">Invested</th>
-            <th onclick="renderSort('value')">Value</th>
-            <th onclick="renderSort('pnl')">P&L</th>
-            <th onclick="renderSort('ret')">Return %</th>
+            <th>Ticker</th><th>Qty</th><th>Avg cost</th><th>CMP</th>
+            <th>Invested</th><th>Value</th><th>P&amp;L</th><th>Return %</th>
           </tr></thead>
           <tbody id="tbody-snapshot"></tbody>
         </table>
@@ -409,6 +403,29 @@ td.ticker{color:var(--fg0);font-weight:500;font-family:'Bricolage Grotesque',san
     </div>
   </div>
 
+  <!-- ── MONTHLY VIEW ── -->
+  <div class="view" id="view-monthly">
+    <div class="card">
+      <div class="card-hdr">
+        <h2>Monthly growth</h2>
+        <div class="chart-tabs">
+          <button class="ctab on" onclick="switchMonthlyChart('pnl',this)">P&amp;L</button>
+          <button class="ctab" onclick="switchMonthlyChart('capital',this)">Capital</button>
+        </div>
+      </div>
+      <div class="chart-scroll-wrap"><div class="chart-inner" id="chartMonthlyWrap"><canvas id="chartMonthly"></canvas></div></div>
+      <div class="legend" id="legendMonthly"></div>
+    </div>
+    <div class="card">
+      <div class="card-hdr"><h2>Monthly breakdown</h2></div>
+      <div class="tbl-wrap">
+        <table><thead><tr>
+          <th>Month</th><th>Trades</th><th>Capital deployed</th><th>Monthly P&amp;L</th><th>Cumulative P&amp;L</th><th>MoM %</th>
+        </tr></thead><tbody id="tbody-monthly"></tbody></table>
+      </div>
+    </div>
+  </div>
+
   <!-- ── TRADES LOG VIEW ── -->
   <div class="view" id="view-trades">
     <div class="card" style="padding:0;">
@@ -452,11 +469,6 @@ let charts = {};
 const PAL = ['#4a9eff','#22c98a','#f5a623','#e265b0','#a78bfa','#34d399','#f05a35','#60d4e0','#facc15'];
 
 /* ─── FORMAT ─── */
-function renderSort(key) {
-  sortState.key = key;
-  renderDashboard();
-}
-
 function inr(n, short=true) {
   const abs = Math.abs(n);
   let s;
@@ -659,7 +671,8 @@ const CHART_MIN_H = 260;
 function setChartWidth(canvasId, numPoints){
   const wrapMap = {
     chartMain:'chartMainWrap', chartPL:'chartPLWrap',
-    chartPort:'chartPortWrap', chartWeekly:'chartWeeklyWrap'
+    chartPort:'chartPortWrap', chartWeekly:'chartWeeklyWrap',
+    chartMonthly:'chartMonthlyWrap'
   };
   const wrap = document.getElementById(wrapMap[canvasId]);
   if(!wrap) return;
@@ -1004,6 +1017,104 @@ function renderWeekly(){
   });
 }
 
+/* ─── MONTHLY VIEW ─── */
+function getMonthKey(d){ return d.slice(0,7); } // "YYYY-MM"
+function monthLabel(mk){ const [y,m]=mk.split('-'); return new Date(parseInt(y),parseInt(m)-1,1).toLocaleDateString('en-IN',{month:'short',year:'numeric'}); }
+
+let monthlyChartMode='pnl';
+
+function renderMonthly(){
+  const moMap={};
+  const rb5={};
+  const sorted=[...TRADES].sort((a,b)=>a.date.localeCompare(b.date)||a.id-b.id);
+  sorted.forEach(t=>{
+    const mk=getMonthKey(t.date);
+    if(!moMap[mk]) moMap[mk]={pnl:0,trades:0,capital:0,buys:0,sells:0};
+    if(!rb5[t.ticker]) rb5[t.ticker]={qty:0,costBasis:0};
+    const b=rb5[t.ticker];
+    let tradePnl=0;
+    if(t.type==='buy'&&t.price>0){
+      const hp=priceOnDate(t.ticker,t.date);
+      if(hp) tradePnl=(hp-t.price)*t.qty;
+      b.qty+=t.qty; b.costBasis+=t.qty*t.price;
+      moMap[mk].buys++;
+    } else if(t.type==='sell'){
+      const wac=b.qty>0?b.costBasis/b.qty:0;
+      tradePnl=(t.price-wac)*t.qty;
+      b.qty=Math.max(0,b.qty-t.qty); b.costBasis=b.qty*wac;
+      moMap[mk].sells++;
+    }
+    moMap[mk].pnl+=tradePnl;
+    moMap[mk].trades++;
+    moMap[mk].capital+=t.price*t.qty;
+  });
+
+  const months=Object.keys(moMap).sort();
+  const barData=months.map(m=>parseFloat(moMap[m].pnl.toFixed(2)));
+  let cum=0; const cumData=months.map(m=>{ cum+=moMap[m].pnl; return parseFloat(cum.toFixed(2)); });
+
+  switchMonthlyChart(monthlyChartMode,null,moMap,months,barData,cumData);
+
+  /* Table */
+  const tb=document.getElementById('tbody-monthly'); tb.innerHTML='';
+  let cumulPnl=0, prevPnl=null;
+  months.forEach(mk=>{
+    cumulPnl+=moMap[mk].pnl;
+    const pl=moMap[mk].pnl;
+    const mom=prevPnl!=null&&prevPnl!==0?((pl-prevPnl)/Math.abs(prevPnl))*100:null;
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td>${monthLabel(mk)}</td><td>${moMap[mk].trades} <span class="muted" style="font-size:10px">(${moMap[mk].buys}B/${moMap[mk].sells}S)</span></td><td>${inr(moMap[mk].capital)}</td><td class="${pl>=0?'pos':'neg'}">${(pl>=0?'+':'')+inr(pl)}</td><td class="${cumulPnl>=0?'pos':'neg'}">${(cumulPnl>=0?'+':'')+inr(cumulPnl)}</td><td class="${mom!=null?(mom>=0?'pos':'neg'):'muted'}">${mom!=null?pct(mom):'—'}</td>`;
+    tb.appendChild(tr);
+    prevPnl=pl;
+  });
+}
+
+function switchMonthlyChart(m,btn,moMap,months,barData,cumData){
+  monthlyChartMode=m;
+  if(btn){ document.querySelectorAll('#view-monthly .ctab').forEach(b=>b.classList.remove('on')); btn.classList.add('on'); }
+  /* If called from tab click, rebuild data */
+  if(!moMap){
+    const rb={};
+    moMap={};
+    const sorted=[...TRADES].sort((a,b)=>a.date.localeCompare(b.date)||a.id-b.id);
+    sorted.forEach(t=>{
+      const mk=getMonthKey(t.date);
+      if(!moMap[mk]) moMap[mk]={pnl:0,trades:0,capital:0};
+      if(!rb[t.ticker]) rb[t.ticker]={qty:0,costBasis:0};
+      const b=rb[t.ticker];
+      let tradePnl=0;
+      if(t.type==='buy'&&t.price>0){
+        const hp=priceOnDate(t.ticker,t.date); if(hp) tradePnl=(hp-t.price)*t.qty;
+        b.qty+=t.qty; b.costBasis+=t.qty*t.price;
+      } else if(t.type==='sell'){
+        const wac=b.qty>0?b.costBasis/b.qty:0;
+        tradePnl=(t.price-wac)*t.qty;
+        b.qty=Math.max(0,b.qty-t.qty); b.costBasis=b.qty*wac;
+      }
+      moMap[mk].pnl+=tradePnl; moMap[mk].trades++; moMap[mk].capital+=t.price*t.qty;
+    });
+    months=Object.keys(moMap).sort();
+    barData=months.map(mo=>parseFloat(moMap[mo].pnl.toFixed(2)));
+    let c=0; cumData=months.map(mo=>{ c+=moMap[mo].pnl; return parseFloat(c.toFixed(2)); });
+  }
+  const leg=document.getElementById('legendMonthly'); leg.innerHTML='';
+  const labels=months.map(monthLabel);
+
+  if(m==='pnl'){
+    mkChart('chartMonthly',{type:'bar',data:{labels,datasets:[
+      {label:'Monthly P&L',data:barData,backgroundColor:barData.map(v=>v>=0?'rgba(34,201,138,0.7)':'rgba(240,90,53,0.7)'),borderRadius:5,borderSkipped:false,yAxisID:'y'},
+      {label:'Cumulative',data:cumData,type:'line',borderColor:'#4a9eff',backgroundColor:'transparent',tension:0.35,pointRadius:4,pointBackgroundColor:'#4a9eff',borderWidth:2,yAxisID:'y2'}
+    ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>(ctx.parsed.y>=0?'+':'')+inr(ctx.parsed.y)}}},scales:{y:{position:'left',grid:{color:gridC},ticks:{callback:v=>inr(v),font:{family:'IBM Plex Mono',size:10},color:tickC}},y2:{position:'right',grid:{display:false},ticks:{callback:v=>inr(v),font:{family:'IBM Plex Mono',size:10},color:'#4a9eff'}},x:{grid:{display:false},ticks:{font:{family:'IBM Plex Mono',size:10},color:tickC,maxRotation:45,autoSkip:false}}}}});
+    leg.innerHTML='<span class="leg-item"><span class="leg-sq" style="background:#22c98a"></span>Monthly gain</span><span class="leg-item"><span class="leg-sq" style="background:#f05a35"></span>Monthly loss</span><span class="leg-item"><span class="leg-sq" style="background:#4a9eff"></span>Cumulative</span>';
+  } else {
+    const capData=months.map(mo=>parseFloat(moMap[mo].capital.toFixed(2)));
+    mkChart('chartMonthly',{type:'bar',data:{labels,datasets:[
+      {label:'Capital deployed',data:capData,backgroundColor:'rgba(74,158,255,0.55)',borderRadius:5,borderSkipped:false}
+    ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>inr(ctx.parsed.y)}}},scales:{y:{grid:{color:gridC},ticks:{callback:v=>inr(v),font:{family:'IBM Plex Mono',size:10},color:tickC}},x:{grid:{display:false},ticks:{font:{family:'IBM Plex Mono',size:10},color:tickC,maxRotation:45,autoSkip:false}}}}});
+    leg.innerHTML='<span class="leg-item"><span class="leg-sq" style="background:rgba(74,158,255,0.55)"></span>Capital deployed per month</span>';
+  }
+}
+
 /* ─── TRADES LOG ─── */
 function setTF(f,btn){ tradeFilter=f; document.querySelectorAll('#view-trades .ctab').forEach(b=>b.classList.remove('on')); btn.classList.add('on'); renderTrades(); }
 function renderTrades(){
@@ -1044,6 +1155,7 @@ function renderView(v){
   else if(v==='pl') renderPL();
   else if(v==='portfolio') renderPortfolio();
   else if(v==='weekly') renderWeekly();
+  else if(v==='monthly') renderMonthly();
   else if(v==='trades') renderTrades();
 }
 function renderAll(){ invalidateCache(); renderMetrics(); renderView(currentView); }
