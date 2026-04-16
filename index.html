@@ -84,7 +84,7 @@ nav{
 .sp-hint{font-size:11px;color:var(--fg3);line-height:1.6;margin-top:4px;}
 
 /* ── MAIN LAYOUT ── 1100px*/
-main{max-width:95%;margin:0 auto;padding:1.5rem 1rem 4rem;}
+main{max-width:99%;margin:0 auto;padding:1.5rem 1rem 4rem;}
 
 /* ── METRICS BAR ── */
 .metrics{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-bottom:1.5rem;}
@@ -152,6 +152,10 @@ td.ticker{color:var(--fg0);font-weight:500;font-family:'Bricolage Grotesque',san
 /* ── EMPTY / LOADING ── */
 .state-msg{text-align:center;padding:48px 20px;font-size:13px;font-family:'IBM Plex Mono',monospace;color:var(--fg3);}
 .state-msg b{display:block;font-size:15px;color:var(--fg2);margin-bottom:6px;font-family:'Bricolage Grotesque',sans-serif;}
+
+/* ── ACCOUNT BAR ── */
+#account-bar .acc-btn{font-size:11px;}
+#account-bar .acc-btn.active{background:var(--green-bg);color:var(--green);border-color:var(--green-dim);}
 
 /* ── VIEW SECTIONS ── */
 .view{display:none;}
@@ -308,6 +312,9 @@ td.ticker{color:var(--fg0);font-weight:500;font-family:'Bricolage Grotesque',san
 <!-- ── MAIN ── -->
 <main>
 
+  <!-- Account filter bar (hidden when only 1 account) -->
+  <div id="account-bar" style="display:none;flex-wrap:wrap;gap:4px;margin-bottom:12px;"></div>
+
   <!-- Metrics always visible -->
   <div class="metrics" id="metrics-bar">
     <div class="met"><div class="lbl">Invested</div><div class="val" id="m-inv">—</div></div>
@@ -461,12 +468,47 @@ let PRICES_HISTORY = {};   // historical: {"YYYY-MM-DD": {ticker: price, ...}, .
 let PRICES_DATE = '';
 let CUR = '₹';
 let tradeFilter = 'all';
+let ACCOUNT_FILTER = 'all';
 let mainChartMode = 'pnl';
 let plChartMode = 'cumulative';
 let portChartMode = 'value';
 let charts = {};
 
 const PAL = ['#4a9eff','#22c98a','#f5a623','#e265b0','#a78bfa','#34d399','#f05a35','#60d4e0','#facc15'];
+
+/* ─── ACCOUNT FILTER ─── */
+function activeTrades(){
+  if(ACCOUNT_FILTER==='all') return TRADES;
+  return TRADES.filter(t=>(t.account||'')===ACCOUNT_FILTER);
+}
+function allAccounts(){
+  return [...new Set(TRADES.map(t=>t.account||'').filter(Boolean))].sort();
+}
+function setAccount(acc){
+  ACCOUNT_FILTER=acc;
+  document.querySelectorAll('.acc-btn').forEach(b=>b.classList.toggle('active',b.dataset.acc===acc));
+  renderAll();
+}
+function rebuildAccountBar(){
+  const bar=document.getElementById('account-bar');
+  if(!bar) return;
+  const accounts=allAccounts();
+  if(accounts.length<=1){ bar.style.display='none'; return; }
+  bar.style.display='flex';
+  bar.innerHTML='';
+  const all=document.createElement('button');
+  all.className='acc-btn nav-btn'+(ACCOUNT_FILTER==='all'?' active':'');
+  all.dataset.acc='all'; all.textContent='All accounts';
+  all.onclick=()=>setAccount('all');
+  bar.appendChild(all);
+  accounts.forEach(acc=>{
+    const btn=document.createElement('button');
+    btn.className='acc-btn nav-btn'+(ACCOUNT_FILTER===acc?' active':'');
+    btn.dataset.acc=acc; btn.textContent=acc;
+    btn.onclick=()=>setAccount(acc);
+    bar.appendChild(btn);
+  });
+}
 
 /* ─── FORMAT ─── */
 function inr(n, short=true) {
@@ -589,7 +631,7 @@ function cmp(ticker){ return PRICES[ticker]||null; }
  * wac = weighted average cost per share at that point
  */
 function buildRunningBook(){
-  const sorted = [...TRADES].sort((a,b)=> a.date.localeCompare(b.date) || a.id - b.id);
+  const sorted = [...activeTrades()].sort((a,b)=> a.date.localeCompare(b.date) || a.id - b.id);
   const book = {}; // ticker -> {qty, costBasis, realisedPnl}
   const snapshots = [];
   for(const t of sorted){
@@ -621,7 +663,7 @@ function buildRunningBook(){
 
 /* Get final state per ticker (used by holdings / avgCost / realisedPnl) */
 function _finalBook(){
-  if(_finalBook._cache && _finalBook._trades === TRADES) return _finalBook._cache;
+  const _at=activeTrades(); if(_finalBook._cache && _finalBook._atRef===_at) return _finalBook._cache;
   const snaps = buildRunningBook();
   const map = {};
   for(const s of snaps){
@@ -633,7 +675,7 @@ function _finalBook(){
     };
   }
   _finalBook._cache = map;
-  _finalBook._trades = TRADES;
+  _finalBook._atRef = _at;
   return map;
 }
 
@@ -711,7 +753,31 @@ function renderMetrics(){
   document.getElementById('m-pnl').className='val '+(totalPnl>=0?'pos':'neg');
   const totalInvested = inv + Object.values(fb).reduce((acc,b)=>acc+b.realisedPnl*0,0); // use inv only for unrealised %
   document.getElementById('m-pnl-pct').textContent=val?pct(retPct):'';
-  document.getElementById('m-day').textContent='—';
+  /* Day change: compare current prices to yesterday's snapshot in prices_history */
+  let dayChange=null;
+  const histDates=Object.keys(PRICES_HISTORY).sort();
+  if(histDates.length){
+    const today=new Date().toISOString().slice(0,10);
+    // find latest snapshot strictly before today (yesterday's close proxy)
+    let prevSnap=null;
+    for(const d of histDates){ if(d<today) prevSnap=d; }
+    if(prevSnap){
+      dayChange=0;
+      h.forEach(p=>{
+        const cur=cmp(p.ticker);
+        const prev=PRICES_HISTORY[prevSnap][p.ticker];
+        if(cur!=null && prev!=null) dayChange+=(cur-prev)*p.qty;
+      });
+    }
+  }
+  const dayEl=document.getElementById('m-day');
+  if(dayChange!=null){
+    dayEl.textContent=(dayChange>=0?'+':'')+inr(dayChange);
+    dayEl.className='val '+(dayChange>=0?'pos':'neg');
+  } else {
+    dayEl.textContent='—';
+    dayEl.className='val';
+  }
   document.getElementById('m-hold').textContent=h.length||'—';
 }
 
@@ -762,7 +828,7 @@ function switchMainChart(m,btn){
     }
     /* Better approach: use realisedPnlSoFar + unrealised value at each snapshot */
     const data2=[];
-    const sorted=[...TRADES].sort((a,b)=>a.date.localeCompare(b.date)||a.id-b.id);
+    const sorted=[...activeTrades()].sort((a,b)=>a.date.localeCompare(b.date)||a.id-b.id);
     const runBook={};
     for(const t of sorted){
       if(!runBook[t.ticker]) runBook[t.ticker]={qty:0,costBasis:0,realisedPnl:0};
@@ -796,7 +862,7 @@ function switchMainChart(m,btn){
     leg.innerHTML='<span class="leg-item"><span class="leg-sq" style="background:rgba(74,158,255,0.5)"></span>Invested</span><span class="leg-item"><span class="leg-sq" style="background:rgba(34,201,138,0.5)"></span>Current value</span>';
 
   } else {
-    const map={}; TRADES.forEach(t=>{ map[t.ticker]=(map[t.ticker]||0)+t.price*t.qty; });
+    const map={}; activeTrades().forEach(t=>{ map[t.ticker]=(map[t.ticker]||0)+t.price*t.qty; });
     const labels=Object.keys(map),data=Object.values(map),colors=labels.map((_,i)=>PAL[i%PAL.length]);
     mkChart('chartMain',{type:'doughnut',data:{labels,datasets:[{data,backgroundColor:colors,borderWidth:2,borderColor:'transparent'}]},options:{responsive:true,maintainAspectRatio:false,cutout:'60%',plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>ctx.label+': '+inr(ctx.parsed)}}}}});
     const total=data.reduce((a,b)=>a+b,0);
@@ -806,7 +872,7 @@ function switchMainChart(m,btn){
 
 /* ─── P&L VIEW ─── */
 function renderPL(){
-  const tickers=[...new Set(TRADES.map(t=>t.ticker))];
+  const tickers=[...new Set(activeTrades().map(t=>t.ticker))];
   const fb=_finalBook();
   const tb=document.getElementById('tbody-pl'); tb.innerHTML='';
   tickers.forEach(tk=>{
@@ -838,7 +904,7 @@ function switchPLChart(m,btn){
 
   if(m==='cumulative'){
     /* Running total P&L (realised + unrealised mark-to-historical) per trade */
-    const sorted=[...TRADES].sort((a,b)=>a.date.localeCompare(b.date)||a.id-b.id);
+    const sorted=[...activeTrades()].sort((a,b)=>a.date.localeCompare(b.date)||a.id-b.id);
     const labels=sorted.map(t=>t.date+' '+t.ticker);
     const data=[];
     const runBook2={};
@@ -863,7 +929,7 @@ function switchPLChart(m,btn){
 
   } else if(m==='pertrade'){
     /* Per-trade realised/unrealised P&L using WAC at time of trade */
-    const sorted=[...TRADES].sort((a,b)=>a.date.localeCompare(b.date)||a.id-b.id);
+    const sorted=[...activeTrades()].sort((a,b)=>a.date.localeCompare(b.date)||a.id-b.id);
     const labels=sorted.map(t=>t.date+' '+t.ticker);
     const data=[];
     const runBook3={};
@@ -888,7 +954,7 @@ function switchPLChart(m,btn){
 
   } else {
     /* By ticker: realised + unrealised (current CMP) */
-    const tickers=[...new Set(TRADES.map(t=>t.ticker))];
+    const tickers=[...new Set(activeTrades().map(t=>t.ticker))];
     const data=tickers.map(tk=>{
       const b=fb[tk]||{qty:0,wac:0,realisedPnl:0,costBasis:0};
       const cm=cmp(tk)||b.wac;
@@ -937,7 +1003,7 @@ function switchPortChart(m,btn){
   if(!h.length) return;
 
   if(m==='value'){
-    const sorted=[...TRADES].sort((a,b)=>a.date.localeCompare(b.date)||a.id-b.id);
+    const sorted=[...activeTrades()].sort((a,b)=>a.date.localeCompare(b.date)||a.id-b.id);
     const snapshots=[];
     const rb={};
     sorted.forEach((t)=>{
@@ -974,7 +1040,7 @@ function wkLabel(wk){ const [y,w]=wk.split('-W'); const j=new Date(parseInt(y),0
 function renderWeekly(){
   const wkMap={};
   const rb4={};
-  const sorted=[...TRADES].sort((a,b)=>a.date.localeCompare(b.date)||a.id-b.id);
+  const sorted=[...activeTrades()].sort((a,b)=>a.date.localeCompare(b.date)||a.id-b.id);
   sorted.forEach(t=>{
     const wk=getWeekKey(t.date);
     if(!wkMap[wk]) wkMap[wk]={pnl:0,trades:0,capital:0};
@@ -1026,7 +1092,7 @@ let monthlyChartMode='pnl';
 function renderMonthly(){
   const moMap={};
   const rb5={};
-  const sorted=[...TRADES].sort((a,b)=>a.date.localeCompare(b.date)||a.id-b.id);
+  const sorted=[...activeTrades()].sort((a,b)=>a.date.localeCompare(b.date)||a.id-b.id);
   sorted.forEach(t=>{
     const mk=getMonthKey(t.date);
     if(!moMap[mk]) moMap[mk]={pnl:0,trades:0,capital:0,buys:0,sells:0};
@@ -1076,7 +1142,7 @@ function switchMonthlyChart(m,btn,moMap,months,barData,cumData){
   if(!moMap){
     const rb={};
     moMap={};
-    const sorted=[...TRADES].sort((a,b)=>a.date.localeCompare(b.date)||a.id-b.id);
+    const sorted=[...activeTrades()].sort((a,b)=>a.date.localeCompare(b.date)||a.id-b.id);
     sorted.forEach(t=>{
       const mk=getMonthKey(t.date);
       if(!moMap[mk]) moMap[mk]={pnl:0,trades:0,capital:0};
@@ -1118,7 +1184,7 @@ function switchMonthlyChart(m,btn,moMap,months,barData,cumData){
 /* ─── TRADES LOG ─── */
 function setTF(f,btn){ tradeFilter=f; document.querySelectorAll('#view-trades .ctab').forEach(b=>b.classList.remove('on')); btn.classList.add('on'); renderTrades(); }
 function renderTrades(){
-  const vis=tradeFilter==='all'?TRADES:TRADES.filter(t=>t.type===tradeFilter);
+  const base=activeTrades(); const vis=tradeFilter==='all'?base:base.filter(t=>t.type===tradeFilter);
   const tb=document.getElementById('tbody-trades'); tb.innerHTML='';
   document.getElementById('trades-empty').style.display=vis.length===0?'block':'none';
   const sorted=[...vis].sort((a,b)=>b.date.localeCompare(a.date)||b.id-a.id);
@@ -1158,7 +1224,7 @@ function renderView(v){
   else if(v==='monthly') renderMonthly();
   else if(v==='trades') renderTrades();
 }
-function renderAll(){ invalidateCache(); renderMetrics(); renderView(currentView); }
+function renderAll(){ invalidateCache(); rebuildAccountBar(); renderMetrics(); renderView(currentView); }
 
 /* ─── SETTINGS ─── */
 function toggleSettings(){ document.getElementById('settings-overlay').classList.toggle('open'); }
