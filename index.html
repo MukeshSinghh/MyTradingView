@@ -272,24 +272,6 @@ td.ticker{color:var(--fg0);font-weight:500;font-family:'Bricolage Grotesque',san
   .idx-price{font-size:17px;}
 }
 
-/* ── WATCHLIST CARDS ── */
-.wl-card{
-  background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--r8);
-  padding:12px 14px;position:relative;transition:border-color 0.15s;
-}
-.wl-card:hover{border-color:var(--border2);}
-.wl-sym{font-size:15px;font-weight:600;color:var(--fg0);margin-bottom:4px;font-family:'Bricolage Grotesque',sans-serif;}
-.wl-price{font-size:18px;font-weight:500;font-family:'IBM Plex Mono',monospace;margin-bottom:3px;}
-.wl-chg{font-size:11px;font-family:'IBM Plex Mono',monospace;margin-bottom:4px;}
-.wl-ts{font-size:10px;font-family:'IBM Plex Mono',monospace;color:var(--fg3);}
-.wl-remove{
-  position:absolute;top:8px;right:8px;
-  background:none;border:none;color:var(--fg3);cursor:pointer;
-  font-size:11px;padding:2px 4px;border-radius:3px;line-height:1;
-  transition:color 0.15s;
-}
-.wl-remove:hover{color:var(--red);}
-
 </style>
 </head>
 <body>
@@ -494,65 +476,43 @@ td.ticker{color:var(--fg0);font-weight:500;font-family:'Bricolage Grotesque',san
   <!-- ── MARKET VIEW ── -->
   <div class="view" id="view-market">
 
-    <!-- Index strip -->
-    <div class="idx-strip" style="margin-bottom:10px;">
+    <!-- Index ticker strip -->
+    <div class="idx-strip">
       <div class="idx-card" id="idx-nifty">
         <div class="idx-name"><span class="idx-live"></span>Nifty 50</div>
-        <div class="idx-price" style="font-size:22px;font-weight:500;font-family:'IBM Plex Mono',monospace;color:var(--fg0)">—</div>
+        <div class="idx-price idx-loading">Loading…</div>
         <div class="idx-change"></div>
         <div class="idx-time"></div>
       </div>
       <div class="idx-card" id="idx-sensex">
         <div class="idx-name"><span class="idx-live"></span>Sensex</div>
-        <div class="idx-price" style="font-size:22px;font-weight:500;font-family:'IBM Plex Mono',monospace;color:var(--fg0)">—</div>
+        <div class="idx-price idx-loading">Loading…</div>
         <div class="idx-change"></div>
         <div class="idx-time"></div>
       </div>
       <div class="idx-card" id="idx-giftnifty">
         <div class="idx-name"><span class="idx-live"></span>Gift Nifty</div>
-        <div class="idx-price" style="font-size:22px;font-weight:500;font-family:'IBM Plex Mono',monospace;color:var(--fg0)">—</div>
+        <div class="idx-price idx-loading">Loading…</div>
         <div class="idx-change"></div>
         <div class="idx-time"></div>
       </div>
     </div>
 
-    <!-- Toolbar: refresh + add watchlist -->
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap;">
-      <button class="refresh-btn" onclick="refreshAll()">⟳ Refresh all</button>
-      <span class="refresh-meta" id="mkt-refresh-time"></span>
-      <span style="flex:1"></span>
-      <span style="font-size:11px;font-family:'IBM Plex Mono',monospace;color:var(--fg3);">Add symbol (e.g. HAL, RELIANCE, TCS):</span>
-      <input id="wl-input" placeholder="Symbol" style="
-        width:110px;padding:5px 8px;border-radius:var(--r4);
-        border:0.5px solid var(--border2);background:var(--bg3);
-        color:var(--fg0);font-family:'IBM Plex Mono',monospace;font-size:12px;
-        outline:none;" onkeydown="if(event.key==='Enter')addWatchItem()"/>
-      <button class="refresh-btn" onclick="addWatchItem()">+ Add</button>
-      <button class="refresh-btn" onclick="clearWatchlist()" style="color:var(--red);">✕ Clear all</button>
-    </div>
-
-    <!-- Watchlist grid -->
-    <div id="watchlist-grid" style="
-      display:grid;
-      grid-template-columns:repeat(auto-fill,minmax(170px,1fr));
-      gap:8px;
-      margin-bottom:1.5rem;">
-    </div>
-    <div id="watchlist-hint" style="font-size:12px;font-family:'IBM Plex Mono',monospace;color:var(--fg3);margin-bottom:1.5rem;">
-      Enter NSE symbol above and press Enter or "+ Add". Data via Stooq — 15 min delayed during market hours.
-    </div>
-
     <!-- Holdings: last snapshot vs now -->
     <div class="card session-tbl">
       <div class="card-hdr">
-        <h2>Holdings — last snapshot vs now</h2>
+        <h2>Holdings — last session vs now</h2>
+        <div class="refresh-bar" style="margin-bottom:0;">
+          <button class="refresh-btn" onclick="fetchIndices()">⟳ Refresh indices</button>
+          <span class="refresh-meta" id="idx-refresh-time"></span>
+        </div>
       </div>
       <div class="tbl-wrap">
         <table>
           <thead><tr>
             <th>Ticker</th><th>Qty</th>
             <th>Prev price</th><th>Prev date</th>
-            <th>Current (prices.json)</th>
+            <th>Current</th>
             <th>Change ₹/unit</th><th>Change %</th>
             <th>Session P&amp;L</th>
           </tr></thead>
@@ -1341,252 +1301,109 @@ function renderTrades(){
 
 
 /* ─── MARKET VIEW ─── */
-
-/* ── Stooq symbol mapping ──
-   Stooq uses lowercase NSE symbols like "hal.ns", "reliance.ns"
-   Indices: ^nf50 = Nifty50, ^bse = Sensex, ^nfmdcp50 = Nifty Midcap50
-   Gift Nifty trades on SGX — no free CORS source; we show N/A with a note.
-*/
-
-let _idxTimer = null;
-let WATCHLIST  = JSON.parse(localStorage.getItem('mtvWatchlist')||'[{hal.ns},{IOC}]');
-// Saved prices for watchlist items: {SYM: {price,chg,chgPct,ts}}
-let WL_PRICES  = {};
+const INDEX_SYMBOLS = [
+  {id:'idx-nifty',     sym:'^NSEI',    name:'Nifty 50'},
+  {id:'idx-sensex',    sym:'^BSESN',   name:'Sensex'},
+  {id:'idx-giftnifty', sym:'GIFT.NS',  name:'Gift Nifty'},
+];
+let _idxTimer=null;
 
 function fmtIdxNum(n){
   if(n==null||isNaN(n)) return '—';
   return n.toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});
 }
 
-/* ── Stooq fetch: returns {price, open, high, low, close, chg, chgPct, ts, name} ── */
-async function stooqFetch(sym){
-  /* Stooq CSV endpoint — CORS open, no key needed.
-     sym examples: "hal.ns", "^nf50", "^bse"
-     Returns CSV: Symbol,Date,Time,Open,High,Low,Close,Volume
-  */
-  const url = `https://stooq.com/q/l/?s=${encodeURIComponent(sym)}&f=sd2t2ohlcvn&h&e=csv`;
-  const res  = await fetch(url, {cache:'no-store'});
-  if(!res.ok) throw new Error('HTTP '+res.status);
-  const text = await res.text();
-  const lines = text.trim().split('\n');
-  if(lines.length < 2) throw new Error('Empty response');
-  const row = lines[1].split(',');
-  // Symbol,Date,Time,Open,High,Low,Close,Volume,Name
-  const close = parseFloat(row[6]);
-  const open  = parseFloat(row[3]);
-  if(isNaN(close)) throw new Error('Bad price: '+text.slice(0,100));
-  const chg    = close - open;
-  const chgPct = open!==0 ? (chg/open)*100 : 0;
-  return {
-    price:   close,
-    open:    open,
-    high:    parseFloat(row[4]),
-    low:     parseFloat(row[5]),
-    chg:     chg,
-    chgPct:  chgPct,
-    date:    row[1],
-    time:    row[2],
-    name:    (row[8]||'').replace(/\r/,'').trim()
-  };
-}
-
-/* ── Map display name → Stooq symbol ── */
-function toStooqSym(input){
-  const s = input.trim().toUpperCase();
-  // Index aliases
-  if(s==='NIFTY'||s==='NIFTY50'||s==='^NF50')  return '^nf50';
-  if(s==='SENSEX'||s==='^BSE')                  return '^bse';
-  if(s==='BANKNIFTY')                            return '^nfbank';
-  if(s==='MIDCAP'||s==='NIFTYMIDCAP')            return '^nfmdcp50';
-  if(s==='GIFTNIFTY'||s==='GIFT')                return null; // no free source
-  // NSE stock: lowercase + .ns suffix
-  return s.toLowerCase()+'.ns';
-}
-
-/* ── Render a single index card ── */
-function renderIdxCard(id, data, err){
-  const card = document.getElementById(id);
+async function fetchOneIndex(cfg){
+  const card=document.getElementById(cfg.id);
   if(!card) return;
-  const priceEl  = card.querySelector('.idx-price');
-  const changeEl = card.querySelector('.idx-change');
-  const timeEl   = card.querySelector('.idx-time');
-
-  if(err || !data){
-    priceEl.textContent  = id==='idx-giftnifty'? 'N/A' : 'Error';
-    priceEl.style.color  = 'var(--fg3)';
-    changeEl.textContent = id==='idx-giftnifty'
-      ? 'No free CORS source available'
-      : 'Could not fetch — check connection';
-    changeEl.style.color = 'var(--fg3)';
-    timeEl.textContent   = '';
-    return;
-  }
-  const isUp = data.chg >= 0;
-  priceEl.textContent  = fmtIdxNum(data.price);
-  priceEl.style.color  = isUp ? 'var(--green)' : 'var(--red)';
-  changeEl.textContent = (isUp?'+':'')+fmtIdxNum(data.chg)+
-                         ' ('+(isUp?'+':'')+data.chgPct.toFixed(2)+'%)';
-  changeEl.style.color = isUp ? 'var(--green)' : 'var(--red)';
-  timeEl.textContent   = data.date+' '+data.time;
-
-  // flash
-  card.classList.remove('up','dn','flash');
-  void card.offsetWidth;
-  card.classList.add(isUp?'up':'dn','flash');
-  setTimeout(()=>card.classList.remove('flash'), 700);
-}
-
-async function fetchIndices(){
-  const pairs = [
-    {id:'idx-nifty',     sym:'^nf50'},
-    {id:'idx-sensex',    sym:'^bse'},
-    {id:'idx-giftnifty', sym:null},
-  ];
-  for(const p of pairs){
-    if(!p.sym){ renderIdxCard(p.id, null, false); continue; }
-    try{
-      const d = await stooqFetch(p.sym);
-      renderIdxCard(p.id, d, false);
-    } catch(e){
-      renderIdxCard(p.id, null, true);
-    }
-  }
-  const el = document.getElementById('mkt-refresh-time');
-  if(el) el.textContent = 'Updated '+new Date().toLocaleTimeString('en-IN',
-    {hour:'2-digit',minute:'2-digit',timeZone:'Asia/Kolkata'})+' IST';
-}
-
-/* ── Watchlist ── */
-function saveWatchlist(){ localStorage.setItem('mtvWatchlist', JSON.stringify(WATCHLIST)); }
-
-function addWatchItem(){
-  const inp = document.getElementById('wl-input');
-  if(!inp) return;
-  const raw = inp.value.trim().toUpperCase();
-  if(!raw) return;
-  if(WATCHLIST.includes(raw)){ inp.value=''; return; }
-  if(WATCHLIST.length >= 30){ alert('Max 30 watchlist items'); return; }
-  WATCHLIST.push(raw);
-  saveWatchlist();
-  inp.value='';
-  renderWatchlistGrid();
-  fetchWatchItem(raw);
-}
-
-function removeWatchItem(sym){
-  WATCHLIST = WATCHLIST.filter(s=>s!==sym);
-  delete WL_PRICES[sym];
-  saveWatchlist();
-  renderWatchlistGrid();
-}
-
-function clearWatchlist(){
-  WATCHLIST=[];  WL_PRICES={};
-  saveWatchlist();
-  renderWatchlistGrid();
-}
-
-function renderWatchlistGrid(){
-  const grid = document.getElementById('watchlist-grid');
-  const hint = document.getElementById('watchlist-hint');
-  if(!grid) return;
-  grid.innerHTML='';
-  if(!WATCHLIST.length){
-    hint.style.display='block';
-    return;
-  }
-  hint.style.display='none';
-  WATCHLIST.forEach(sym=>{
-    const d   = WL_PRICES[sym];
-    const isUp= d && d.chg>=0;
-    const clr = !d ? 'var(--fg2)' : isUp ? 'var(--green)' : 'var(--red)';
-    const card= document.createElement('div');
-    card.className='wl-card';
-    card.id='wl-'+sym;
-    card.innerHTML=`
-      <button class="wl-remove" onclick="removeWatchItem('${sym}')" title="Remove">✕</button>
-      <div class="wl-sym">${sym}</div>
-      <div class="wl-price" style="color:${clr}">${d?fmtIdxNum(d.price):'…'}</div>
-      <div class="wl-chg" style="color:${clr}">
-        ${d?((!isUp?'':'+') + fmtIdxNum(d.chg)+' ('+(isUp?'+':'')+d.chgPct.toFixed(2)+'%)'):'—'}
-      </div>
-      <div class="wl-ts">${d?d.date+' '+d.time:''}</div>`;
-    grid.appendChild(card);
-  });
-}
-
-async function fetchWatchItem(sym){
-  const stooqSym = toStooqSym(sym);
-  if(!stooqSym){ WL_PRICES[sym]={price:null,chg:0,chgPct:0,date:'',time:'N/A'}; renderWatchlistGrid(); return; }
+  const priceEl=card.querySelector('.idx-price');
+  const changeEl=card.querySelector('.idx-change');
+  const timeEl=card.querySelector('.idx-time');
   try{
-    const d = await stooqFetch(stooqSym);
-    WL_PRICES[sym] = d;
-  } catch(e){
-    WL_PRICES[sym] = {price:null,chg:0,chgPct:0,date:'',time:'err'};
-  }
-  // Update just this card in place
-  const card = document.getElementById('wl-'+sym);
-  if(card){
-    const d    = WL_PRICES[sym];
-    const isUp = d && d.chg>=0;
-    const clr  = !d||d.price==null ? 'var(--fg2)' : isUp ? 'var(--green)' : 'var(--red)';
-    const pEl  = card.querySelector('.wl-price');
-    const cEl  = card.querySelector('.wl-chg');
-    const tEl  = card.querySelector('.wl-ts');
-    if(pEl) { pEl.textContent=d&&d.price!=null?fmtIdxNum(d.price):'N/A'; pEl.style.color=clr; }
-    if(cEl) { cEl.textContent=d&&d.price!=null?((isUp?'+':'')+fmtIdxNum(d.chg)+' ('+(isUp?'+':'')+d.chgPct.toFixed(2)+'%)'):'—'; cEl.style.color=clr; }
-    if(tEl) { tEl.textContent=d?d.date+' '+d.time:''; }
+    // Yahoo Finance v8 CORS-open endpoint
+    const url=`https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(cfg.sym)}?interval=1d&range=5d&includePrePost=false`;
+    const res=await fetch(url,{cache:'no-store'});
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const data=await res.json();
+    const meta=data?.chart?.result?.[0]?.meta;
+    if(!meta) throw new Error('No meta');
+    const price=meta.regularMarketPrice;
+    const prev=meta.previousClose||meta.chartPreviousClose;
+    const chg=price-prev;
+    const chgPct=(chg/prev)*100;
+    const isUp=chg>=0;
+    const ts=meta.regularMarketTime ? new Date(meta.regularMarketTime*1000) : null;
+    const timeStr=ts ? ts.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',timeZone:'Asia/Kolkata'})+ ' IST' : '';
+    priceEl.textContent=fmtIdxNum(price);
+    priceEl.className='idx-price '+(isUp?'pos':'neg');
+    changeEl.textContent=(isUp?'+':'')+fmtIdxNum(chg)+' ('+(isUp?'+':'')+chgPct.toFixed(2)+'%)';
+    changeEl.className='idx-change '+(isUp?'pos':'neg');
+    timeEl.textContent=timeStr;
+    card.classList.remove('up','dn','flash');
+    void card.offsetWidth; // reflow to restart animation
+    card.classList.add(isUp?'up':'dn','flash');
+    setTimeout(()=>card.classList.remove('flash'),600);
+  } catch(err){
+    priceEl.textContent='N/A';
+    priceEl.className='idx-price idx-loading';
+    changeEl.textContent='Unable to fetch — check CORS / network';
+    changeEl.className='idx-change muted';
+    timeEl.textContent='';
   }
 }
 
-function fetchAllWatchlist(){
-  WATCHLIST.forEach(fetchWatchItem);
-}
-
-function refreshAll(){
-  fetchIndices();
-  fetchAllWatchlist();
+function fetchIndices(){
+  INDEX_SYMBOLS.forEach(fetchOneIndex);
+  const el=document.getElementById('idx-refresh-time');
+  if(el) el.textContent='Updated '+new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',timeZone:'Asia/Kolkata'})+' IST';
 }
 
 function startIdxAutoRefresh(){
   if(_idxTimer) clearInterval(_idxTimer);
-  refreshAll();
-  _idxTimer = setInterval(refreshAll, 60000);
+  fetchIndices();
+  _idxTimer=setInterval(fetchIndices,60000);
 }
 function stopIdxAutoRefresh(){
   if(_idxTimer){ clearInterval(_idxTimer); _idxTimer=null; }
 }
 
-/* ── Session table ── */
+/* ── Session table: last price_history snapshot vs current prices.json ── */
 function renderSessionTable(){
-  const tb      = document.getElementById('tbody-session');
-  const emptyEl = document.getElementById('session-empty');
+  const tb=document.getElementById('tbody-session');
+  const emptyEl=document.getElementById('session-empty');
   if(!tb) return;
   tb.innerHTML='';
 
-  const h         = holdings();
-  const histDates = Object.keys(PRICES_HISTORY).sort();
+  const h=holdings(); // current open positions (account-filtered)
+  const histDates=Object.keys(PRICES_HISTORY).sort();
 
-  if(!histDates.length){ emptyEl.style.display='block'; return; }
+  if(!histDates.length){
+    emptyEl.style.display='block'; return;
+  }
   emptyEl.style.display='none';
 
-  const prevDate = histDates[histDates.length-1];
-  const prevSnap = PRICES_HISTORY[prevDate];
-  let sessionTotal=0, hasAny=false;
+  // Find the most recent snapshot date
+  const prevDate=histDates[histDates.length-1];
+  const prevSnap=PRICES_HISTORY[prevDate];
+
+  let sessionTotal=0;
+  let hasAny=false;
 
   h.forEach(p=>{
-    const cur     = cmp(p.ticker);
-    const prev    = prevSnap[p.ticker];
-    const hasCur  = cur!=null;
-    const hasPrev = prev!=null;
-    const chgUnit = hasCur&&hasPrev ? cur-prev : null;
-    const chgPct  = hasCur&&hasPrev&&prev!==0 ? (chgUnit/prev)*100 : null;
-    const sPnl    = chgUnit!=null ? chgUnit*p.qty : null;
-    if(sPnl!=null) sessionTotal+=sPnl;
+    const cur=cmp(p.ticker);
+    const prev=prevSnap[p.ticker];
+    const hasCur=cur!=null;
+    const hasPrev=prev!=null;
+    const chgUnit=hasCur&&hasPrev ? cur-prev : null;
+    const chgPct=hasCur&&hasPrev&&prev!==0 ? (chgUnit/prev)*100 : null;
+    const sessionPnl=chgUnit!=null ? chgUnit*p.qty : null;
+    if(sessionPnl!=null) sessionTotal+=sessionPnl;
     hasAny=true;
+
     const isUp=chgUnit!=null&&chgUnit>=0;
     const cls=chgUnit==null?'chg-nil':isUp?'chg-up':'chg-dn';
     const sign=isUp?'+':'';
+
     const tr=document.createElement('tr');
     tr.innerHTML=
       `<td class="ticker">${p.ticker}</td>`+
@@ -1596,27 +1413,27 @@ function renderSessionTable(){
       `<td>${hasCur?('₹'+fmtIdxNum(cur)):'<span class="muted">—</span>'}</td>`+
       `<td class="${cls}">${chgUnit!=null?(sign+'₹'+fmtIdxNum(Math.abs(chgUnit))):'<span class="muted">—</span>'}</td>`+
       `<td class="${cls}">${chgPct!=null?(sign+chgPct.toFixed(2)+'%'):'<span class="muted">—</span>'}</td>`+
-      `<td class="${sPnl!=null?(sPnl>=0?'pos':'neg'):'muted'}">${sPnl!=null?((sPnl>=0?'+':'')+'₹'+fmtIdxNum(Math.abs(sPnl))):'—'}</td>`;
+      `<td class="${sessionPnl!=null?(sessionPnl>=0?'pos':'neg'):'muted'}">${sessionPnl!=null?((sessionPnl>=0?'+':'')+'₹'+fmtIdxNum(Math.abs(sessionPnl))):'—'}</td>`;
     tb.appendChild(tr);
   });
 
-  if(!hasAny){ emptyEl.style.display='block'; return; }
-  const tf=document.createElement('tr');
-  tf.style.borderTop='0.5px solid var(--border2)';
-  tf.innerHTML=
-    `<td colspan="7" style="font-weight:500;color:var(--fg1)">Session total (all holdings)</td>`+
-    `<td class="${sessionTotal>=0?'pos':'neg'}" style="font-weight:500">`+
-    `${(sessionTotal>=0?'+':'')+'₹'+fmtIdxNum(Math.abs(sessionTotal))}</td>`;
-  tb.appendChild(tf);
+  if(!hasAny){
+    emptyEl.style.display='block'; return;
+  }
+
+  // Summary footer row
+  const tfoot=document.createElement('tr');
+  tfoot.style.borderTop='0.5px solid var(--border2)';
+  tfoot.innerHTML=
+    `<td colspan="7" style="font-weight:500;color:var(--fg1)">Session P&L (portfolio total)</td>`+
+    `<td class="${sessionTotal>=0?'pos':'neg'}" style="font-weight:500">${(sessionTotal>=0?'+':'')+'₹'+fmtIdxNum(Math.abs(sessionTotal))}</td>`;
+  tb.appendChild(tfoot);
 }
 
 function renderMarket(){
-  renderWatchlistGrid();
   renderSessionTable();
   startIdxAutoRefresh();
 }
-
-
 
 /* ─── VIEW ROUTER ─── */
 let currentView='dashboard';
