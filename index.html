@@ -84,7 +84,7 @@ nav{
 .sp-hint{font-size:11px;color:var(--fg3);line-height:1.6;margin-top:4px;}
 
 /* ── MAIN LAYOUT 1100px── */
-main{max-width:99%;margin:0 auto;padding:1.5rem 1rem 4rem;}
+main{max-width:95%;margin:0 auto;padding:1.5rem 1rem 4rem;}
 
 /* ── METRICS BAR ── */
 .metrics{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-bottom:1.5rem;}
@@ -1349,7 +1349,7 @@ function renderTrades(){
 */
 
 let _idxTimer = null;
-let WATCHLIST  = JSON.parse(localStorage.getItem('mtvWatchlist')||'[{hal.ns},{IOC}]');
+let WATCHLIST  = JSON.parse(localStorage.getItem('mtvWatchlist')||'[]');
 // Saved prices for watchlist items: {SYM: {price,chg,chgPct,ts}}
 let WL_PRICES  = {};
 
