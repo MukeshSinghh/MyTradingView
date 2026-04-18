@@ -83,8 +83,8 @@ nav{
 .sp-close:hover{color:var(--fg0);}
 .sp-hint{font-size:11px;color:var(--fg3);line-height:1.6;margin-top:4px;}
 
-/* ── MAIN LAYOUT 1100px── */
-main{max-width:95%;margin:0 auto;padding:1.5rem 1rem 4rem;}
+/* ── MAIN LAYOUT ── 1100px*/
+main{max-width:98%;margin:0 auto;padding:1.5rem 1rem 4rem;}
 
 /* ── METRICS BAR ── */
 .metrics{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-bottom:1.5rem;}
@@ -328,23 +328,30 @@ td.ticker{color:var(--fg0);font-weight:500;font-family:'Bricolage Grotesque',san
       <div id="trades-status" class="file-status" style="margin-bottom:8px;"></div>
 
       <div class="sp-row">
-        <label>prices.json</label>
+        <label>prices_history.json <span style="color:var(--green);font-size:10px;">★ primary</span></label>
+        <button class="file-load-btn" onclick="document.getElementById('prices-history-file').click()">Load file</button>
+        <input class="file-input" id="prices-history-file" type="file" accept=".json" onchange="loadPricesHistoryFile(event)"/>
+      </div>
+      <div id="prices-history-status" class="file-status" style="margin-bottom:8px;"></div>
+
+      <div class="sp-row">
+        <label>prices.json <span style="color:var(--fg3);font-size:10px;">(fallback only)</span></label>
         <button class="file-load-btn" onclick="document.getElementById('prices-file').click()">Load file</button>
         <input class="file-input" id="prices-file" type="file" accept=".json" onchange="loadPricesFile(event)"/>
       </div>
       <div id="prices-status" class="file-status" style="margin-bottom:8px;"></div>
 
       <div class="sp-row">
-        <label>prices_history.json <span style="color:var(--fg3);font-size:10px;">(optional)</span></label>
-        <button class="file-load-btn" onclick="document.getElementById('prices-history-file').click()">Load file</button>
-        <input class="file-input" id="prices-history-file" type="file" accept=".json" onchange="loadPricesHistoryFile(event)"/>
+        <label>watchlist.json <span style="color:var(--fg3);font-size:10px;">(Market defaults)</span></label>
+        <button class="file-load-btn" onclick="document.getElementById('watchlist-file').click()">Load file</button>
+        <input class="file-input" id="watchlist-file" type="file" accept=".json" onchange="loadWatchlistFile(event)"/>
       </div>
-      <div id="prices-history-status" class="file-status" style="margin-bottom:8px;"></div>
+      <div id="watchlist-file-status" class="file-status" style="margin-bottom:8px;"></div>
 
       <div class="sp-hint">
-        Keep <code>trades.json</code> and <code>prices.json</code> in the repo root.<br/>
-        <code>prices_history.json</code> enables real P&amp;L flow charts over time.<br/>
-        Format: <code>{"2025-01-01":{"IOC":91.5,...}, "2025-06-01":{...}}</code>
+        <b style="color:var(--fg1)">prices_history.json</b> is now the primary price source. The latest snapshot date is used as CMP for all P&amp;L calculations. <code>prices.json</code> is only a fallback for tickers not in history.<br/><br/>
+        Format: <code>{"2025-01-01":{"IOC":91.5,...}}</code><br/>
+        <b style="color:var(--fg1)">watchlist.json</b> seeds the Market tab. Format: <code>["HAL","SBIN","RELIANCE"]</code>
       </div>
     </div>
 
@@ -697,7 +704,9 @@ function loadPricesHistoryFile(e){
        2) {"history": {"2025-01-01": {...}, ...}}     — wrapped */
     PRICES_HISTORY=data.history||data;
     const dates=Object.keys(PRICES_HISTORY).length;
-    document.getElementById('prices-history-status').textContent='✓ '+file.name+' ('+dates+' snapshots)';
+    // Auto-derive PRICES from the latest snapshot
+    derivePricesFromHistory();
+    document.getElementById('prices-history-status').textContent='✓ '+file.name+' ('+dates+' snapshots, latest used as CMP)';
     document.getElementById('prices-history-status').className='file-status';
     renderAll();
   } catch(err){
@@ -707,20 +716,62 @@ function loadPricesHistoryFile(e){
   r.readAsText(file);
 }
 
+/* Derive PRICES from the latest snapshot in PRICES_HISTORY */
+function derivePricesFromHistory(){
+  const dates = Object.keys(PRICES_HISTORY).sort();
+  if(!dates.length) return;
+  const latest = dates[dates.length-1];
+  PRICES_DATE = latest;
+  // Merge: history latest takes precedence, keep any prices.json entries not in history
+  const snap = PRICES_HISTORY[latest];
+  Object.keys(snap).forEach(tk=>{ PRICES[tk]=snap[tk]; });
+  document.getElementById('prices-date').textContent='CMP: '+latest;
+}
+
+function loadWatchlistFile(e){
+  const file=e.target.files[0]; if(!file) return;
+  const r=new FileReader();
+  r.onload=ev=>{ try{
+    const d=JSON.parse(ev.target.result);
+    const syms=Array.isArray(d)?d:(d.watchlist||[]);
+    WATCHLIST=syms.map(s=>s.toUpperCase());
+    saveWatchlist();
+    document.getElementById('watchlist-file-status').textContent='✓ '+file.name+' ('+WATCHLIST.length+' symbols)';
+    document.getElementById('watchlist-file-status').className='file-status';
+    if(currentView==='market') renderWatchlistGrid();
+  } catch(err){
+    document.getElementById('watchlist-file-status').textContent='✗ Invalid JSON';
+    document.getElementById('watchlist-file-status').className='file-status err';
+  }};
+  r.readAsText(file);
+}
+
 /* Auto-load from repo root */
 async function autoLoad(){
   try{
-    const [tr,pr,ph]=await Promise.all([
+    const [tr,pr,ph,wl]=await Promise.all([
       fetch('trades.json'),
       fetch('prices.json'),
-      fetch('prices_history.json')
+      fetch('prices_history.json'),
+      fetch('watchlist.json')
     ]);
     if(tr.ok){ TRADES=await tr.json(); document.getElementById('trades-status').textContent='✓ trades.json ('+TRADES.length+' trades)'; }
-    if(pr.ok){ const d=await pr.json(); PRICES=d.prices||d; PRICES_DATE=d.updated||'';
+    if(pr.ok){ const d=await pr.json(); const p=d.prices||d; Object.assign(PRICES,p); PRICES_DATE=d.updated||'';
       if(PRICES_DATE) document.getElementById('prices-date').textContent='prices: '+PRICES_DATE; }
-    if(ph.ok){ const d=await ph.json(); PRICES_HISTORY=d.history||d;
+    if(ph.ok){
+      const d=await ph.json(); PRICES_HISTORY=d.history||d;
       const dates=Object.keys(PRICES_HISTORY).length;
-      document.getElementById('prices-history-status').textContent='✓ prices_history.json ('+dates+' snapshots)'; }
+      document.getElementById('prices-history-status').textContent='✓ prices_history.json ('+dates+' snapshots)';
+      derivePricesFromHistory();
+    }
+    if(wl.ok){
+      const d=await wl.json();
+      const syms=Array.isArray(d)?d:(d.watchlist||[]);
+      if(!localStorage.getItem('mtvWatchlist') && syms.length){
+        WATCHLIST=syms.map(s=>s.toUpperCase());
+        saveWatchlist();
+      }
+    }
     renderAll();
   } catch(e){ /* file:// protocol — user loads manually */ }
 }
@@ -1399,6 +1450,7 @@ function toStooqSym(input){
   if(s==='BANKNIFTY')                            return '^nfbank';
   if(s==='MIDCAP'||s==='NIFTYMIDCAP')            return '^nfmdcp50';
   if(s==='GIFTNIFTY'||s==='GIFT')                return null; // no free source
+  // Handle special chars: M&M -> m&m.ns, etc.
   // NSE stock: lowercase + .ns suffix
   return s.toLowerCase()+'.ns';
 }
