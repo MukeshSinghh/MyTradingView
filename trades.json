@@ -606,5 +606,7 @@
  {"id": 605, "ticker": "Eternal", "type": "sell", "qty": 100, "price": 269.86, "trade_value": 26986.97, "date": "2026-02-02" ,"account": "DHAN-H" },
  {"id": 606, "ticker": "Reliance", "type": "sell", "qty": 150, "price": 1373.27, "trade_value": 205991.42, "date": "2026-02-02" ,"account": "DHAN-H" },
  {"id": 607, "ticker": "Tata Motors", "type": "buy", "qty": 20, "price": 476, "trade_value": 9511, "date": "2025-11-30" ,"account": "DHAN-H" },
- {"id": 608, "ticker": "Network18", "type": "sell", "qty": 63, "price": 38.11, "trade_value": 2400, "date": "2026-01-22" ,"account": "DHAN-H" }
+ {"id": 608, "ticker": "Network18", "type": "sell", "qty": 63, "price": 38.11, "trade_value": 2400, "date": "2026-01-22" ,"account": "DHAN-H" },
+ {"id": 609, "ticker": "HAL", "type": "sell", "qty": 125, "price": 4330, "trade_value": 541297, "date": "2026-04-16" ,"account": "DHAN-M" },
+ {"id": 610, "ticker": "ZerodhaLIQUIDCASE", "type": "buy", "qty": 4757, "price": 113.67, "trade_value": 540728, "date": "2026-04-17" ,"account": "DHAN-M" }
 ]
