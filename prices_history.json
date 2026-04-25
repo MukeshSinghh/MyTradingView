@@ -223,6 +223,43 @@
     "NipponNIFTYBEES": 274.73,
     "NipponSILVERBEES": 236.26,
     "ZerodhaLIQUIDCASE": 113.68
+  },
+    "2026-04-23": {  
+    "BEL": 449.95,
+    "BHEL":337.6,
+    "BHARTIARTL": 1841.2,
+    "HAL": 4352.5,
+    "IOC": 145.48,
+    "IRFC": 105.06,
+    "M&M": 3047.7,
+    "PAYTM": 1159.55,
+    "Protean": 525,
+    "RECLTD": 376.45,
+    "RVNL": 307.21,
+    "SBIN": 1094.25,
+    "Tata Motors": 424.55,
+    "NipponGOLDBEES": 124.08,
+    "NipponNIFTYBEES": 271.09,
+    "NipponSILVERBEES": 227.89,
+    "ZerodhaLIQUIDCASE": 113.78
+  },
+  "2026-04-24":{
+    "BEL": 443.2,
+    "BHEL":337.33,
+    "BHARTIARTL": 1818,
+    "HAL": 4270.5,
+    "IOC": 143.8,
+    "IRFC": 104.24,
+    "M&M": 3040,
+    "PAYTM": 1153,
+    "Protean": 524.95,
+    "RECLTD": 374.5,
+    "RVNL": 303.65,
+    "SBIN": 1100.95,
+    "Tata Motors": 424.95,
+    "NipponGOLDBEES": 123.92,
+    "NipponNIFTYBEES": 271.35,
+    "NipponSILVERBEES": 227.9,
+    "ZerodhaLIQUIDCASE": 113.79
   }
-
 }
