@@ -609,7 +609,19 @@
  {"id": 608, "ticker": "Network18", "type": "sell", "qty": 63, "price": 38.11, "trade_value": 2400, "date": "2026-01-22" ,"account": "DHAN-H" },
  {"id": 609, "ticker": "HAL", "type": "sell", "qty": 125, "price": 4330, "trade_value": 541297, "date": "2026-04-16" ,"account": "DHAN-M" },
  {"id": 610, "ticker": "ZerodhaLIQUIDCASE", "type": "buy", "qty": 4757, "price": 113.67, "trade_value": 540728, "date": "2026-04-17" ,"account": "DHAN-M" },
- {"id": 610, "ticker": "ZerodhaLIQUIDCASE", "type": "sell", "qty": 1000, "price": 113.77, "trade_value": 113770, "date": "2026-04-27" ,"account": "DHAN-M" },
- {"id": 610, "ticker": "VEDANTA", "type": "buy", "qty": 107, "price": 738, "trade_value": 79000, "date": "2026-04-27" ,"account": "DHAN-M" },
- {"id": 610, "ticker": "HAL", "type": "buy", "qty": 8, "price": 4310, "trade_value": 34480, "date": "2026-04-27" ,"account": "DHAN-M" }
+ {"id": 611, "ticker": "ZerodhaLIQUIDCASE", "type": "sell", "qty": 1801, "price": 113.77, "trade_value": 204954, "date": "2026-04-27" ,"account": "DHAN-M" },
+ {"id": 612, "ticker": "VEDANTA", "type": "buy", "qty": 107, "price": 738, "trade_value": 79000, "date": "2026-04-27" ,"account": "DHAN-M" },
+ {"id": 613, "ticker": "HAL", "type": "buy", "qty": 8, "price": 4310, "trade_value": 34480, "date": "2026-04-27" ,"account": "DHAN-M" },
+ {"id": 614, "ticker": "PAYTM", "type": "buy", "qty": 9, "price": 1123, "trade_value": 10107, "date": "2026-04-27" ,"account": "DHAN-M" },
+ {"id": 615, "ticker": "SBIN", "type": "buy", "qty": 49, "price": 1110, "trade_value": 54390, "date": "2026-04-27" ,"account": "DHAN-M" },
+ {"id": 616, "ticker": "Protean", "type": "buy", "qty": 50, "price": 538, "trade_value": 26900, "date": "2026-04-27" ,"account": "DHAN-M" },
+ {"id": 621, "ticker": "ZerodhaLIQUIDCASE", "type": "sell", "qty": 500, "price": 113.80, "trade_value": 56900, "date": "2026-04-27" ,"account": "DHAN-M" },
+ {"id": 622, "ticker": "REC", "type": "buy", "qty": 156, "price": 364, "trade_value": 56784, "date": "2026-05-04" ,"account": "DHAN-M" },
+ {"id": 623, "ticker": "HAL", "type": "sell", "qty": 8, "price": 4520, "trade_value": 36160, "date": "2026-05-04" ,"account": "DHAN-M" } ,  
+ {"id": 624, "ticker": "ZerodhaLIQUIDCASE", "type": "sell", "qty": 800, "price": 113.88, "trade_value": 91104, "date": "2026-05-04" ,"account": "DHAN-M" },
+ {"id": 625, "ticker": "BEL", "type": "buy", "qty": 100, "price": 440, "trade_value": 44000, "date": "2026-05-04" ,"account": "DHAN-M" },
+ {"id": 626, "ticker": "PAYTM", "type": "buy", "qty": 8, "price": 1120, "trade_value": 8960, "date": "2026-05-04" ,"account": "DHAN-M" },
+ {"id": 627, "ticker": "RVNL", "type": "buy", "qty": 50, "price": 303, "trade_value": 19295, "date": "2026-05-04" ,"account": "DHAN-M" },
+ {"id": 628, "ticker": "M&M", "type": "buy", "qty": 17, "price": 3145, "trade_value": 19295, "date": "2026-05-04" ,"account": "DHAN-M" },
+ {"id": 629, "ticker": "LIC of India", "type": "buy", "qty": 7, "price": 810, "trade_value": 5670, "date": "2026-05-04" ,"account": "DHAN-M" }
 ]
