@@ -244,8 +244,7 @@
     "ZerodhaLIQUIDCASE": 113.78
   },
   "2026-04-27":{
-              "BEL": 436.65,
-              "BHEL":348.92,
+              "BEL": 436.65,"BHEL":348.92,
               "BHARTIARTL": 1822.5,
               "HAL": 4301.7,
               "IOC": 145.44,
@@ -263,4 +262,14 @@
               "ZerodhaLIQUIDCASE": 113.78,
               "VEDANTA": 737.7
   }
+, "2026-05-04":{"BEL": 435.15,"BHEL":361.7,"BHARTIARTL": 1857,"HAL": 4555.5,"IOC": 143.15,"IRFC": 105.1,"M&M": 3132.5,"PAYTM": 1118.3,"Protean": 527.05
+                ,"RECLTD": 357.85,"RVNL": 300.15,"SBIN": 1081.1,"Tata Motors": 408.15,"NipponGOLDBEES": 122.62,"NipponNIFTYBEES": 274.16
+                ,"NipponSILVERBEES": 231.48,"ZerodhaLIQUIDCASE": 113.9,"VEDANTA": 289.45,"LICI": 801.75}
+
+
+
+
+
+
+
 }
