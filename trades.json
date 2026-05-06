@@ -629,6 +629,6 @@
  {"id": 633, "ticker": "BEL", "type": "buy", "qty": 100, "price": 433, "trade_value": 43300, "date": "2026-05-05" ,"account": "DHAN-M" },
  {"id": 634, "ticker": "SBIN", "type": "buy", "qty": 50, "price": 1052, "trade_value": 52600, "date": "2026-05-05" ,"account": "DHAN-M" },
  {"id": 635, "ticker": "Protean", "type": "buy", "qty": 50, "price": 525, "trade_value": 26200, "date": "2026-05-05" ,"account": "DHAN-M" },
- {"id": 638, "ticker": "IOC", "type": "buy", "qty": 1130, "price": 148, "trade_value": 167240, "date": "2026-05-06" ,"account": "DHAN-M" },
- {"id": 639, "ticker": "IOC", "type": "buy", "qty": 1200, "price": 144, "trade_value": 172800, "date": "2026-05-06" ,"account": "DHAN-M" } 
+ {"id": 638, "ticker": "IOC", "type": "buy", "qty": 1130, "price": 148, "trade_value": 167240, "date": "2026-05-06" ,"account": "Shoonya" },
+ {"id": 639, "ticker": "IOC", "type": "buy", "qty": 1200, "price": 144, "trade_value": 172800, "date": "2026-05-06" ,"account": "Shoonya" } 
 ]
