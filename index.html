@@ -572,12 +572,23 @@ td.ticker{color:var(--fg0);font-weight:500;font-family:'Anthropic Sans',sans-ser
   <!-- ── TRADES LOG VIEW ── -->
   <div class="view" id="view-trades">
     <div class="card" style="padding:0;">
-      <div class="card-hdr" style="padding:16px 18px 0;">
+      <div class="card-hdr" style="padding:16px 18px 0;flex-wrap:wrap;gap:10px;">
         <h2>Full trade log</h2>
-        <div style="display:flex;gap:6px;">
+        <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
           <button class="ctab on" onclick="setTF('all',this)" style="border-radius:4px;">All</button>
           <button class="ctab" onclick="setTF('buy',this)" style="border-radius:4px;">Buys</button>
           <button class="ctab" onclick="setTF('sell',this)" style="border-radius:4px;">Sells</button>
+          <div style="width:1px;height:18px;background:var(--border2);margin:0 2px;"></div>
+          <div style="position:relative;display:flex;align-items:center;">
+            <select id="ticker-filter-sel" onchange="setTickerFilter(this.value)"
+              style="padding:4px 28px 4px 10px;border-radius:var(--r4);border:0.5px solid var(--border2);
+                background:var(--bg3);color:var(--fg0);font-family:'Anthropic Mono',monospace;font-size:11px;
+                cursor:pointer;outline:none;appearance:none;-webkit-appearance:none;min-width:110px;">
+              <option value="all">All tickers</option>
+            </select>
+            <span style="position:absolute;right:8px;pointer-events:none;color:var(--fg2);font-size:10px;">&#9662;</span>
+          </div>
+          <button class="ctab" onclick="setTickerFilter('all')" id="ticker-clear-btn" style="display:none;border-radius:4px;color:var(--red);">&#x2715; Clear</button>
         </div>
       </div>
       <div class="tbl-wrap" style="padding:0 0 4px;">
@@ -603,6 +614,7 @@ let PRICES_HISTORY = {};
 let PRICES_DATE = '';
 let CUR = '₹';
 let tradeFilter = 'all';
+let tickerFilter = 'all';
 let ACCOUNT_FILTER = 'all';
 let mainChartMode = 'pnl';
 let plChartMode = 'cumulative';
@@ -620,7 +632,7 @@ function allAccounts(){
   return [...new Set(TRADES.map(t=>t.account||'').filter(Boolean))].sort();
 }
 function setAccount(acc){
-  ACCOUNT_FILTER=acc;
+  ACCOUNT_FILTER=acc; tickerFilter='all';
   document.querySelectorAll('.acc-btn').forEach(b=>b.classList.toggle('active',b.dataset.acc===acc));
   renderAll();
 }
@@ -1167,8 +1179,32 @@ function switchMonthlyChart(m,btn,moMap,months,barData,cumData){
 
 /* ─── TRADES LOG ─── */
 function setTF(f,btn){ tradeFilter=f; document.querySelectorAll('#view-trades .ctab').forEach(b=>b.classList.remove('on')); btn.classList.add('on'); renderTrades(); }
+function setTickerFilter(tk){
+  tickerFilter=tk;
+  const sel=document.getElementById('ticker-filter-sel');
+  const clr=document.getElementById('ticker-clear-btn');
+  if(sel) sel.value=tk;
+  if(clr) clr.style.display=tk==='all'?'none':'inline-block';
+  renderTrades();
+}
+function rebuildTickerDropdown(trades){
+  const sel=document.getElementById('ticker-filter-sel');
+  if(!sel) return;
+  const tickers=[...new Set(trades.map(t=>t.ticker))].sort();
+  const cur=sel.value;
+  sel.innerHTML='<option value="all">All tickers</option>';
+  tickers.forEach(tk=>{
+    const opt=document.createElement('option');
+    opt.value=tk; opt.textContent=tk;
+    if(tk===cur) opt.selected=true;
+    sel.appendChild(opt);
+  });
+}
 function renderTrades(){
-  const base=activeTrades(); const vis=tradeFilter==='all'?base:base.filter(t=>t.type===tradeFilter);
+  const base=activeTrades();
+  rebuildTickerDropdown(base);
+  let vis=tradeFilter==='all'?base:base.filter(t=>t.type===tradeFilter);
+  if(tickerFilter!=='all') vis=vis.filter(t=>t.ticker===tickerFilter);
   const tb=document.getElementById('tbody-trades'); tb.innerHTML='';
   document.getElementById('trades-empty').style.display=vis.length===0?'block':'none';
   const sorted=[...vis].sort((a,b)=>b.date.localeCompare(a.date)||b.id-a.id);
