@@ -629,6 +629,27 @@
  {"id": 633, "ticker": "BEL", "type": "buy", "qty": 100, "price": 433, "trade_value": 43300, "date": "2026-05-05" ,"account": "DHAN-M" },
  {"id": 634, "ticker": "SBIN", "type": "buy", "qty": 50, "price": 1052, "trade_value": 52600, "date": "2026-05-05" ,"account": "DHAN-M" },
  {"id": 635, "ticker": "Protean", "type": "buy", "qty": 50, "price": 525, "trade_value": 26200, "date": "2026-05-05" ,"account": "DHAN-M" },
- {"id": 638, "ticker": "IOC", "type": "buy", "qty": 1130, "price": 148, "trade_value": 167240, "date": "2026-05-06" ,"account": "Shoonya" },
- {"id": 639, "ticker": "IOC", "type": "buy", "qty": 1200, "price": 144, "trade_value": 172800, "date": "2026-05-06" ,"account": "Shoonya" } 
+ {"id": 638, "ticker": "IOC", "type": "sell", "qty": 1130, "price": 148, "trade_value": 167240, "date": "2026-05-06" ,"account": "Shoonya" },
+ {"id": 639, "ticker": "IOC", "type": "sell", "qty": 1200, "price": 144, "trade_value": 172800, "date": "2026-05-06" ,"account": "Shoonya" } ,
+ {"id": 632, "ticker": "IOC", "type": "sell", "qty": 475, "price": 144.73, "trade_value": 68746, "date": "2026-05-08" ,"account": "DHAN-M" },
+ {"id": 632, "ticker": "IOC", "type": "buy", "qty": 475, "price": 144.70, "trade_value": 68632, "date": "2026-05-08" ,"account": "DHAN-M" },
+ {"id": 632, "ticker": "IOC", "type": "buy", "qty": 475, "price": 144.76, "trade_value": 68761, "date": "2026-05-08" ,"account": "DHAN-M" },
+ {"id": 623, "ticker": "HAL", "type": "sell", "qty": 5, "price": 4789, "trade_value": 23946, "date": "2026-05-08" ,"account": "DHAN-M" } ,  
+ {"id": 623, "ticker": "HAL", "type": "buy", "qty": 4, "price": 4756.40, "trade_value": 19025, "date": "2026-05-08" ,"account": "DHAN-M" } ,  
+ {"id": 623, "ticker": "HAL", "type": "buy", "qty": 5, "price": 4791, "trade_value": 23955, "date": "2026-05-08" ,"account": "DHAN-M" } ,  
+ {"id": 634, "ticker": "SBIN", "type": "buy", "qty": 7, "price": 977.60, "trade_value": 6843, "date": "2026-05-11" ,"account": "DHAN-M" },
+ {"id": 600, "ticker": "NipponSILVERBEES", "type": "buy", "qty": 1306, "price": 267.34, "trade_value": 349141, "date": "2026-05-14" ,"account": "DHAN-H" },
+ {"id": 600, "ticker": "NipponSILVERBEES", "type": "sell", "qty": 1306, "price": 270.85, "trade_value": 353730, "date": "2026-05-14" ,"account": "DHAN-H" },
+ {"id": 600, "ticker": "NipponSILVERBEES", "type": "sell", "qty": 1306, "price": 268.85, "trade_value": 351118, "date": "2026-05-14" ,"account": "DHAN-H" },
+ {"id": 632, "ticker": "IOC", "type": "buy", "qty": 195, "price": 135.02, "trade_value": 26328, "date": "2026-05-15" ,"account": "DHAN-M" },
+ {"id": 632, "ticker": "IOC", "type": "buy", "qty": 200, "price": 136.47, "trade_value": 27295, "date": "2026-05-15" ,"account": "DHAN-M" },
+ {"id": 632, "ticker": "IOC", "type": "buy", "qty": 500, "price": 137.84, "trade_value": 68920, "date": "2026-05-15" ,"account": "DHAN-M" },
+ {"id": 632, "ticker": "SBIN", "type": "buy", "qty": 43, "price": 967.40, "trade_value": 41599, "date": "2026-05-15" ,"account": "DHAN-M" },
+ {"id": 632, "ticker": "LICI", "type": "buy", "qty": 500, "price": 809.30, "trade_value": 34800, "date": "2026-05-15" ,"account": "DHAN-M" }, 
+ {"id": 632, "ticker": "NipponNIFTYBEES", "type": "buy", "qty": 500, "price": 269.15, "trade_value": 26377, "date": "2026-05-15" ,"account": "DHAN-M" },
+ {"id": 635, "ticker": "Protean", "type": "buy", "qty": 150, "price": 633.20, "trade_value": 94980, "date": "2026-05-25" ,"account": "DHAN-M" },
+ {"id": 635, "ticker": "Protean", "type": "sell", "qty": 150, "price": 635.50, "trade_value": 95325, "date": "2026-05-25" ,"account": "DHAN-M" }
+
+
+ 
 ]
