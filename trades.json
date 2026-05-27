@@ -645,8 +645,8 @@
  {"id": 632, "ticker": "IOC", "type": "buy", "qty": 200, "price": 136.47, "trade_value": 27295, "date": "2026-05-15" ,"account": "DHAN-M" },
  {"id": 632, "ticker": "IOC", "type": "buy", "qty": 500, "price": 137.84, "trade_value": 68920, "date": "2026-05-15" ,"account": "DHAN-M" },
  {"id": 632, "ticker": "SBIN", "type": "buy", "qty": 43, "price": 967.40, "trade_value": 41599, "date": "2026-05-15" ,"account": "DHAN-M" },
- {"id": 632, "ticker": "LICI", "type": "buy", "qty": 500, "price": 809.30, "trade_value": 34800, "date": "2026-05-15" ,"account": "DHAN-M" }, 
- {"id": 632, "ticker": "NipponNIFTYBEES", "type": "buy", "qty": 500, "price": 269.15, "trade_value": 26377, "date": "2026-05-15" ,"account": "DHAN-M" },
+ {"id": 632, "ticker": "LICI", "type": "buy", "qty": 43, "price": 809.30, "trade_value": 34800, "date": "2026-05-15" ,"account": "DHAN-M" }, 
+ {"id": 632, "ticker": "NipponNIFTYBEES", "type": "buy", "qty": 98, "price": 269.15, "trade_value": 26377, "date": "2026-05-15" ,"account": "DHAN-M" },
  {"id": 635, "ticker": "Protean", "type": "buy", "qty": 150, "price": 633.20, "trade_value": 94980, "date": "2026-05-25" ,"account": "DHAN-M" },
  {"id": 635, "ticker": "Protean", "type": "sell", "qty": 150, "price": 635.50, "trade_value": 95325, "date": "2026-05-25" ,"account": "DHAN-M" }
 
