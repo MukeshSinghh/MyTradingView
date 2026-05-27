@@ -749,32 +749,40 @@ function loadWatchlistFile(e){
 }
 
 async function autoLoad(){
-  try{
-    const [tr,pr,ph,wl]=await Promise.all([
-      fetch('trades.json'),
-      fetch('prices.json'),
-      fetch('prices_history.json'),
-      fetch('watchlist.json')
-    ]);
-    if(tr.ok){ TRADES=await tr.json(); document.getElementById('trades-status').textContent='✓ trades.json ('+TRADES.length+' trades)'; }
-    if(pr.ok){ const d=await pr.json(); const p=d.prices||d; Object.assign(PRICES,p); PRICES_DATE=d.updated||'';
-      if(d.updated) document.getElementById('prices-date').textContent='CMP: '+d.updated; }
-    if(ph.ok){
-      const d=await ph.json(); PRICES_HISTORY=d.history||d;
-      const dates=Object.keys(PRICES_HISTORY).length;
-      document.getElementById('prices-history-status').textContent='✓ prices_history.json ('+dates+' snapshots)';
-      derivePricesFromHistory();
+  const tryFetch = async (path) => {
+    try { const r = await fetch(path); if(r.ok) return await r.json(); } catch(e){}
+    return null;
+  };
+  const [trData, prData, phData, wlData] = await Promise.all([
+    tryFetch('trades.json'),
+    tryFetch('prices.json'),
+    tryFetch('prices_history.json'),
+    tryFetch('watchlist.json')
+  ]);
+  if(trData){
+    TRADES = Array.isArray(trData) ? trData : (trData.trades || []);
+    document.getElementById('trades-status').textContent = '✓ trades.json ('+TRADES.length+' trades)';
+  }
+  if(prData){
+    const p = prData.prices || prData;
+    Object.assign(PRICES, p);
+    PRICES_DATE = prData.updated || '';
+    if(prData.updated) document.getElementById('prices-date').textContent = 'CMP: '+prData.updated;
+  }
+  if(phData){
+    PRICES_HISTORY = phData.history || phData;
+    const dates = Object.keys(PRICES_HISTORY).length;
+    document.getElementById('prices-history-status').textContent = '✓ prices_history.json ('+dates+' snapshots)';
+    derivePricesFromHistory();
+  }
+  if(wlData){
+    const syms = Array.isArray(wlData) ? wlData : (wlData.watchlist || []);
+    if(!localStorage.getItem('mtvWatchlist') && syms.length){
+      WATCHLIST = syms.map(s => s.toUpperCase().replace(/\.NS$/i,''));
+      saveWatchlist();
     }
-    if(wl.ok){
-      const d=await wl.json();
-      const syms=Array.isArray(d)?d:(d.watchlist||[]);
-      if(!localStorage.getItem('mtvWatchlist') && syms.length){
-        WATCHLIST=syms.map(s=>s.toUpperCase().replace(/\.NS$/i,''));
-        saveWatchlist();
-      }
-    }
-    renderAll();
-  } catch(e){ /* file:// — user loads manually */ }
+  }
+  renderAll();
 }
 
 /* ─── PRICE HISTORY LOOKUP ─── */
