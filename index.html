@@ -990,7 +990,7 @@ function renderPL(){
     const ret=totalInvested>0?(total/totalInvested)*100:0;
     return{tk,unrealised,realised,total,ret};
   });
-  rows.sort((a,b)=>b.ret-a.ret||a.tk.localeCompare(b.tk));
+  rows.sort((a,b)=>b.unrealised-a.unrealised||a.tk.localeCompare(b.tk));
   rows.forEach(({tk,unrealised,realised,total,ret})=>{
     const tr=document.createElement('tr');
     tr.innerHTML=`<td class="ticker">${tk}</td><td class="${unrealised>=0?'pos':'neg'}">${(unrealised>=0?'+':'')+inr(unrealised)}</td><td class="${realised>=0?'pos':'neg'}">${(realised>=0?'+':'')+inr(realised)}</td><td class="${total>=0?'pos':'neg'}" style="font-weight:500">${(total>=0?'+':'')+inr(total)}</td><td class="${ret>=0?'pos':'neg'}">${pct(ret)}</td>`;
