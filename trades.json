@@ -675,8 +675,14 @@
  {"id": 681, "ticker": "VedantaPower", "type": "buy", "qty": 6, "price": 41.7, "trade_value": 270.2, "date": "2026-06-16" ,"account": "DHAN-M" },
  {"id": 682, "ticker": "VedantaOil&Gas", "type": "buy", "qty": 107, "price": 32.99, "trade_value": 3549.93, "date": "2026-06-17" ,"account": "DHAN-M" },
  {"id": 683, "ticker": "VedantaPower", "type": "buy", "qty": 100, "price": 41.5, "trade_value": 4170, "date": "2026-06-19" ,"account": "DHAN-M" },
+
+ {"id": 682, "ticker": "VedantaOil&Gas", "type": "buy", "qty": 107, "price": 80, "trade_value": 8560, "date": "2026-06-01" ,"account": "DHAN-M" },
+ {"id": 686, "ticker": "VedantaIron&Steel", "type": "buy", "qty": 107, "price": 80, "trade_value": 8560, "date": "2026-06-01" ,"account": "DHAN-M" },
+ {"id": 686, "ticker": "VedantaPower", "type": "buy", "qty": 107, "price": 80, "trade_value": 8560, "date": "2026-06-01" ,"account": "DHAN-M" },
+ {"id": 686, "ticker": "VedantaAluminiumMetal", "type": "buy", "qty": 107, "price": 80, "trade_value": 8560, "date": "2026-06-01" ,"account": "DHAN-M" },
+
  {"id": 684, "ticker": "VedantaAluminiumMetal", "type": "sell", "qty": 57, "price": 465.12, "trade_value": 26531.84, "date": "2026-06-23" ,"account": "DHAN-M" },
- {"id": 685, "ticker": "VedantaAluminiumMetal", "type": "buy", "qty": 50, "price": 457.6, "trade_value": 22900, "date": "2026-06-24" ,"account": "DHAN-M" },
+ {"id": 685, "ticker": "VedantaAluminiumMetal", "type": "sell", "qty": 50, "price": 457.6, "trade_value": 22900, "date": "2026-06-24" ,"account": "DHAN-M" },
  {"id": 686, "ticker": "VedantaIron&Steel", "type": "buy", "qty": 393, "price": 28.96, "trade_value": 11401.28, "date": "2026-06-24" ,"account": "DHAN-M" },
  {"id": 687, "ticker": "VedantaPower", "type": "buy", "qty": 180, "price": 42.69, "trade_value": 7704.2, "date": "2026-06-24" ,"account": "DHAN-M" },
  {"id": 688, "ticker": "VedantaOil&Gas", "type": "buy", "qty": 286, "price": 32.87, "trade_value": 9420.82, "date": "2026-06-24" ,"account": "DHAN-M" },
@@ -692,7 +698,4 @@
  {"id": 698, "ticker": "VedantaIron&Steel", "type": "buy", "qty": 541, "price": 35.74, "trade_value": 19355.34, "date": "2026-07-14" ,"account": "DHAN-M" },
  {"id": 699, "ticker": "LICI", "type": "buy", "qty": 4, "price": 424.15, "trade_value": 1716.6, "date": "2026-07-30" ,"account": "DHAN-M" },
  {"id": 700, "ticker": "LICI", "type": "buy", "qty": 10, "price": 392.7, "trade_value": 3947, "date": "2026-08-05" ,"account": "DHAN-M" }
-
-
- 
 ]
