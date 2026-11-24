@@ -42,6 +42,17 @@ body{margin:0;background:var(--bg);color:var(--ink);font:400 15px/1.5 "Hanken Gr
 .theme-btn{border:1px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-size:13px;font-weight:500;padding:6px 12px;border-radius:999px;cursor:pointer}
 .theme-btn:hover{border-color:var(--accent)}
 
+.lock-wrap{max-width:380px;margin:72px auto;padding:0 16px}
+.lock-card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:24px;box-shadow:0 10px 30px rgba(0,0,0,.06)}
+.lock-title{font-size:20px;font-weight:700;margin:0 0 6px;letter-spacing:-.015em}
+.lock-sub{font-size:13px;color:var(--muted);margin:0 0 18px}
+.lock-form{display:flex;flex-direction:column;gap:12px}
+.lock-input{font:inherit;font-size:15px;padding:11px 14px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--ink)}
+.lock-input:focus{outline:2px solid var(--accent);border-color:transparent}
+.lock-btn{font:inherit;font-size:15px;font-weight:600;padding:11px 16px;border-radius:12px;border:0;background:var(--accent);color:#fff;cursor:pointer}
+.lock-btn:disabled{opacity:.6;cursor:wait}
+.lock-err{font-size:13px;color:var(--loss);min-height:18px}
+
 .m-shell{max-width:520px;margin:0 auto;min-height:100dvh;background:var(--bg);padding-bottom:48px}
 header.m-top{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:14px 14px 8px}
 h1{font-size:19px;font-weight:700;margin:0;letter-spacing:-.015em}
@@ -109,7 +120,20 @@ label.m-tg{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:v
 </style>
 </head>
 <body>
-<div class="m-shell">
+
+<div class="lock-wrap" id="lockWrap">
+  <div class="lock-card">
+    <h2 class="lock-title">🔒 Protected Portfolio</h2>
+    <p class="lock-sub">Enter your passphrase to unlock your portfolio snapshot.</p>
+    <form class="lock-form" id="unlockForm">
+      <input class="lock-input" type="password" id="passInput" autocomplete="current-password" placeholder="Enter passphrase" required>
+      <button class="lock-btn" id="unlockBtn" type="submit">Unlock</button>
+      <div class="lock-err" id="lockErr"></div>
+    </form>
+  </div>
+</div>
+
+<div class="m-shell" id="appWrap" hidden>
   <header class="m-top">
     <div>
       <h1>My Portfolio</h1>
@@ -118,13 +142,17 @@ label.m-tg{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:v
     <div class="hdr-r">
       <a class="desk-link" href="portfolio.html">Full view</a>
       <button class="theme-btn" id="themeBtn" type="button">Theme</button>
+      <button class="theme-btn" id="lockBtn" type="button">Lock</button>
     </div>
   </header>
   <nav class="m-views" id="views"></nav>
   <main class="m-body" id="main"></main>
 </div>
 <script>
-const DATA = {"asOf": "2026-11-25", "accounts": [{"id": "dhan-me", "label": "Dhan", "sub": "Yours", "tx": [["2024-05-03", 8600.0, ""], ["2024-05-14", 46200.0, ""], ["2024-05-16", 37100.0, ""], ["2024-06-03", 2500.0, ""], ["2024-06-04", 20000.0, ""], ["2024-06-18", -16000.0, ""], ["2024-06-20", 3990.0, ""], ["2024-07-12", 7077.0, ""], ["2024-07-14", 2000.0, ""], ["2024-07-23", 30000.0, ""], ["2024-07-23", 60000.0, ""], ["2024-07-23", 60000.0, ""], ["2024-07-25", 40800.0, ""], ["2024-08-06", 10000.0, ""], ["2024-08-09", 5000.0, ""], ["2024-08-16", 10300.0, ""], ["2024-08-16", 1030.0, ""], ["2024-09-04", 9000.0, ""], ["2024-09-13", 28000.0, ""], ["2024-09-26", 10500.0, ""], ["2024-09-30", 64000.0, ""], ["2024-10-07", 5000.0, ""], ["2024-10-08", 7935.0, ""], ["2024-10-24", 3800.0, ""], ["2024-11-01", 40000.0, ""], ["2024-11-04", -25000.0, ""], ["2024-11-10", -3863.39, ""], ["2024-12-18", 22500.0, ""], ["2025-01-05", 12500.0, ""], ["2025-01-13", 7500.0, ""], ["2025-01-14", -7997.0, ""], ["2025-01-22", -10800.0, ""], ["2025-01-31", 27500.0, ""], ["2025-02-12", 29200.0, ""], ["2025-02-17", 15500.0, ""], ["2025-02-17", 8500.0, ""], ["2025-02-18", 47600.0, ""], ["2025-02-28", 57000.0, ""], ["2025-02-28", 40000.0, ""], ["2025-03-20", 4566.0, ""], ["2025-05-13", 50000.0, ""], ["2025-05-26", 50000.0, ""], ["2025-05-29", 50000.0, ""], ["2025-05-30", 11000.0, ""], ["2025-06-10", 25000.0, ""], ["2025-06-12", 5600.0, ""], ["2025-06-12", 138.0, ""], ["2025-06-12", 2400.0, ""], ["2025-06-12", 5691.0, ""], ["2025-06-17", 21000.0, ""], ["2025-06-19", 1915.0, ""], ["2025-06-24", 7500.0, ""], ["2025-07-15", 1399.0, ""], ["2025-08-18", 29986.0, "BlueStoneIPO"], ["2025-10-01", 14880.0, "Trualt Bio IPO"], ["2025-10-08", 29808.0, "WeWorkIPO"], ["2025-10-13", 14820.0, "LGIPO"], ["2025-10-14", 4000.0, ""], ["2025-10-14", 66000.0, ""], ["2025-10-16", 40000.0, ""], ["2025-10-17", 33000.0, ""], ["2025-10-27", 30000.0, ""], ["2025-11-16", 28222.0, "PhysicsWalaPO"], ["2025-11-19", 300.0, ""], ["2025-11-20", -39000.0, ""], ["2025-11-21", 15209.0, ""], ["2025-12-01", 15000.0, ""], ["2025-12-22", 10000.0, ""], ["2025-12-29", 2000.0, "5-Silver 2-Nifty"], ["2025-12-31", 22000.0, "Eternal-79"], ["2026-01-07", 100.0, ""], ["2026-02-01", 50000.0, "Silver+Gold"], ["2026-02-02", 32000.0, ""], ["2026-02-06", -32500.0, ""], ["2026-02-19", -130000.0, ""], ["2026-02-20", -110000.0, ""], ["2026-02-24", -100000.0, ""], ["2026-03-06", 200000.0, ""], ["2026-03-09", 8000.0, ""], ["2026-03-09", 3751.0, ""], ["2026-03-24", 32000.0, ""], ["2026-03-25", 5000.0, ""], ["2026-04-10", 13600.0, ""], ["2026-04-16", 100000.0, "MSE"], ["2026-04-24", 100.0, ""], ["2026-05-08", 95000.0, ""], ["2026-05-15", -130000.0, "Withdrawn"], ["2026-05-16", 4500.0, ""], ["2026-05-17", 0.0, "Jio MF (5000)"], ["2026-05-17", 3500.0, ""], ["2026-05-19", 4250.0, ""], ["2026-07-21", 100.0, ""], ["2026-07-30", 1700.0, ""], ["2026-08-05", 4100.0, ""], ["2026-08-11", 7000.0, ""], ["2026-08-20", 2200.0, ""], ["2026-08-27", 15000.0, ""], ["2026-09-11", 16000.0, ""], ["2026-09-17", 20000.0, ""], ["2026-09-17", 6000.0, ""], ["2026-10-23", 30000.0, ""], ["2026-11-11", 100.0, ""]], "note": "", "extra": {"lossBooked": -213611.0}}, {"id": "dhan-wife", "label": "Dhan", "sub": "Wifey", "tx": [["2024-05-03", 1400000.0, "Interest"], ["2025-12-31", 70000.0, ""]], "note": ""}, {"id": "gullak-me", "label": "Gullak", "sub": "Yours", "tx": [["2025-08-09", 3666.4, "Gold-1"], ["2025-09-02", 1500.0, "Gold-1"], ["2025-09-25", 2139.45, "Silver-1"], ["2025-10-02", 1500.0, "Gold-1"], ["2025-10-02", 1600.0, "Silver-1"], ["2025-10-08", 8000.0, "Silver-1"], ["2025-10-08", 8240.0, "Gold-1"], ["2025-10-12", 77250.0, "Gold-1"], ["2025-10-13", 20600.0, "Gold-1"], ["2025-10-16", 15902.0, "Gold-1"], ["2025-10-18", 70604.0, "Silver-1"], ["2025-12-03", -89845.0, "Silver-1"], ["2026-01-26", 82003.05, "Silver-3"]], "note": ""}, {"id": "gullak-wife", "label": "Gullak", "sub": "Wifey", "tx": [["2025-08-09", 3666.4, "Gold-1"], ["2025-09-02", 1500.0, "Gold-1"], ["2025-09-25", 2139.45, "Silver-1"], ["2025-10-02", 1500.0, "Gold-1"], ["2025-10-02", 1600.0, "Silver-1"], ["2025-10-08", 8000.0, "Silver-1"], ["2025-10-08", 8240.0, "Gold-1"], ["2025-10-12", 77250.0, "Gold-1"], ["2025-10-13", 20600.0, "Gold-1"], ["2025-10-16", 15902.0, "Gold-1"], ["2025-10-18", 70604.0, "Silver-1"], ["2025-12-03", -89845.0, "Silver-1"], ["2026-01-03", 1500.0, "Gold-1"], ["2026-02-03", 1500.0, "Gold-1"], ["2026-03-03", 1500.0, "Gold-1"], ["2026-04-03", 1500.0, "Gold-1"], ["2026-05-03", 1500.0, "Gold-1"], ["2026-06-03", 1500.0, "Gold-1"], ["2026-07-03", 1500.0, "Gold-1"], ["2026-08-03", 1500.0, "Gold-1"], ["2026-09-03", 1500.0, "Gold-1"], ["2026-10-03", 1500.0, "Gold-1"], ["2026-11-03", 1500.0, "Gold-1"]], "note": ""}], "holdings": [{"a": "dhan-me", "n": "GoldBees", "c": "ETF", "q": 5.0, "b": 103.0, "p": 102.94, "i": 515.0, "v": 514.7, "closed": false}, {"a": "dhan-me", "n": "SilverBees", "c": "ETF", "q": 10.0, "b": 146.0, "p": 146.51, "i": 1460.0, "v": 1465.1, "closed": false}, {"a": "dhan-me", "n": "LIQUIDCASE", "c": "ETF", "q": 0.0, "b": 0.0, "p": 117.07, "i": 0.0, "v": 0.0, "closed": true}, {"a": "dhan-me", "n": "NiftyBees", "c": "ETF", "q": 0.0, "b": 0.0, "p": 289.48, "i": 0.0, "v": 0.0, "closed": true}, {"a": "dhan-me", "n": "BEL", "c": "Stock", "q": 500.0, "b": 430.0, "p": 395.8, "i": 215000.0, "v": 197900.0, "closed": false}, {"a": "dhan-me", "n": "COLPAL", "c": "Stock", "q": 50.0, "b": 1720.0, "p": 1755.5, "i": 86000.0, "v": 87775.0, "closed": false}, {"a": "dhan-me", "n": "ETERNAL", "c": "Stock", "q": 0.0, "b": 0.0, "p": 362.1, "i": 0.0, "v": 0.0, "closed": true}, {"a": "dhan-me", "n": "HAL", "c": "Stock", "q": 10.0, "b": 4800.0, "p": 4780, "i": 48000.0, "v": 47800.0, "closed": false}, {"a": "dhan-me", "n": "IOC", "c": "Stock", "q": 3000.0, "b": 143.0, "p": 145, "i": 429000.0, "v": 435000.0, "closed": false}, {"a": "dhan-me", "n": "LICI", "c": "Stock", "q": 100.0, "b": 416.0, "p": 407.3, "i": 41600.0, "v": 40730.0, "closed": false}, {"a": "dhan-me", "n": "JPL", "c": "Stock", "q": 50.0, "b": 1380.0, "p": 1365.9, "i": 69000.0, "v": 68295.0, "closed": false}, {"a": "dhan-me", "n": "PAYTM", "c": "Stock", "q": 0.0, "b": 1160.0, "p": 1730.6, "i": 0.0, "v": 0.0, "closed": true}, {"a": "dhan-me", "n": "Protean", "c": "Stock", "q": 0.0, "b": 0.0, "p": 693, "i": 0.0, "v": 0.0, "closed": true}, {"a": "dhan-me", "n": "RECLtd", "c": "Stock", "q": 620.0, "b": 360.0, "p": 292.95, "i": 223200.0, "v": 181629.0, "closed": false}, {"a": "dhan-me", "n": "RVNL", "c": "Stock", "q": 700.0, "b": 235.0, "p": 185.1, "i": 164500.0, "v": 129570.0, "closed": false}, {"a": "dhan-me", "n": "SBIN", "c": "Stock", "q": 150.0, "b": 1150.0, "p": 1132.65, "i": 172500.0, "v": 169897.5, "closed": false}, {"a": "dhan-me", "n": "VEDL", "c": "Stock", "q": 120.0, "b": 300.0, "p": 235.53, "i": 36000.0, "v": 28263.6, "closed": false}, {"a": "dhan-me", "n": "VEDPOWER", "c": "Stock", "q": 1000.0, "b": 48.0, "p": 33.5, "i": 48000.0, "v": 33500.0, "closed": false}, {"a": "dhan-me", "n": "VISL", "c": "Stock", "q": 1100.0, "b": 35.0, "p": 23.3, "i": 38500.0, "v": 25630.0, "closed": false}, {"a": "dhan-me", "n": "VOGL", "c": "Stock", "q": 1022.0, "b": 47.0, "p": 29.17, "i": 48034.0, "v": 29811.74, "closed": false}, {"a": "dhan-me", "n": "MSEI (unlisted)", "c": "Unlisted", "q": 11764.0, "b": 8.5, "p": 8.5, "i": 99994.0, "v": 99994.0, "closed": false}, {"a": "dhan-me", "n": "VAML", "c": "Stock", "q": 0.0, "b": 0.0, "p": 361.25, "i": 0.0, "v": 0.0, "closed": true}, {"a": "dhan-me", "n": "Nippon Consuption", "c": "Mutual fund", "q": null, "b": null, "p": null, "i": 30500.0, "v": 31660.0, "closed": false}, {"a": "dhan-me", "n": "Nippon Large", "c": "Mutual fund", "q": null, "b": null, "p": null, "i": 31030.0, "v": 32340.0, "closed": false}, {"a": "dhan-me", "n": "Nippon Power", "c": "Mutual fund", "q": null, "b": null, "p": null, "i": 5000.0, "v": 4945.0, "closed": false}, {"a": "dhan-me", "n": "Quant Mid", "c": "Mutual fund", "q": null, "b": null, "p": null, "i": 30910.0, "v": 31880.0, "closed": false}, {"a": "dhan-me", "n": "Quant Small", "c": "Mutual fund", "q": null, "b": null, "p": null, "i": 2500.0, "v": 2472.0, "closed": false}, {"a": "dhan-me", "n": "Jio Black Advance", "c": "Mutual fund", "q": null, "b": null, "p": null, "i": 10000.0, "v": 10240.0, "closed": false}, {"a": "dhan-wife", "n": "GoldBees", "c": "Stock", "q": 0.0, "b": 88.0, "p": 102.94, "i": 0.0, "v": 0.0, "closed": true}, {"a": "dhan-wife", "n": "SilverBees", "c": "Stock", "q": 600.0, "b": 340.0, "p": 146.51, "i": 204000.0, "v": 87906.0, "closed": false}, {"a": "dhan-wife", "n": "NiftyBees", "c": "Stock", "q": 0.0, "b": 305.0, "p": 289.48, "i": 0.0, "v": 0.0, "closed": true}, {"a": "dhan-wife", "n": "RELIANCE", "c": "Stock", "q": 0.0, "b": 1252.0, "p": 1351, "i": 0.0, "v": 0.0, "closed": true}, {"a": "dhan-wife", "n": "BEL", "c": "Stock", "q": 350.0, "b": 450.0, "p": 395.8, "i": 157500.0, "v": 138530.0, "closed": false}, {"a": "dhan-wife", "n": "BHEL", "c": "Stock", "q": 0.0, "b": 311.0, "p": 415.7, "i": 0.0, "v": 0.0, "closed": true}, {"a": "dhan-wife", "n": "HAL", "c": "Stock", "q": 10.0, "b": 4850.0, "p": 4780, "i": 48500.0, "v": 47800.0, "closed": false}, {"a": "dhan-wife", "n": "IRB", "c": "Stock", "q": 0.0, "b": 58.0, "p": 17.31, "i": 0.0, "v": 0.0, "closed": true}, {"a": "dhan-wife", "n": "IOC", "c": "Stock", "q": 1000.0, "b": 137.0, "p": 145, "i": 137000.0, "v": 145000.0, "closed": false}, {"a": "dhan-wife", "n": "M&M", "c": "Stock", "q": 0.0, "b": 3685.0, "p": 3487.4, "i": 0.0, "v": 0.0, "closed": true}, {"a": "dhan-wife", "n": "IRFC", "c": "Stock", "q": 555.0, "b": 172.0, "p": 80.8, "i": 95460.0, "v": 44844.0, "closed": false}, {"a": "dhan-wife", "n": "NETWORK18", "c": "Stock", "q": 0.0, "b": 106.0, "p": 25.2, "i": 0.0, "v": 0.0, "closed": true}, {"a": "dhan-wife", "n": "RVNL", "c": "Stock", "q": 453.0, "b": 520.0, "p": 185.1, "i": 235560.0, "v": 83850.3, "closed": false}, {"a": "dhan-wife", "n": "TMPV", "c": "Stock", "q": 20.0, "b": 480.0, "p": 259, "i": 9600.0, "v": 5180.0, "closed": false}, {"a": "dhan-wife", "n": "TMCV", "c": "Stock", "q": 0.0, "b": 0.0, "p": 452.5, "i": 0.0, "v": 0.0, "closed": true}, {"a": "dhan-wife", "n": "SBIN", "c": "Stock", "q": 0.0, "b": 980.0, "p": 1132.65, "i": 0.0, "v": 0.0, "closed": true}, {"a": "dhan-wife", "n": "IDEA", "c": "Stock", "q": 0.0, "b": 15.0, "p": 11.91, "i": 0.0, "v": 0.0, "closed": true}, {"a": "dhan-wife", "n": "SJVN", "c": "Stock", "q": 0.0, "b": 145.0, "p": 54.75, "i": 0.0, "v": 0.0, "closed": true}, {"a": "dhan-wife", "n": "ETERNAL", "c": "Stock", "q": 0.0, "b": 660.0, "p": 362.1, "i": 0.0, "v": 0.0, "closed": true}, {"a": "dhan-wife", "n": "BHARTIARTL", "c": "Stock", "q": 0.0, "b": 305.0, "p": 2128.5, "i": 0.0, "v": 0.0, "closed": true}, {"a": "dhan-wife", "n": "PAYTM", "c": "Stock", "q": 0.0, "b": 2100.0, "p": 1730.6, "i": 0.0, "v": 0.0, "closed": true}, {"a": "dhan-wife", "n": "LICI", "c": "Stock", "q": 0.0, "b": 1360.0, "p": 407.3, "i": 0.0, "v": 0.0, "closed": true}, {"a": "gullak-me", "n": "Gold-1", "c": "Digital gold", "q": null, "b": null, "p": null, "i": 128658.4, "v": 129661.6203, "closed": false}, {"a": "gullak-me", "n": "Silver-3", "c": "Digital silver", "q": null, "b": null, "p": null, "i": 82003.05, "v": 30767.0517, "closed": false}, {"a": "gullak-wife", "n": "Gold-1", "c": "Digital gold", "q": null, "b": null, "p": null, "i": 145158.4, "v": 126022.5953, "closed": false}, {"a": "gullak-wife", "n": "Silver-1", "c": "Digital silver", "q": null, "b": null, "p": null, "i": -7501.55, "v": 0.0, "closed": false}]};
+
+const PAYLOAD = {"encrypted": true, "salt": "/ebILmH5jNObKBa3lKMKbg==", "iv": "9GTbu25TCCIHyBFL", "ct": "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"};
+let DATA = null;
+
 const inr = new Intl.NumberFormat('en-IN',{maximumFractionDigits:0});
 const inr2 = new Intl.NumberFormat('en-IN',{maximumFractionDigits:2});
 const money = n => (n<0?'−':'')+'₹'+inr.format(Math.abs(Math.round(n)));
@@ -137,19 +165,15 @@ function compact(n){
 }
 const pct = n => (n>0?'+':n<0?'−':'')+Math.abs(n*100).toFixed(1)+'%';
 const cls = n => n>0?'pos':n<0?'neg':'';
-const fmtDate = s => new Date(s+'T00:00:00').toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'2-digit'});
 const monthKey = s => s.slice(0,7);
 const monthLabel = k => new Date(k+'-01T00:00:00').toLocaleDateString('en-IN',{month:'short',year:'2-digit'});
-
-const ACC = DATA.accounts;
-const ALL = {id:'all',label:'All',sub:''};
-const VIEWS = [...ACC, ALL];
-const TYPE_COLORS = {'Stock':'--c1','ETF':'--c3','Mutual fund':'--c2','Unlisted':'--c4','Digital gold':'--c5','Digital silver':'--c6'};
+const TYPE_COLORS = {'Stock':'--c1','ETF':'--c3','Mutual fund':'--c2','Unlisted':'--c4','Digital gold':'--c5','Digital silver':'--c6','Digital gold/silver':'--c5'};
 
 function initTheme(){
   const saved = localStorage.getItem('pf-theme');
   if(saved) document.documentElement.setAttribute('data-theme', saved);
   const btn = document.getElementById('themeBtn');
+  if(!btn) return;
   const sync = () => {
     const cur = document.documentElement.getAttribute('data-theme');
     btn.textContent = cur === 'dark' ? '☀ Light' : cur === 'light' ? '☾ Dark' : '◐ Theme';
@@ -162,13 +186,6 @@ function initTheme(){
     sync();
   };
   sync();
-}
-
-function accSummary(a){
-  const hs = DATA.holdings.filter(h=>h.a===a.id && !h.closed);
-  const invested=hs.reduce((s,h)=>s+h.i,0), value=hs.reduce((s,h)=>s+h.v,0);
-  const net = a.tx.reduce((s,t)=>s+t[1],0);
-  return {invested,value,pl:value-invested,net,hasData:a.tx.length>0||hs.length>0,holdings:hs};
 }
 
 function mergeHoldings(list){
@@ -201,202 +218,281 @@ function mergeHoldings(list){
   }));
 }
 
-function viewModel(id){
-  if(id==='all'){
-    const parts = ACC.map(a=>({a,s:accSummary(a)}));
-    const invested=parts.reduce((s,p)=>s+p.s.invested,0), value=parts.reduce((s,p)=>s+p.s.value,0);
-    const mergedActive = mergeHoldings(DATA.holdings.filter(h=>!h.closed));
-    const mergedClosed = mergeHoldings(DATA.holdings.filter(h=>h.closed));
-    return {
-      id,
-      label:'All accounts',
-      invested,
-      value,
-      pl:value-invested,
-      net:parts.reduce((s,p)=>s+p.s.net,0),
-      holdings:mergedActive,
-      closed:mergedClosed,
-      tx:ACC.flatMap(a=>a.tx.map(t=>[...t,a.label+(a.sub?' · '+a.sub:'')])),
-      lossBooked:ACC.reduce((s,a)=>s+((a.extra&&a.extra.lossBooked)||0),0),
-      parts,
-      hasData:true,
-      note:''
-    };
+async function decryptPayload(pkg, password){
+  const b64 = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+  const salt = b64(pkg.salt);
+  const iv = b64(pkg.iv);
+  const ct = b64(pkg.ct);
+  const baseKey = await crypto.subtle.importKey(
+    'raw', new TextEncoder().encode(password), 'PBKDF2', false, ['deriveKey']
+  );
+  const aesKey = await crypto.subtle.deriveKey(
+    { name: 'PBKDF2', salt, iterations: 250000, hash: 'SHA-256' },
+    baseKey,
+    { name: 'AES-GCM', length: 256 },
+    false,
+    ['decrypt']
+  );
+  const plainBuf = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, aesKey, ct);
+  return JSON.parse(new TextDecoder().decode(plainBuf));
+}
+
+function lockDashboard(){
+  sessionStorage.removeItem('pf-pass');
+  location.reload();
+}
+
+async function boot(){
+  initTheme();
+  const lockWrap = document.getElementById('lockWrap');
+  const appWrap = document.getElementById('appWrap');
+
+  const unlockWith = async (pw) => {
+    DATA = await decryptPayload(PAYLOAD, pw);
+    sessionStorage.setItem('pf-pass', pw);
+    if(lockWrap) lockWrap.remove();
+    if(appWrap) appWrap.hidden = false;
+    startApp();
+  };
+
+  if(!PAYLOAD || !PAYLOAD.encrypted){
+    DATA = PAYLOAD;
+    if(lockWrap) lockWrap.remove();
+    if(appWrap) appWrap.hidden = false;
+    startApp();
+    return;
   }
-  const a=ACC.find(x=>x.id===id), s=accSummary(a);
-  return {
-    id,
-    label:a.label+(a.sub?' · '+a.sub:''),
-    ...s,
-    holdings:s.holdings,
-    closed:DATA.holdings.filter(h=>h.a===id&&h.closed),
-    tx:a.tx.map(t=>[...t]),
-    lossBooked:a.extra?a.extra.lossBooked:null,
-    note:a.note||'',
-    parts:null
+
+  const cached = sessionStorage.getItem('pf-pass');
+  if(cached){
+    try {
+      await unlockWith(cached);
+      return;
+    } catch {
+      sessionStorage.removeItem('pf-pass');
+    }
+  }
+
+  const form = document.getElementById('unlockForm');
+  const input = document.getElementById('passInput');
+  const btn = document.getElementById('unlockBtn');
+  const errEl = document.getElementById('lockErr');
+  input.focus();
+
+  form.onsubmit = async (e) => {
+    e.preventDefault();
+    errEl.textContent = '';
+    btn.disabled = true;
+    btn.textContent = 'Decrypting…';
+    try {
+      await unlockWith(input.value);
+    } catch {
+      errEl.textContent = 'Incorrect passphrase. Please try again.';
+      btn.disabled = false;
+      btn.textContent = 'Unlock';
+      input.select();
+    }
   };
 }
 
-let current = DATA.accounts[0].id, sortKey='v', sortDir=-1, query='', showClosed=false, showAllTx=false;
+const fmtDate = s => new Date(s+'T00:00:00').toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'2-digit'});
 
+function startApp(){
+  const ACC = DATA.accounts;
+  const ALL = {id:'all',label:'All',sub:''};
+  const VIEWS = [...ACC, ALL];
+  const lockBtn = document.getElementById('lockBtn');
+  if(!PAYLOAD.encrypted && lockBtn) lockBtn.remove();
+  else if(lockBtn) lockBtn.onclick = lockDashboard;
 
-function renderNav(){
-  const nav=document.getElementById('views');
-  nav.innerHTML = VIEWS.map(v=>`<button class="m-chip" data-id="${v.id}" aria-pressed="${v.id===current}">${v.label}${v.sub?`<small>${v.sub}</small>`:''}</button>`).join('');
-  nav.querySelectorAll('.m-chip').forEach(b=>b.onclick=()=>{current=b.dataset.id;showAllTx=false;query='';showClosed=false;render();});
-}
-
-function allocBlock(m){
-  const by={};
-  m.holdings.forEach(h=>{ if(h.v>0) by[h.c]=(by[h.c]||0)+h.v; });
-  const tot=Object.values(by).reduce((a,b)=>a+b,0);
-  if(!tot) return '';
-  const rows=Object.entries(by).sort((a,b)=>b[1]-a[1]);
-  return `<div class="m-alloc">
-    <div class="m-bar">${rows.map(([k,v])=>`<span style="flex:${v} 1 0;background:var(${TYPE_COLORS[k]||'--c1'})"></span>`).join('')}</div>
-    <div class="m-pills">${rows.map(([k,v])=>`<span class="m-pill"><i style="background:var(${TYPE_COLORS[k]||'--c1'})"></i>${k} <b>${(v/tot*100).toFixed(0)}%</b></span>`).join('')}</div>
-  </div>`;
-}
-
-function kpiGrid(m){
-  const kpis=[
-    ['Invested',compact(m.invested),''],
-    ['P/L %',m.invested?pct(m.pl/m.invested):'–',cls(m.pl)],
-    ['Net Deposited',compact(m.net),'']
-  ];
-  if(m.lossBooked) kpis.push(['Loss Booked',compact(m.lossBooked),'neg']);
-  return `<div class="m-grid2">${kpis.map(([k,v,c])=>`<div class="m-kpi"><div class="k">${k}</div><div class="v ${c}">${v}</div></div>`).join('')}</div>`;
-}
-
-function holdingsBlock(m){
-
-  let rows=[...m.holdings, ...(showClosed?m.closed:[])];
-  if(query) rows=rows.filter(h=>h.n.toLowerCase().includes(query.toLowerCase())||h.c.toLowerCase().includes(query.toLowerCase()));
-  rows=rows.map(h=>({...h,pl:h.v-h.i,plp:h.i?(h.v-h.i)/h.i:0}));
-  rows.sort((a,b)=>{
-    const x=a[sortKey], y=b[sortKey];
-    if(typeof x==='string') return sortDir*x.localeCompare(y);
-    return sortDir*((x??-Infinity)-(y??-Infinity));
-  });
-  const cards=rows.map(h=>`<div class="h-card ${h.closed?'closed':''}">
-    <div class="h-top">
-      <div>
-        <div class="h-name">${h.n}</div>
-        <div class="h-meta">${h.c}${h.mergedCount > 1 ? ' · ' + h.mergedCount + ' accounts' : ''}${h.closed ? ' · Sold out' : ''}</div>
-      </div>
-      <div>
-        <div class="h-val">${money(h.v)}</div>
-        <div class="h-pl ${cls(h.pl)}">${signed(h.pl)} (${h.i?pct(h.plp):'–'})</div>
-      </div>
-    </div>
-    <div class="h-foot">
-      <span>Inv <b>${compact(h.i)}</b></span>
-      ${h.q!=null?`<span>Qty <b>${inr2.format(h.q)}</b></span>`:''}
-      ${h.b?`<span>Avg <b>${inr2.format(h.b)}</b></span>`:''}
-      ${h.p?`<span>CMP <b>${inr2.format(h.p)}</b></span>`:''}
-    </div>
-  </div>`).join('');
-
-  return `<section class="m-sec">
-    <div class="m-sec-h"><h2>Holdings</h2><span class="m-count">${rows.length} items</span></div>
-    <div class="m-controls">
-      <input type="search" id="q" placeholder="Search holding…" value="${query}">
-      <select id="sortSel" aria-label="Sort holdings">
-        <option value="v:-1" ${sortKey==='v'&&sortDir===-1?'selected':''}>Value ↓</option>
-        <option value="pl:-1" ${sortKey==='pl'&&sortDir===-1?'selected':''}>P/L (₹) ↓</option>
-        <option value="plp:-1" ${sortKey==='plp'&&sortDir===-1?'selected':''}>P/L (%) ↓</option>
-        <option value="plp:1" ${sortKey==='plp'&&sortDir===1?'selected':''}>P/L (%) ↑</option>
-        <option value="n:1" ${sortKey==='n'&&sortDir===1?'selected':''}>Name A–Z</option>
-      </select>
-    </div>
-    ${m.closed.length?`<div class="m-closed-row"><label class="m-tg"><input type="checkbox" id="closed" ${showClosed?'checked':''}> Show sold-out (${m.closed.length})</label></div>`:''}
-    ${cards||`<div class="empty">No holdings match “${query}”.</div>`}
-  </section>`;
-}
-
-function accountsBlock(m){
-  return `<section class="m-sec"><div class="m-sec-h"><h2>Accounts</h2></div>${m.parts.map(({a,s})=>`<div class="h-card">
-    <div class="h-top">
-      <div><div class="h-name">${a.label}${a.sub?' · '+a.sub:''}</div><div class="h-meta">${s.hasData&&m.value?(s.value/m.value*100).toFixed(1)+'% of total':'No data'}</div></div>
-      <div><div class="h-val">${s.hasData?money(s.value):'–'}</div><div class="h-pl ${cls(s.pl)}">${s.hasData?signed(s.pl):'–'}</div></div>
-    </div>
-    <div class="h-foot"><span>Invested <b>${s.hasData?compact(s.invested):'–'}</b></span><span>Net flow <b>${s.hasData?compact(s.net):'–'}</b></span></div>
-  </div>`).join('')}</section>`;
-}
-
-function flowBlock(m){
-  if(!m.tx.length) return '';
-  const sorted=[...m.tx].sort((a,b)=>a[0].localeCompare(b[0]));
-  const months={}; sorted.forEach(t=>{const k=monthKey(t[0]); months[k]=(months[k]||0)+t[1];});
-  const keys=Object.keys(months).sort();
-  const filled=[]; let [y,mo]=keys[0].split('-').map(Number); const [ey,em]=keys[keys.length-1].split('-').map(Number);
-  while(y<ey||(y===ey&&mo<=em)){ filled.push(y+'-'+String(mo).padStart(2,'0')); mo++; if(mo>12){mo=1;y++;} }
-  let cum=0; const pts=filled.map(k=>{cum+=months[k]||0; return {k,m:months[k]||0,c:cum};});
-  const W=460, H=190, L=50, R=8, T=10, B=24;
-  const maxV=Math.max(...pts.map(p=>Math.max(p.c,p.m,0)),1), minV=Math.min(...pts.map(p=>Math.min(p.c,p.m,0)),0);
-  const y0=v=>T+(maxV-v)/(maxV-minV||1)*(H-T-B);
-  const bw=(W-L-R)/pts.length, bx=i=>L+i*bw;
-  const tv=Array.from({length:4},(_,i)=>minV+(maxV-minV)*i/3);
-  const step=Math.max(1,Math.ceil(pts.length/5));
-  const bars=pts.map((p,i)=>`<rect x="${bx(i)+bw*.18}" y="${Math.min(y0(p.m),y0(0))}" width="${Math.max(2,bw*.64)}" height="${Math.abs(y0(p.m)-y0(0))}" rx="2" fill="var(${p.m>=0?'--accent':'--loss'})" opacity=".82"></rect>`).join('');
-  const line=pts.map((p,i)=>`${i?'L':'M'}${bx(i)+bw/2},${y0(p.c)}`).join('');
-  return `<section class="m-sec"><div class="m-sec-h"><h2>Monthly Cash Flow</h2></div><div class="m-chart">
-    <svg viewBox="0 0 ${W} ${H}">
-      ${tv.map(v=>`<line class="grid" x1="${L}" x2="${W-R}" y1="${y0(v)}" y2="${y0(v)}"/><text class="axis" x="${L-5}" y="${y0(v)+4}" text-anchor="end">${compact(v).replace('₹','')}</text>`).join('')}
-      ${bars}
-      <path d="${line}" fill="none" stroke="var(--gain)" stroke-width="2.2" stroke-linejoin="round"/>
-      ${pts.map((p,i)=>i%step===0?`<text class="axis" x="${bx(i)+bw/2}" y="${H-6}" text-anchor="middle">${monthLabel(p.k)}</text>`:'').join('')}
-    </svg>
-  </div></section>`;
-}
-
-function txBlock(m){
-  if(!m.tx.length) return '';
-  const rows=[...m.tx].sort((a,b)=>b[0].localeCompare(a[0]));
-  const shown=showAllTx?rows:rows.slice(0,8);
-  const withAcc=m.id==='all';
-  return `<section class="m-sec"><div class="m-sec-h"><h2>Recent Transactions</h2><span class="m-count">${rows.length} total</span></div>
-    ${shown.map(t=>`<div class="tx-card">
-      <div>
-        <div class="tx-main">${t[2]||(t[1]<0?'Withdrawal':'Deposit')}</div>
-        <div class="tx-sub">${fmtDate(t[0])}${withAcc?' · '+t[3]:''}</div>
-      </div>
-      <div class="tx-amt ${t[1]<0?'neg':'pos'}">${signed(t[1])}</div>
-    </div>`).join('')}
-    ${rows.length>8?`<button class="m-more" id="moretx">${showAllTx?'Show less':'Show all '+rows.length+' transactions'}</button>`:''}
-  </section>`;
-}
-
-function render(){
-  renderNav();
-  document.getElementById('asof').textContent='Snapshot '+fmtDate(DATA.asOf);
-  const m=viewModel(current), main=document.getElementById('main');
-  if(!m.hasData){
-    main.innerHTML=`<div class="empty"><b>${m.label} has no data yet</b><p class="asof" style="margin-top:6px">${m.note}</p></div>`;
-    return;
+  function accSummary(a){
+    const hs = DATA.holdings.filter(h=>h.a===a.id && !h.closed);
+    const invested=hs.reduce((s,h)=>s+h.i,0), value=hs.reduce((s,h)=>s+h.v,0);
+    const net = a.tx.reduce((s,t)=>s+t[1],0);
+    return {invested,value,pl:value-invested,net,hasData:a.tx.length>0||hs.length>0,holdings:hs};
   }
-  main.innerHTML=`
-    <div class="hero-card">
-      <div class="hero-lbl">${m.label} · Current Value</div>
-      <div class="hero-val">${money(m.value)}</div>
-      <div class="hero-row">
-        <span class="${cls(m.pl)}">${signed(m.pl)}</span>
-        <span class="badge ${cls(m.pl)}">${m.invested?pct(m.pl/m.invested):'–'}</span>
+  function viewModel(id){
+    if(id==='all'){
+      const parts = ACC.map(a=>({a,s:accSummary(a)}));
+      const invested=parts.reduce((s,p)=>s+p.s.invested,0), value=parts.reduce((s,p)=>s+p.s.value,0);
+      const mergedActive = mergeHoldings(DATA.holdings.filter(h=>!h.closed));
+      const mergedClosed = mergeHoldings(DATA.holdings.filter(h=>h.closed));
+      return {
+        id,label:'All accounts',invested,value,pl:value-invested,
+        net:parts.reduce((s,p)=>s+p.s.net,0),
+        holdings:mergedActive, closed:mergedClosed,
+        tx:ACC.flatMap(a=>a.tx.map(t=>[...t,a.label+(a.sub?' · '+a.sub:'')])),
+        lossBooked:ACC.reduce((s,a)=>s+((a.extra&&a.extra.lossBooked)||0),0),
+        parts,hasData:true,note:''
+      };
+    }
+    const a=ACC.find(x=>x.id===id), s=accSummary(a);
+    return {
+      id,label:a.label+(a.sub?' · '+a.sub:''),...s,
+      holdings:s.holdings, closed:DATA.holdings.filter(h=>h.a===id&&h.closed),
+      tx:a.tx.map(t=>[...t]), lossBooked:a.extra?a.extra.lossBooked:null, note:a.note||'', parts:null
+    };
+  }
+
+  let current = DATA.accounts[0].id, sortKey='v', sortDir=-1, query='', showClosed=false, showAllTx=false;
+
+  function renderNav(){
+    const nav=document.getElementById('views');
+    nav.innerHTML = VIEWS.map(v=>`<button class="m-chip" data-id="${v.id}" aria-pressed="${v.id===current}">${v.label}${v.sub?`<small>${v.sub}</small>`:''}</button>`).join('');
+    nav.querySelectorAll('.m-chip').forEach(b=>b.onclick=()=>{current=b.dataset.id;showAllTx=false;query='';showClosed=false;render();});
+  }
+
+  function allocBlock(m){
+    const by={};
+    m.holdings.forEach(h=>{ if(h.v>0) by[h.c]=(by[h.c]||0)+h.v; });
+    const tot=Object.values(by).reduce((a,b)=>a+b,0);
+    if(!tot) return '';
+    const rows=Object.entries(by).sort((a,b)=>b[1]-a[1]);
+    return `<div class="m-alloc">
+      <div class="m-bar">${rows.map(([k,v])=>`<span style="flex:${v} 1 0;background:var(${TYPE_COLORS[k]||'--c1'})"></span>`).join('')}</div>
+      <div class="m-pills">${rows.map(([k,v])=>`<span class="m-pill"><i style="background:var(${TYPE_COLORS[k]||'--c1'})"></i>${k} <b>${(v/tot*100).toFixed(0)}%</b></span>`).join('')}</div>
+    </div>`;
+  }
+
+  function kpiGrid(m){
+    const kpis=[
+      ['Invested',compact(m.invested),''],
+      ['P/L %',m.invested?pct(m.pl/m.invested):'–',cls(m.pl)],
+      ['Net Deposited',compact(m.net),'']
+    ];
+    if(m.lossBooked) kpis.push(['Loss Booked',compact(m.lossBooked),'neg']);
+    return `<div class="m-grid2">${kpis.map(([k,v,c])=>`<div class="m-kpi"><div class="k">${k}</div><div class="v ${c}">${v}</div></div>`).join('')}</div>`;
+  }
+
+  function holdingsBlock(m){
+    let rows=[...m.holdings, ...(showClosed?m.closed:[])];
+    if(query) rows=rows.filter(h=>h.n.toLowerCase().includes(query.toLowerCase())||h.c.toLowerCase().includes(query.toLowerCase()));
+    rows=rows.map(h=>({...h,pl:h.v-h.i,plp:h.i?(h.v-h.i)/h.i:0}));
+    rows.sort((a,b)=>{
+      const x=a[sortKey], y=b[sortKey];
+      if(typeof x==='string') return sortDir*x.localeCompare(y);
+      return sortDir*((x??-Infinity)-(y??-Infinity));
+    });
+    const cards=rows.map(h=>`<div class="h-card ${h.closed?'closed':''}">
+      <div class="h-top">
+        <div>
+          <div class="h-name">${h.n}</div>
+          <div class="h-meta">${h.c}${h.mergedCount > 1 ? ' · ' + h.mergedCount + ' accounts' : ''}${h.closed ? ' · Sold out' : ''}</div>
+        </div>
+        <div>
+          <div class="h-val">${money(h.v)}</div>
+          <div class="h-pl ${cls(h.pl)}">${signed(h.pl)} (${h.i?pct(h.plp):'–'})</div>
+        </div>
       </div>
-    </div>
-    ${allocBlock(m)}
-    ${kpiGrid(m)}
-    ${m.parts?accountsBlock(m):''}
-    ${m.holdings.length?holdingsBlock(m):''}
-    ${flowBlock(m)}
-    ${txBlock(m)}`;
-  const q=document.getElementById('q'); if(q){q.oninput=e=>{query=e.target.value;const p=e.target.selectionStart;render();const n=document.getElementById('q');n.focus();n.setSelectionRange(p,p);};}
-  const s=document.getElementById('sortSel'); if(s) s.onchange=e=>{const [k,d]=e.target.value.split(':');sortKey=k;sortDir=Number(d);render();};
-  const c=document.getElementById('closed'); if(c) c.onchange=e=>{showClosed=e.target.checked;render();};
-  const mt=document.getElementById('moretx'); if(mt) mt.onclick=()=>{showAllTx=!showAllTx;render();};
+      <div class="h-foot">
+        <span>Inv <b>${compact(h.i)}</b></span>
+        ${h.q!=null?`<span>Qty <b>${inr2.format(h.q)}</b></span>`:''}
+        ${h.b?`<span>Avg <b>${inr2.format(h.b)}</b></span>`:''}
+        ${h.p?`<span>CMP <b>${inr2.format(h.p)}</b></span>`:''}
+      </div>
+    </div>`).join('');
+
+    return `<section class="m-sec">
+      <div class="m-sec-h"><h2>Holdings</h2><span class="m-count">${rows.length} items</span></div>
+      <div class="m-controls">
+        <input type="search" id="q" placeholder="Search holding…" value="${query}">
+        <select id="sortSel" aria-label="Sort holdings">
+          <option value="v:-1" ${sortKey==='v'&&sortDir===-1?'selected':''}>Value ↓</option>
+          <option value="pl:-1" ${sortKey==='pl'&&sortDir===-1?'selected':''}>P/L (₹) ↓</option>
+          <option value="plp:-1" ${sortKey==='plp'&&sortDir===-1?'selected':''}>P/L (%) ↓</option>
+          <option value="plp:1" ${sortKey==='plp'&&sortDir===1?'selected':''}>P/L (%) ↑</option>
+          <option value="n:1" ${sortKey==='n'&&sortDir===1?'selected':''}>Name A–Z</option>
+        </select>
+      </div>
+      ${m.closed.length?`<div class="m-closed-row"><label class="m-tg"><input type="checkbox" id="closed" ${showClosed?'checked':''}> Show sold-out (${m.closed.length})</label></div>`:''}
+      ${cards||`<div class="empty">No holdings match “${query}”.</div>`}
+    </section>`;
+  }
+
+  function accountsBlock(m){
+    return `<section class="m-sec"><div class="m-sec-h"><h2>Accounts</h2></div>${m.parts.map(({a,s})=>`<div class="h-card">
+      <div class="h-top">
+        <div><div class="h-name">${a.label}${a.sub?' · '+a.sub:''}</div><div class="h-meta">${s.hasData&&m.value?(s.value/m.value*100).toFixed(1)+'% of total':'No data'}</div></div>
+        <div><div class="h-val">${s.hasData?money(s.value):'–'}</div><div class="h-pl ${cls(s.pl)}">${s.hasData?signed(s.pl):'–'}</div></div>
+      </div>
+      <div class="h-foot"><span>Invested <b>${s.hasData?compact(s.invested):'–'}</b></span><span>Net flow <b>${s.hasData?compact(s.net):'–'}</b></span></div>
+    </div>`).join('')}</section>`;
+  }
+
+  function flowBlock(m){
+    if(!m.tx.length) return '';
+    const sorted=[...m.tx].sort((a,b)=>a[0].localeCompare(b[0]));
+    const months={}; sorted.forEach(t=>{const k=monthKey(t[0]); months[k]=(months[k]||0)+t[1];});
+    const keys=Object.keys(months).sort();
+    const filled=[]; let [y,mo]=keys[0].split('-').map(Number); const [ey,em]=keys[keys.length-1].split('-').map(Number);
+    while(y<ey||(y===ey&&mo<=em)){ filled.push(y+'-'+String(mo).padStart(2,'0')); mo++; if(mo>12){mo=1;y++;} }
+    let cum=0; const pts=filled.map(k=>{cum+=months[k]||0; return {k,m:months[k]||0,c:cum};});
+    const W=460, H=190, L=50, R=8, T=10, B=24;
+    const maxV=Math.max(...pts.map(p=>Math.max(p.c,p.m,0)),1), minV=Math.min(...pts.map(p=>Math.min(p.c,p.m,0)),0);
+    const y0=v=>T+(maxV-v)/(maxV-minV||1)*(H-T-B);
+    const bw=(W-L-R)/pts.length, bx=i=>L+i*bw;
+    const tv=Array.from({length:4},(_,i)=>minV+(maxV-minV)*i/3);
+    const step=Math.max(1,Math.ceil(pts.length/5));
+    const bars=pts.map((p,i)=>`<rect x="${bx(i)+bw*.18}" y="${Math.min(y0(p.m),y0(0))}" width="${Math.max(2,bw*.64)}" height="${Math.abs(y0(p.m)-y0(0))}" rx="2" fill="var(${p.m>=0?'--accent':'--loss'})" opacity=".82"></rect>`).join('');
+    const line=pts.map((p,i)=>`${i?'L':'M'}${bx(i)+bw/2},${y0(p.c)}`).join('');
+    return `<section class="m-sec"><div class="m-sec-h"><h2>Monthly Cash Flow</h2></div><div class="m-chart">
+      <svg viewBox="0 0 ${W} ${H}">
+        ${tv.map(v=>`<line class="grid" x1="${L}" x2="${W-R}" y1="${y0(v)}" y2="${y0(v)}"/><text class="axis" x="${L-5}" y="${y0(v)+4}" text-anchor="end">${compact(v).replace('₹','')}</text>`).join('')}
+        ${bars}
+        <path d="${line}" fill="none" stroke="var(--gain)" stroke-width="2.2" stroke-linejoin="round"/>
+        ${pts.map((p,i)=>i%step===0?`<text class="axis" x="${bx(i)+bw/2}" y="${H-6}" text-anchor="middle">${monthLabel(p.k)}</text>`:'').join('')}
+      </svg>
+    </div></section>`;
+  }
+
+  function txBlock(m){
+    if(!m.tx.length) return '';
+    const rows=[...m.tx].sort((a,b)=>b[0].localeCompare(a[0]));
+    const shown=showAllTx?rows:rows.slice(0,8);
+    const withAcc=m.id==='all';
+    return `<section class="m-sec"><div class="m-sec-h"><h2>Recent Transactions</h2><span class="m-count">${rows.length} total</span></div>
+      ${shown.map(t=>`<div class="tx-card">
+        <div>
+          <div class="tx-main">${t[2]||(t[1]<0?'Withdrawal':'Deposit')}</div>
+          <div class="tx-sub">${fmtDate(t[0])}${withAcc?' · '+t[3]:''}</div>
+        </div>
+        <div class="tx-amt ${t[1]<0?'neg':'pos'}">${signed(t[1])}</div>
+      </div>`).join('')}
+      ${rows.length>8?`<button class="m-more" id="moretx">${showAllTx?'Show less':'Show all '+rows.length+' transactions'}</button>`:''}
+    </section>`;
+  }
+
+  function render(){
+    renderNav();
+    document.getElementById('asof').textContent='Snapshot '+fmtDate(DATA.asOf);
+    const m=viewModel(current), main=document.getElementById('main');
+    if(!m.hasData){
+      main.innerHTML=`<div class="empty"><b>${m.label} has no data yet</b><p class="asof" style="margin-top:6px">${m.note}</p></div>`;
+      return;
+    }
+    main.innerHTML=`
+      <div class="hero-card">
+        <div class="hero-lbl">${m.label} · Current Value</div>
+        <div class="hero-val">${money(m.value)}</div>
+        <div class="hero-row">
+          <span class="${cls(m.pl)}">${signed(m.pl)}</span>
+          <span class="badge ${cls(m.pl)}">${m.invested?pct(m.pl/m.invested):'–'}</span>
+        </div>
+      </div>
+      ${allocBlock(m)}
+      ${kpiGrid(m)}
+      ${m.parts?accountsBlock(m):''}
+      ${m.holdings.length?holdingsBlock(m):''}
+      ${flowBlock(m)}
+      ${txBlock(m)}`;
+    const q=document.getElementById('q'); if(q){q.oninput=e=>{query=e.target.value;const p=e.target.selectionStart;render();const n=document.getElementById('q');n.focus();n.setSelectionRange(p,p);};}
+    const s=document.getElementById('sortSel'); if(s) s.onchange=e=>{const [k,d]=e.target.value.split(':');sortKey=k;sortDir=Number(d);render();};
+    const c=document.getElementById('closed'); if(c) c.onchange=e=>{showClosed=e.target.checked;render();};
+    const mt=document.getElementById('moretx'); if(mt) mt.onclick=()=>{showAllTx=!showAllTx;render();};
+  }
+  render();
 }
-initTheme();
-render();
+boot();
 </script>
 </body>
 </html>
