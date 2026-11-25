@@ -1,1 +1,1 @@
-py build-portfolio.py --xlsx Dhan-Funds-IO-MH.xlsx
+py build-portfolio.py --xlsx Dhan-Funds-IO-MH.xlsx --password "SecretPa33w@rd" --push
